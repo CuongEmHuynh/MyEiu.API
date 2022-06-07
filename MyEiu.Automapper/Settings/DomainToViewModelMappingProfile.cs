@@ -9,5 +9,6 @@ namespace MyEiu.Automapper.Settings
 {
     internal class DomainToViewModelMappingProfile : Profile
     {
+
     }
 }

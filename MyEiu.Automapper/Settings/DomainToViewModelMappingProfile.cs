@@ -9,5 +9,9 @@ namespace MyEiu.Automapper.Settings
 {
     internal class DomainToViewModelMappingProfile : Profile
     {
+       public DomainToViewModelMappingProfile()
+        {
+            //post -> postviewmodel
+        }
     }
 }

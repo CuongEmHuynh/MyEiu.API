@@ -2,20 +2,25 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace MyEiu.Automapper.ViewModel
 {
-    internal class PostViewModel
-    {       
+    public class PostViewModel
+    {
+        [JsonPropertyName("Id")]
         public int Id { get; set; }
-
-        public string Post_Excerpt { get; set; }
-
-        public string Post_Title { get; set; }
-        public string Guid { get; set; }
+        [JsonPropertyName("Post_Description")]
+        public string? Post_Description { get; set; }
+        [JsonPropertyName("Post_Title")]
+        public string? Post_Title { get; set; }
+        [JsonPropertyName("Post_Url")]
+        public string? Post_Url { get; set; }
         //public string Thumbnail_Url { get; set; }
+        [JsonPropertyName("Post_Date")]
         public DateTime Post_Date { get; set; }
+        [JsonPropertyName("Post_Author")]
         public int Post_Author { get; set; }
     }
 }

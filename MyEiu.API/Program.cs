@@ -1,9 +1,14 @@
 
+using Microsoft.EntityFrameworkCore;
 using MyEiu.API.Installer.Settings;
+using MyEiu.Automapper.Settings;
+using MyEiu.Data.EF.DbContexts;
 using MyEiu.Data.EF.Interface;
 using MyEiu.Data.EF.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
+
+
 
 // Add services to the container.
 //builder.Services.InstallServicesInAssembly(builder.Configuration);
@@ -13,7 +18,17 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 
+builder.Services.AddSingleton(AutoMapperConfig.RegisterMappings().CreateMapper());
+
+string EiuDbConnectionStr = builder.Configuration.GetConnectionString("WebEiuDbConnection");
+builder.Services.AddDbContext<WebEiuDbContext>(options => options.UseMySql(EiuDbConnectionStr, ServerVersion.AutoDetect(EiuDbConnectionStr)));
+
+
 var app = builder.Build();
+
+
+
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

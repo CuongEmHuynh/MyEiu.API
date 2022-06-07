@@ -19,9 +19,13 @@ namespace MyEiu.Data.Entities
 
         public string? Post_Title { get; set; }
         public string? Guid { get; set; }
-        //public string Thumbnail_Url { get; set; }
         public DateTime Post_Date { get; set; }
         public int Post_Author { get; set; }
+        public string? Post_Type { get; set; }
+        public string? Post_Status { get; set; }
+        public string? Ping_Status { get; set; }
+        
+        
 
     }
 }

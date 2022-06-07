@@ -1,4 +1,5 @@
 ﻿using MyEiu.API.Installer.Settings;
+using AutoMapper;
 
 namespace MyEiu.API.Installer
 {
@@ -7,8 +8,8 @@ namespace MyEiu.API.Installer
         
         public void InstallServices(IServiceCollection services, IConfiguration configuration)
         {
-            //Add Other services
-           
+            //Add Other services           
+
             throw new NotImplementedException();
         }
     }

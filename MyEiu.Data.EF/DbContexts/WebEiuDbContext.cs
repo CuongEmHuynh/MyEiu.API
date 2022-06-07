@@ -10,8 +10,13 @@ using System.Threading.Tasks;
 
 namespace MyEiu.Data.EF.DbContexts
 {
-    internal class WebEiuDbContext : DbContext
+    public class WebEiuDbContext : DbContext
     {
+        protected readonly IConfiguration _configuration;
+        public WebEiuDbContext(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             var environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
@@ -20,10 +25,12 @@ namespace MyEiu.Data.EF.DbContexts
                 .AddJsonFile("appsettings.json")
                 .AddJsonFile($"appsettings.{environmentName}.json")
                 .Build();
-            var connectionString = configuration.GetConnectionString("EiuDbConnection");
+            var connectionString = configuration.GetConnectionString("WebEiuDbConnection");
             optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
         }
 
         public DbSet<Post>? Posts { get; set; }
+        public DbSet<UserWebEiu>? UserWebEius { get; set; }
+        public DbSet<ThumbnailWebEiu>? ThumbnailWebEius { get; set; }
     }
 }

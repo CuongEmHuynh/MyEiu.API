@@ -12,6 +12,7 @@ namespace MyEiu.Automapper.Settings
        public DomainToViewModelMappingProfile()
         {
             //post -> postviewmodel
+            //staff -> staffviewmodel
         }
     }
 }

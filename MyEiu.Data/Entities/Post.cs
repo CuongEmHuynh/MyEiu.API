@@ -35,8 +35,6 @@ namespace MyEiu.Data.Entities
         public virtual UserWebEiu? UserWebEiu { get; set; }  
         public virtual ICollection<Translation> Translation { get; set; }
         public virtual ICollection<ThumbnailWebEiu> ThumbnailWebEius { get; set; }  
-
-        public virtual UserWebEiu UserWebEiu { get;set;}
-        //public virtual ICollection<ThumbnailWebEiu> ThumbnailWebEius { get;set; }
+       
     }
 }

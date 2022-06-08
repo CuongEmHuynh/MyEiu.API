@@ -1,0 +1,24 @@
+version: '3'
+
+#NETWORK
+networks:
+   web-net:
+    external: true
+
+#SERVICES
+services:
+  myapp-eiu:
+    hostname: myapp-eiu
+    container_name: myapp-eiu
+    image: huynhcuongem75/myapp-eiu:latest
+    build: 
+        context: ./
+        dockerfile: ./MyEiu.API/Dockerfile
+    restart: always
+    #volumes:
+      #-  D:\Backup\test:/app/wwwroot/FileUpload/Task
+
+    networks:
+      - web-net
+    ports:
+      - 5300:80

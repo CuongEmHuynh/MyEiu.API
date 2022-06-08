@@ -24,8 +24,8 @@ namespace MyEiu.Data.Entities
 
         public string? Post_Excerpt { get; set; }
 
-        public string? Post_Title { get; set; }
-        public string? Guid { get; set; }
+        public string Post_Title { get; set; }
+        public string Guid { get; set; }
         public DateTime Post_Date { get; set; }
         
         public string? Post_Type { get; set; }
@@ -36,5 +36,7 @@ namespace MyEiu.Data.Entities
         public virtual ICollection<Translation> Translation { get; set; }
         public virtual ICollection<ThumbnailWebEiu> ThumbnailWebEius { get; set; }  
 
+        public virtual UserWebEiu UserWebEiu { get;set;}
+        //public virtual ICollection<ThumbnailWebEiu> ThumbnailWebEius { get;set; }
     }
 }

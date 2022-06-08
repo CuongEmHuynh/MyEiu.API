@@ -1,5 +1,4 @@
-﻿
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using MyEiu.Data.Entities;
 using System;
@@ -28,9 +27,19 @@ namespace MyEiu.Data.EF.DbContexts
             var connectionString = configuration.GetConnectionString("WebEiuDbConnection");
             optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
         }
-
-        public DbSet<Post>? Posts { get; set; }
-        public DbSet<UserWebEiu>? UserWebEius { get; set; }
-        public DbSet<ThumbnailWebEiu>? ThumbnailWebEius { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Post>()
+               .HasOne(p => p.UserWebEiu)
+               .WithMany(u => u.Posts)
+               .HasForeignKey(p => p.Post_Author);
+            //modelBuilder.Entity<ThumbnailWebEiu>()
+            //   .HasOne(t => t.Post)
+            //   .WithMany(p => p.ThumbnailWebEius)
+            //   .HasForeignKey(t => t.post_parent);
+        }
+        public virtual DbSet<Post>? Posts { get; set; }
+        public virtual DbSet<UserWebEiu>? UserWebEius { get; set; }
+        public virtual DbSet<ThumbnailWebEiu>? ThumbnailWebEius { get; set; }
     }
 }

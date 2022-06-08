@@ -21,35 +21,43 @@ namespace MyEiu.API.Controllers
         }
 
         [HttpGet]
-        public IList<PostViewModel> LoadDataFromMyEiuDb(Language _lng)
+        public IList<PostViewModel> LoadDataFromMyEiuDb(PostType _ptype,Language _lng)
         {
-            //return _mySqlDbContext.Students.ToList();
             List<PostViewModel> postViewModelList = new();
 
-            List<Post> result = new List<Post>();
-            IList<UserWebEiu> userWebEius = _webeiudbcontext.UserWebEius.ToList();
+            List<Post> result = new();
+            //List<UserWebEiu> users = _webeiudbcontext.UserWebEius.ToList();
 
+            switch (_ptype)
+            {
+                case PostType.News:
+                    result = _webeiudbcontext.Posts.Where(p => p.Post_Type == "post")
+                        .OrderByDescending(rs => rs.Post_Date).Take(5).ToList();
+                    break;
+                case PostType.Events:
+                    result = _webeiudbcontext.Posts.Where(p => p.Post_Type == "events")
+                        .OrderByDescending(rs => rs.Post_Date).Take(5).ToList();
+                    break;
+            }
 
-            switch(_lng)
+            switch (_lng)
             {
                 case Language.Vietnamese:
-                    result = _webeiudbcontext.Posts.Where(p => p.Post_Type == "post" && p.Post_Status == "publish"
-                                                            && p.Ping_Status == "open" && p.Guid.Contains("https://eiu.edu.vn/news/") == false)
-                                                    //.Join(userWebEius, post => post.Post_Author, nd => nd.Id,
-                                                    //    (post, nd) => new
-                                                    //    {
-
-                                                    //        AuthorName = nd.Dislay_Name,
-
-                                                    //    })
+                    if( _ptype == PostType.News)
+                    {
+                        result = result.Where(p => p.Post_Status == "publish"
+                                                     && p.Guid.Contains("https://eiu.edu.vn/news/") == false)
                                                     .OrderByDescending(rs => rs.Post_Date)
-                                                    
                                                     .Take(5).ToList();
+                    }                    
                     break;
                 case Language.English:
-                    result = _webeiudbcontext.Posts.Where(p => p.Post_Type == "post" && p.Post_Status == "publish"
-                                                            && p.Ping_Status == "open" && p.Guid.Contains("https://eiu.edu.vn/news/") == true)
-                                                    .OrderByDescending(rs => rs.Post_Date).Take<Post>(5..2).ToList();
+                    if (_ptype == PostType.News)
+                    {
+                        result = result.Where(p => p.Post_Status == "publish"
+                                                            && p.Guid.Contains("https://eiu.edu.vn/news/") == true)
+                                                   .OrderByDescending(rs => rs.Post_Date).Take(5).ToList();
+                    }                       
                     break;
             }
             

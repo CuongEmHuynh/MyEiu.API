@@ -1,5 +1,6 @@
 
 using Microsoft.EntityFrameworkCore;
+using MyEiu.API.Configtion.Middleware;
 using MyEiu.API.Installer.Settings;
 using MyEiu.Automapper.Settings;
 using MyEiu.Data.EF.DbContexts;
@@ -22,8 +23,6 @@ builder.Services.AddSingleton(AutoMapperConfig.RegisterMappings().CreateMapper()
 
 string EiuDbConnectionStr = builder.Configuration.GetConnectionString("WebEiuDbConnection");
 builder.Services.AddDbContext<WebEiuDbContext>(options => options.UseMySql(EiuDbConnectionStr, ServerVersion.AutoDetect(EiuDbConnectionStr)));
-
-
 var app = builder.Build();
 
 
@@ -36,6 +35,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+//app.UseMiddleware<ApiKeyMiddleware>();
 
 app.UseHttpsRedirection();
 

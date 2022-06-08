@@ -28,9 +28,25 @@ namespace MyEiu.Data.EF.DbContexts
             var connectionString = configuration.GetConnectionString("WebEiuDbConnection");
             optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
         }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Post>()
+               .HasOne(p => p.UserWebEiu)
+               .WithMany(u => u.Posts)
+               .HasForeignKey(p => p.Post_Author);
+            modelBuilder.Entity<ThumbnailWebEiu>()
+                .HasOne(t => t.Post)
+                .WithMany(p => p.ThumbnailWebEius)
+                .HasForeignKey(t => t.post_parent);
+            modelBuilder.Entity<Translation>()
+                .HasOne(t => t.Post)
+                .WithMany(p => p.Translation)
+                .HasForeignKey(t => t.Element_Id);
 
+        }
         public DbSet<Post>? Posts { get; set; }
         public DbSet<UserWebEiu>? UserWebEius { get; set; }
         public DbSet<ThumbnailWebEiu>? ThumbnailWebEius { get; set; }
+        public DbSet<Translation>? Translations{ get; set; }
     }
 }

@@ -19,6 +19,7 @@ builder.Services.AddSwaggerGen();
 
 
 builder.Services.AddSingleton(AutoMapperConfig.RegisterMappings().CreateMapper());
+builder.Services.AddSingleton(AutoMapperConfig.RegisterMappings());
 
 string EiuDbConnectionStr = builder.Configuration.GetConnectionString("WebEiuDbConnection");
 builder.Services.AddDbContext<WebEiuDbContext>(options => options.UseMySql(EiuDbConnectionStr, ServerVersion.AutoDetect(EiuDbConnectionStr)));

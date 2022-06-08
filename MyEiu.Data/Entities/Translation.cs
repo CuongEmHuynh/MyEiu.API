@@ -8,16 +8,21 @@ using System.Threading.Tasks;
 
 namespace MyEiu.Data.Entities
 {
-    [Table("wp_yoast_indexable")]
-    public class ThumbnailWebEiu
+    [Table("wp_icl_translations")]
+    public class Translation
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public int Id { get; set; }
+        public int Translation_Id { get; set; }
         [ForeignKey("wp_posts")]
-        public int post_parent { get; set; }    
-        public string Twitter_Image { get; set; }
-        public virtual Post Post { get; set; }  
+        public int Element_Id { get; set; }
+        public string? Language_Code { get; set; }
+
+        public virtual Post Post { get; set; }
+
+
+
+
 
     }
 }

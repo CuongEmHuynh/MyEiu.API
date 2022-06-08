@@ -18,6 +18,7 @@
     <ProjectReference Include="..\MyEiu.Application\MyEiu.Application.csproj" />
     <ProjectReference Include="..\MyEiu.Automapper\MyEiu.Automapper.csproj" />
     <ProjectReference Include="..\MyEiu.Data.EF\MyEiu.Data.EF.csproj" />
+    <ProjectReference Include="..\MyEiu.Utilities\MyEiu.Utilities.csproj" />
   </ItemGroup>
 
 </Project>

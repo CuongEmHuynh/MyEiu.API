@@ -11,21 +11,30 @@ namespace MyEiu.Data.Entities
     [Table("wp_posts")]
     public class Post
     {
+        //public Post()
+        //{
+        //    this.ThumbnailWebEius = new HashSet<ThumbnailWebEiu>();
+        //}
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [Column(Order = 1)]
         public int Id { get; set; }
+        [Column(Order = 2)]
+        [ForeignKey("wp_users")]
+        public int Post_Author { get; set; }
 
         public string? Post_Excerpt { get; set; }
 
-        public string? Post_Title { get; set; }
-        public string? Guid { get; set; }
+        public string Post_Title { get; set; }
+        public string Guid { get; set; }
         public DateTime Post_Date { get; set; }
-        public int Post_Author { get; set; }
+
         public string? Post_Type { get; set; }
         public string? Post_Status { get; set; }
-        public string? Ping_Status { get; set; }
-        
-        
+        public string? Ping_Status { get; set; }//closed + open: use for events
 
+
+        public virtual UserWebEiu UserWebEiu { get;set;}
+        //public virtual ICollection<ThumbnailWebEiu> ThumbnailWebEius { get;set; }
     }
 }

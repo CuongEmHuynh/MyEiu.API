@@ -15,9 +15,11 @@ namespace MyEiu.Automapper.Settings
        public DomainToViewModelMappingProfile()
         {
             //post -> postviewmodel
-            CreateMap<Post, PostViewModel>().ForMember(des => des.Post_Description, options => options.MapFrom(src => src.Post_Excerpt))
-                .ForMember(des => des.Post_Url,options =>options.MapFrom(src=>src.Guid))
-                .ForMember(des=>des.Post_Url,options =>options.MapFrom(src=> "https://eiu.edu.vn/?p=" + src.Id));
+            CreateMap<Post, PostViewModel>().ForMember(des => des.Post_Description, options => options.MapFrom(src => src.Post_Excerpt))                
+                .ForMember(des => des.Post_Url, options => options.MapFrom(src => "https://eiu.edu.vn/?p=" + src.Id))
+                .ForMember(des => des.Post_Author, options => options.MapFrom(src => src.UserWebEiu.display_name))
+                //.ForMember(des => des.Post_Thumbnail, options => options.MapFrom(src => src.ThumbnailWebEius.FirstOrDefault().twitter_image))
+                ;
             //staff -> staffviewmodel
         }
 

@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace MyEiu.Data.Entities
+namespace MyEiu.Data.Entities.Web
 {
     [Table("wp_yoast_indexable")]
     public class ThumbnailWebEiu
@@ -15,9 +10,9 @@ namespace MyEiu.Data.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
         [ForeignKey("wp_posts")]
-        public int post_parent { get; set; }    
+        public int post_parent { get; set; }
         public string Twitter_Image { get; set; }
-        public virtual Post Post { get; set; }  
+        public virtual Post Post { get; set; }
 
     }
 }

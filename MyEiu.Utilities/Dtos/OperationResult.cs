@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace MyEiu.Utilities.Dtos
+﻿namespace MyEiu.Utilities.Dtos
 {
     public class OperationResult
     {

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace MyEiu.Utilities.Dtos
+﻿namespace MyEiu.Utilities.Dtos
 {
     public class AuthenticationResult
     {

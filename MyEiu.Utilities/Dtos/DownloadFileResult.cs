@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace MyEiu.Utilities.Dtos
+﻿namespace MyEiu.Utilities.Dtos
 {
     public class DownloadFileResult
     {

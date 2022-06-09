@@ -1,5 +1,4 @@
 ﻿using MyEiu.API.Installer.Settings;
-using AutoMapper;
 
 namespace MyEiu.API.Installer
 {

@@ -1,11 +1,8 @@
 
 using Microsoft.EntityFrameworkCore;
-using MyEiu.API.Configtion.Middleware;
-using MyEiu.API.Installer.Settings;
 using MyEiu.Automapper.Settings;
 using MyEiu.Data.EF.DbContexts;
-using MyEiu.Data.EF.Interface;
-using MyEiu.Data.EF.Repository;
+//using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +15,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+//Ignore cycle loop if an object has number of children > 32
+builder.Services.AddControllers().AddNewtonsoftJson(options =>
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+);
 
 builder.Services.AddSingleton(AutoMapperConfig.RegisterMappings().CreateMapper());
 builder.Services.AddSingleton(AutoMapperConfig.RegisterMappings());
@@ -25,6 +26,8 @@ builder.Services.AddSingleton(AutoMapperConfig.RegisterMappings());
 string EiuDbConnectionStr = builder.Configuration.GetConnectionString("WebEiuDbConnection");
 builder.Services.AddDbContext<WebEiuDbContext>(options => options.UseMySql(EiuDbConnectionStr, ServerVersion.AutoDetect(EiuDbConnectionStr)));
 
+string StaffEiuDbConnectionStr = builder.Configuration.GetConnectionString("StaffEiuDbConnection");
+builder.Services.AddDbContext<StaffEiuDbContext>(options => options.UseMySql(StaffEiuDbConnectionStr, ServerVersion.AutoDetect(StaffEiuDbConnectionStr)));
 
 
 

@@ -1,11 +1,7 @@
 ﻿using AutoMapper;
 using MyEiu.Automapper.ViewModel;
-using MyEiu.Data.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MyEiu.Data.Entities.Staff;
+using MyEiu.Data.Entities.Web;
 
 namespace MyEiu.Automapper.Settings
 {
@@ -22,6 +18,16 @@ namespace MyEiu.Automapper.Settings
                 .ForMember(des => des.Post_Thumbnail, options => options.MapFrom(src => src.ThumbnailWebEius.FirstOrDefault().Twitter_Image))
                 ;
             //staff -> staffviewmodel
+            CreateMap<StaffEiu, StaffEiuViewModel>().ForMember(des => des.Id, options => options.MapFrom(src => src.StaffID))
+                .ForMember(des => des.Name, options => options.MapFrom(src => src.LastName + " " + src.MiddleName + " " + src.FirstName))
+                .ForMember(des => des.DepartmentName, options => options.MapFrom(src => src.DepartmentEiu.FullName))
+                .ForMember(des => des.Email, options => options.MapFrom(src => src.SchoolEmail))
+                .ForMember(des => des.Avatar, options => options.MapFrom(src => "http://it.eiu.vn/pcntt/img/ImageStaff/" + src.ImagePath))
+                ;
+            CreateMap<DepartmentEiu, DepartmentEiuViewModel>().ForMember(des => des.Id, options => options.MapFrom(src => src.RecordID))
+                .ForMember(des => des.Name, options => options.MapFrom(src => src.FullName))
+                .ForMember(des => des.Data, options => options.MapFrom(src => src.Staffs))
+                ;
         }
 
     }

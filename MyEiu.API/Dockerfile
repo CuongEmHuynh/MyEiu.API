@@ -8,6 +8,11 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["MyEiu.API/MyEiu.API.csproj", "MyEiu.API/"]
+COPY ["MyEiu.Application/MyEiu.Application.csproj", "MyEiu.API/"]
+COPY ["MyEiu.Data/MyEiu.Data.csproj", "MyEiu.API/"]
+COPY ["MyEiu.Data.EF/MyEiu.Data.EF.csproj", "MyEiu.API/"]
+COPY ["MyEiu.Automapper/MyEiu.Automapper.csproj", "MyEiu.API/"]
+COPY ["MyEiu.Utilities/MyEiu.Utilities.csproj", "MyEiu.API/"]
 RUN dotnet restore "MyEiu.API/MyEiu.API.csproj"
 COPY . .
 WORKDIR "/src/MyEiu.API"

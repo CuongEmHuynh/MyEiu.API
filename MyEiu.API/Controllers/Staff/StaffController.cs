@@ -30,7 +30,7 @@ namespace MyEiu.API.Controllers.Staff
             List<DepartmentEiu> result = new();
 
             result = await _staffeiudbcontext.Departments.Where(d => d.IsDeleted == 0)
-                                                   .Include(d => d.Staffs)
+                                                   .Include(d => d.Staffs.Where(s => s.IsDeleted == 0))
                                                   .OrderByDescending(d => d.Code)
                                                   .ToListAsync();
        
@@ -46,7 +46,7 @@ namespace MyEiu.API.Controllers.Staff
             List<StaffEiuViewModel> staffViewModel = new();
             List<StaffEiu> result = new();
 
-            result = await _staffeiudbcontext.StaffEius.Where(s => s.IsDeleted == 0)                                                
+            result = await _staffeiudbcontext.StaffEius.Where(s => s.IsDeleted == 0 && s.SchoolEmail=="vu.ho@eiu.edu.vn")                                                
                                                   .OrderByDescending(s => s.StaffID)
                                                   .ToListAsync();
 

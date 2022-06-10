@@ -30,8 +30,9 @@ namespace MyEiu.API.Controllers.Staff
             List<DepartmentEiu> result = new();
 
             result = await _staffeiudbcontext.Departments.Where(d => d.IsDeleted == 0)
-                                                   .Include(d => d.Staffs.Where(s => s.IsDeleted == 0))
-                                                  .OrderByDescending(d => d.Code)
+                                                   .Include(d => d.Staffs.Where(s => s.IsDeleted == 0 && s.Type!=4)//4: type of member not staff
+                                                    .OrderBy(s=>s.StaffID))
+                                                  .OrderBy(d => d.RecordID)
                                                   .ToListAsync();
        
             departmentViewModel = _mapper.Map<List<DepartmentEiuViewModel>>(result);
@@ -46,8 +47,8 @@ namespace MyEiu.API.Controllers.Staff
             List<StaffEiuViewModel> staffViewModel = new();
             List<StaffEiu> result = new();
 
-            result = await _staffeiudbcontext.StaffEius.Where(s => s.IsDeleted == 0 && s.SchoolEmail=="vu.ho@eiu.edu.vn")                                                
-                                                  .OrderByDescending(s => s.StaffID)
+            result = await _staffeiudbcontext.StaffEius.Where(s => s.IsDeleted == 0 && s.Type!=4)   //4: type of member not staff                                             
+                                                  .OrderBy(s => s.StaffID)
                                                   .ToListAsync();
 
             staffViewModel = _mapper.Map<List<StaffEiuViewModel>>(result);
@@ -64,14 +65,14 @@ namespace MyEiu.API.Controllers.Staff
 
             if(staff.Search_Key is null)
             {
-                result = await _staffeiudbcontext.StaffEius.Where(s => s.IsDeleted == 0)
-                                                .OrderByDescending(s => s.StaffID)
+                result = await _staffeiudbcontext.StaffEius.Where(s => s.IsDeleted == 0 && s.Type != 4)
+                                                .OrderBy(s => s.StaffID)
                                                 .ToListAsync();
             }
             else
             {
-                result = await _staffeiudbcontext.StaffEius.Where(s => s.IsDeleted == 0 && s.FullName.Contains(staff.Search_Key))
-                                                .OrderByDescending(s => s.StaffID)
+                result = await _staffeiudbcontext.StaffEius.Where(s => s.IsDeleted == 0 && s.FullName.Contains(staff.Search_Key) && s.Type != 4)
+                                                .OrderBy(s => s.StaffID)
                                                 .ToListAsync();
             }
           

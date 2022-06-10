@@ -23,6 +23,7 @@ namespace MyEiu.Data.Entities.Staff
         public int? DepartmentID { get; set; }
         public string? Phone { get; set; }
         public string? Mobile { get; set; }
+        public int Type { get; set; }
         public int? IsDeleted { get; set; }
         public string? ImagePath { get; set; }
 

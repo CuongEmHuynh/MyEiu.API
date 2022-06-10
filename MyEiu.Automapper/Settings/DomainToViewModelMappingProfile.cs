@@ -24,6 +24,7 @@ namespace MyEiu.Automapper.Settings
                 .ForMember(des => des.Email, options => options.MapFrom(src => src.SchoolEmail))
                 .ForMember(des => des.Avatar, options => options.MapFrom(src => "http://it.eiu.vn/pcntt/img/ImageStaff/" + src.ImagePath))
                 ;
+            //department -> departmentviewmodel
             CreateMap<DepartmentEiu, DepartmentEiuViewModel>().ForMember(des => des.Id, options => options.MapFrom(src => src.RecordID))
                 .ForMember(des => des.Name, options => options.MapFrom(src => src.FullName))
                 .ForMember(des => des.Data, options => options.MapFrom(src => src.Staffs))

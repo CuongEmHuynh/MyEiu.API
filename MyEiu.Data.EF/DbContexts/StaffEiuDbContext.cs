@@ -28,7 +28,7 @@ namespace MyEiu.Data.EF.DbContexts
             modelBuilder.Entity<StaffEiu>()
                .HasOne(s => s.DepartmentEiu)
                .WithMany(d => d.Staffs)
-               .HasForeignKey(s => s.DepartmentID);           
+               .HasForeignKey(s => s.DepartmentID);
 
         }
         public virtual DbSet<StaffEiu> StaffEius { get; set; }

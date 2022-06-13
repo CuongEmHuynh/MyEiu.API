@@ -7,11 +7,11 @@ namespace MyEiu.Data.Entities.Web
     {
         public UserWebEiu()
         {
-            Posts = new HashSet<Post>();
+            Posts = new HashSet<PostWebEiu>();
         }
         public int Id { get; set; }
         public string? display_name { get; set; }
-        public virtual ICollection<Post> Posts { get; set; }
+        public virtual ICollection<PostWebEiu> Posts { get; set; }
 
     }
 }

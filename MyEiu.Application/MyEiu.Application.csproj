@@ -6,4 +6,18 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Services\BaseService.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Services\App\Department\" />
+    <Folder Include="Services\App\User\" />
+    <Folder Include="Services\App\Notification\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MyEiu.Automapper\MyEiu.Automapper.csproj" />
+  </ItemGroup>
+
 </Project>

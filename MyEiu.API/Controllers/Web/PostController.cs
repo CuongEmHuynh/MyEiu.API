@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyEiu.API.Dtos;
-using MyEiu.Automapper.ViewModel;
+using MyEiu.Automapper.ViewModel.Web;
 using MyEiu.Data.EF.DbContexts;
 using MyEiu.Data.Entities.Web;
 using MyEiu.Utilities;
@@ -24,10 +24,10 @@ namespace MyEiu.API.Controllers.Web
 
         [HttpGet]
 
-        public async Task<IList<PostViewModel>> Latest(string language)
+        public async Task<IList<PostWebViewModel>> Latest(string language)
         {
-            List<PostViewModel> postViewModelList = new();
-            List<Post> result = new();
+            List<PostWebViewModel> postViewModelList = new();
+            List<PostWebEiu> result = new();
 
             result = await _webeiudbcontext.Posts.Where(p => p.Post_Status == "publish" && (p.Post_Type == "post" || p.Post_Type == "events")
                                                    && p.Translation.FirstOrDefault().Language_Code == language)
@@ -36,16 +36,16 @@ namespace MyEiu.API.Controllers.Web
                                                    .OrderByDescending(rs => rs.Post_Date)
                                                    .Take(5).ToListAsync();
 
-            postViewModelList = _mapper.Map<List<PostViewModel>>(result);
+            postViewModelList = _mapper.Map<List<PostWebViewModel>>(result);
 
             return postViewModelList;
         }
         [HttpGet]
 
-        public async Task<IList<PostViewModel>> TenPosts(string posttype, string language)
+        public async Task<IList<PostWebViewModel>> TenPosts(string posttype, string language)
         {
-            List<PostViewModel> postViewModelList = new();
-            List<Post> result = new();
+            List<PostWebViewModel> postViewModelList = new();
+            List<PostWebEiu> result = new();
 
 
             result = await _webeiudbcontext.Posts.Where(p => p.Post_Status == "publish" && p.Post_Type == posttype
@@ -54,7 +54,7 @@ namespace MyEiu.API.Controllers.Web
                                                    .OrderByDescending(rs => rs.Post_Date)
                                                    .Take(10).ToListAsync();
 
-            postViewModelList = _mapper.Map<List<PostViewModel>>(result);
+            postViewModelList = _mapper.Map<List<PostWebViewModel>>(result);
 
             return postViewModelList;
         }
@@ -62,15 +62,15 @@ namespace MyEiu.API.Controllers.Web
 
         public async Task<ActionResult> PagingPosts(PostPagingDto postpagingdto)
         {
-            List<PostViewModel> postViewModelList = new();
+            List<PostWebViewModel> postViewModelList = new();
 
-            List<Post> result = await _webeiudbcontext.Posts.Where(p => p.Post_Status == "publish" && p.Post_Type == postpagingdto.Post_Type
+            List<PostWebEiu> result = await _webeiudbcontext.Posts.Where(p => p.Post_Status == "publish" && p.Post_Type == postpagingdto.Post_Type
                                                      && p.Translation.FirstOrDefault().Language_Code == postpagingdto.Post_Language)
                                                     .Include(p => p.Translation).Include(p => p.ThumbnailWebEius).Include(p => p.UserWebEiu)
                                                      .OrderByDescending(rs => rs.Post_Date)
                                                      .ToListAsync();
 
-            postViewModelList = _mapper.Map<List<PostViewModel>>(result);
+            postViewModelList = _mapper.Map<List<PostWebViewModel>>(result);
 
             var pagingResult = postViewModelList.ToPaginationAsync(postpagingdto.Current_Page, postpagingdto.Page_Size);
 

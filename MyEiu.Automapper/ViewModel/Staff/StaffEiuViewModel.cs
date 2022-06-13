@@ -1,10 +1,10 @@
-﻿namespace MyEiu.Automapper.ViewModel
+﻿namespace MyEiu.Automapper.ViewModel.Staff
 {
     public class StaffEiuViewModel
     {
         public string Id { get; set; }
         public string? Name { get; set; }
-        public string? Code { get; set; }       
+        public string? Code { get; set; }
         public string? Email { get; set; }
         public string? Mobile { get; set; }
         public string? Phone { get; set; }

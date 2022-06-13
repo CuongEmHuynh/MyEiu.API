@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyEiu.API.Dtos;
-using MyEiu.Automapper.ViewModel;
+using MyEiu.Automapper.ViewModel.Staff;
 using MyEiu.Data.EF.DbContexts;
 using MyEiu.Data.Entities.Staff;
 using MyEiu.Utilities;

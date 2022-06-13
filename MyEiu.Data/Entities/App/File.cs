@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace MyEiu.Data.Entities.App
 {
     [Table("File_App")]
-    public class File_App
+    public class File
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -17,6 +17,8 @@ namespace MyEiu.Data.Entities.App
         [Required]
         public string DisplayName { get; set; }//user input when uploading file
         public string FileName { get; set; }
-        public string Location { get; set; }
+        [Required]
+        public string Path { get; set; }
+        public virtual ICollection<PostFile> PostFiles { get; set; }
     }
 }

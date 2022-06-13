@@ -24,7 +24,7 @@ namespace MyEiu.Data.EF.DbContexts
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Post>()
+            modelBuilder.Entity<PostWebEiu>()
                .HasOne(p => p.UserWebEiu)
                .WithMany(u => u.Posts)
                .HasForeignKey(p => p.Post_Author);
@@ -32,15 +32,15 @@ namespace MyEiu.Data.EF.DbContexts
                 .HasOne(t => t.Post)
                 .WithMany(p => p.ThumbnailWebEius)
                 .HasForeignKey(t => t.post_parent);
-            modelBuilder.Entity<Translation>()
+            modelBuilder.Entity<TranslationWebEiu>()
                 .HasOne(t => t.Post)
                 .WithMany(p => p.Translation)
                 .HasForeignKey(t => t.Element_Id);
 
         }
-        public DbSet<Post>? Posts { get; set; }
+        public DbSet<PostWebEiu>? Posts { get; set; }
         public DbSet<UserWebEiu>? UserWebEius { get; set; }
         public DbSet<ThumbnailWebEiu>? ThumbnailWebEius { get; set; }
-        public DbSet<Translation>? Translations{ get; set; }
+        public DbSet<TranslationWebEiu>? Translations{ get; set; }
     }
 }

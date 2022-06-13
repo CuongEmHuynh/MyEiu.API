@@ -1,8 +1,10 @@
 
 using Microsoft.EntityFrameworkCore;
+using MyEiu.API.Configtion.Middleware;
 using MyEiu.Automapper.Settings;
 using MyEiu.Data.EF.DbContexts;
 //using System.Text.Json.Serialization;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +30,9 @@ builder.Services.AddDbContext<WebEiuDbContext>(options => options.UseMySql(EiuDb
 string StaffEiuDbConnectionStr = builder.Configuration.GetConnectionString("StaffEiuDbConnection");
 builder.Services.AddDbContext<StaffEiuDbContext>(options => options.UseMySql(StaffEiuDbConnectionStr, ServerVersion.AutoDetect(StaffEiuDbConnectionStr)));
 
+builder.Services.AddDbContext<MobileAppDbContext>(options =>
+                       options.UseSqlServer(
+                           builder.Configuration.GetConnectionString("MobileAppDbConnection")));
 
 
 

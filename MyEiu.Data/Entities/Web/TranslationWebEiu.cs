@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace MyEiu.Data.Entities.Web
 {
     [Table("wp_icl_translations")]
-    public class Translation
+    public class TranslationWebEiu
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
@@ -13,7 +13,7 @@ namespace MyEiu.Data.Entities.Web
         public int Element_Id { get; set; }
         public string? Language_Code { get; set; }
 
-        public virtual Post Post { get; set; }
+        public virtual PostWebEiu Post { get; set; }
 
 
 

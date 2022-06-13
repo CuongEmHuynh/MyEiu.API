@@ -12,7 +12,7 @@ namespace MyEiu.Data.Entities.Web
         [ForeignKey("wp_posts")]
         public int post_parent { get; set; }
         public string Twitter_Image { get; set; }
-        public virtual Post Post { get; set; }
+        public virtual PostWebEiu Post { get; set; }
 
     }
 }

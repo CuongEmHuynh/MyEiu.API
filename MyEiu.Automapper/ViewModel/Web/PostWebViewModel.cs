@@ -1,8 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace MyEiu.Automapper.ViewModel
+namespace MyEiu.Automapper.ViewModel.Web
 {
-    public class PostViewModel
+    public class PostWebViewModel
     {
         [JsonPropertyName("Id")]
         public int Id { get; set; }
@@ -17,7 +17,7 @@ namespace MyEiu.Automapper.ViewModel
         [JsonPropertyName("Post_Url")]
         public string? Post_Url { get; set; }
         //public string Thumbnail_Url { get; set; }
-        
+
         [JsonPropertyName("Post_Thumbnail")]
         public string Post_Thumbnail { get; set; }
     }

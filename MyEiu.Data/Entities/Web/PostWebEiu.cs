@@ -4,12 +4,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace MyEiu.Data.Entities.Web
 {
     [Table("wp_posts")]
-    public class Post
+    public class PostWebEiu
     {
-        public Post()
+        public PostWebEiu()
         {
             ThumbnailWebEius = new HashSet<ThumbnailWebEiu>();
-            Translation = new HashSet<Translation>();
+            Translation = new HashSet<TranslationWebEiu>();
         }
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
@@ -28,7 +28,7 @@ namespace MyEiu.Data.Entities.Web
         public string? Ping_Status { get; set; }
 
         public virtual UserWebEiu? UserWebEiu { get; set; }
-        public virtual ICollection<Translation> Translation { get; set; }
+        public virtual ICollection<TranslationWebEiu> Translation { get; set; }
         public virtual ICollection<ThumbnailWebEiu> ThumbnailWebEius { get; set; }
 
     }

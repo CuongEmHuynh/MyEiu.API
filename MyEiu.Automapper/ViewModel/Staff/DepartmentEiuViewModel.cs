@@ -1,4 +1,4 @@
-﻿namespace MyEiu.Automapper.ViewModel
+﻿namespace MyEiu.Automapper.ViewModel.Staff
 {
     public class DepartmentEiuViewModel
     {

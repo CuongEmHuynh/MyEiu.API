@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace MyEiu.Data.Entities.App
 {
-    public class Department
+    public class Group
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public int RecordID { get; set; }
+        public int Id { get; set; }
         public string? Code { get; set; }
         public string? FullName { get; set; }
         public int IsDeleted { get; set; }

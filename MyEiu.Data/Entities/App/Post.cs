@@ -9,14 +9,14 @@ using System.Threading.Tasks;
 
 namespace MyEiu.Data.Entities.App
 {
-    [Table("Post_App")]
+    [Table("Post")]
     public class Post
     {
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        [ForeignKey("PostType_App")]
+        [ForeignKey("PostType")]
         public int PostTypeId { get; set; }
         public string? Title { get; set; }
         public string? Description { get; set; }

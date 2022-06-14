@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MyEiu.Data.Entities.App
 {
-    [Table("File_App")]
+    [Table("File")]
     public class File
     {
         [Key]
@@ -16,7 +16,7 @@ namespace MyEiu.Data.Entities.App
         public int Id { get; set; }
         [Required]
         public string DisplayName { get; set; }//user input when uploading file
-        public string FileName { get; set; }
+        public string? FileName { get; set; }
         [Required]
         public string Path { get; set; }
         public virtual ICollection<PostFile> PostFiles { get; set; }

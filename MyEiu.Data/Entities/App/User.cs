@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MyEiu.Data.Entities.App
 {
-    [Table("User_App")]
+    [Table("User")]
     public class User
     {
         [Key]
@@ -25,16 +25,15 @@ namespace MyEiu.Data.Entities.App
         public DateTime Birthday { get; set; }
         [Required]
         public string? Email { get; set; }
-        [ForeignKey("UserRole_App")]
+        [ForeignKey("UserRole")]
         [Required]
         public int RoleId { get; set; }
-        [ForeignKey("Department_tbl")]
-        public int? DepartmentID { get; set; }
+        [ForeignKey("Group")]
+        public int? GroupID { get; set; }
         public string? Phone { get; set; }
         public int? IsDeleted { get; set; }
         public string? ImagePath { get; set; }
 
-        public virtual Department Department { get; set; }
         public virtual UserRole UserRole { get; set; }
         public virtual ICollection<Post> PostAuthors { get; set; }
         public virtual ICollection<Post> PostEditors { get; set; }

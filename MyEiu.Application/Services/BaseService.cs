@@ -1,17 +1,18 @@
 ﻿using AutoMapper;
-using DevExtreme.AspNet.Data.ResponseModel;
-using Manager_Request.Application.Configuration;
-using Manager_Request.Data.EF.Interface;
-using Manager_Request.Utilities;
-using Manager_Request.Utilities.Dtos;
-using Manager_Request.Application.Extensions;
+//using DevExtreme.AspNet.Data.ResponseModel;
+//using MyEiu.Application.Configuration;
+using MyEiu.Data.EF.Interface;
+using MyEiu.Utilities;
+using MyEiu.Utilities.Dtos;
+using MyEiu.Application.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using DevExtreme.AspNet.Data;
-using Manager_Request.Application.Const;
+//using DevExtreme.AspNet.Data;
+using MyEiu.Application.Const;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper.QueryableExtensions;
+using DevExtreme.AspNet.Data.ResponseModel;
 
 namespace MyEiu.Application.Services
 {
@@ -30,9 +31,9 @@ namespace MyEiu.Application.Services
         Task<Pager> PaginationAsync(ParamaterPagination paramater);
 
 
-        Task<LoadResult> LoadDxoLookupAsync(DataSourceLoadOptions loadOptions);
+        //Task<LoadResult> LoadDxoLookupAsync(DataSourceLoadOptions loadOptions);
 
-        Task<LoadResult> LoadDxoGridAsync(DataSourceLoadOptions loadOptions);
+        //Task<LoadResult> LoadDxoGridAsync(DataSourceLoadOptions loadOptions);
     }
     public class BaseService<T, TViewModel> : IBaseService<TViewModel> where T : class where TViewModel : class
     {
@@ -145,15 +146,15 @@ namespace MyEiu.Application.Services
         }
 
 
-        public virtual async Task<LoadResult> LoadDxoGridAsync(DataSourceLoadOptions loadOptions)
-        {
-            return await DataSourceLoader.LoadAsync(_repository.FindAll(), loadOptions);
-        }
+        //public virtual async Task<LoadResult> LoadDxoGridAsync(DataSourceLoadOptions loadOptions)
+        //{
+        //    return await DataSourceLoader.LoadAsync(_repository.FindAll(), loadOptions);
+        //}
 
-        public virtual async Task<LoadResult> LoadDxoLookupAsync(DataSourceLoadOptions loadOptions)
-        {
-            return await DataSourceLoader.LoadAsync(_repository.FindAll(), loadOptions);
-        }
+        //public virtual async Task<LoadResult> LoadDxoLookupAsync(DataSourceLoadOptions loadOptions)
+        //{
+        //    return await DataSourceLoader.LoadAsync(_repository.FindAll(), loadOptions);
+        //}
         public virtual async Task<Pager> PaginationAsync(ParamaterPagination paramater)
         {
             var query = _repository.Queryable().AsNoTracking().ProjectTo<TViewModel>(_configMapper);

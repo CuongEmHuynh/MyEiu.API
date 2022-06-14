@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MyEiu.Data.Entities.App
 {
-    [Table("PostType_App")]
+    [Table("PostType")]
     public class PostType
     {
         [Key]

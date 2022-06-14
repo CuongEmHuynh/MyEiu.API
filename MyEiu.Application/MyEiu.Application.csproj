@@ -7,17 +7,19 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Services\BaseService.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="Services\App\Department\" />
     <Folder Include="Services\App\User\" />
     <Folder Include="Services\App\Notification\" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="DevExtreme.AspNet.Data" Version="2.8.6" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\MyEiu.Automapper\MyEiu.Automapper.csproj" />
+    <ProjectReference Include="..\MyEiu.Data.EF\MyEiu.Data.EF.csproj" />
+    <ProjectReference Include="..\MyEiu.Utilities\MyEiu.Utilities.csproj" />
   </ItemGroup>
 
 </Project>

@@ -26,8 +26,4 @@
     <ProjectReference Include="..\MyEiu.Utilities\MyEiu.Utilities.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\App\" />
-  </ItemGroup>
-
 </Project>

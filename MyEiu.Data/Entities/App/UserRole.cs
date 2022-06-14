@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MyEiu.Data.Entities.App
 {
-    [Table("UserRole_App")]
+    [Table("UserRole")]
     public class UserRole
     {
         [Key]

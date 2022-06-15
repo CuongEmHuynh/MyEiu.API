@@ -18,6 +18,9 @@ namespace MyEiu.Data.Entities.App
         [ForeignKey("Post")]
         public int PostId { get; set; }
        
-        public PostStatus Status { get; set; }       
+        public PostStatus Status { get; set; }      
+        
+        public virtual ICollection<NotificationGroup> NotificationGroups { get; set; }
+        public virtual ICollection<NotificationUser> NotificationUsers { get; set; }    
     }
 }

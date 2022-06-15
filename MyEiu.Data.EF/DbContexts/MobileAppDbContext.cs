@@ -22,12 +22,12 @@ namespace MyEiu.Data.EF.DbContexts
             builder.Entity<Post>()
                 .HasOne(p => p.Author)
                 .WithMany(u => u.PostAuthors)               
-                .HasForeignKey(p => p.AuthorId)
+                .HasForeignKey(p => p.CreateBy)
                 .OnDelete(DeleteBehavior.Restrict);
             builder.Entity<Post>()
                .HasOne(p => p.Editor)
                .WithMany(u => u.PostEditors)
-               .HasForeignKey(p => p.EditorId)
+               .HasForeignKey(p => p.ModifyBy)
                .OnDelete(DeleteBehavior.Restrict);
            
 

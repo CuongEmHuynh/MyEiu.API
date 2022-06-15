@@ -2,11 +2,9 @@
 
 namespace MyEiu.API.Controllers.App
 {
-    public class PostController : Controller
+    public class PostController : APIBaseController
     {
-        public IActionResult Index()
-        {
-            return View();
-        }
+        [HttpPost]
+        public async 
     }
 }

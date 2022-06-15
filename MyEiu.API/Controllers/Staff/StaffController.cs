@@ -26,7 +26,7 @@ namespace MyEiu.API.Controllers.Staff
 
         public async Task<ActionResult> Departments()
         {
-            List<DepartmentEiuViewModel> departmentViewModel = new();
+            List<DepartmentStaffEiuViewModel> departmentstaffViewModel = new();
             List<DepartmentEiu> result = new();
 
             result = await _staffeiudbcontext.Departments.Where(d => d.IsDeleted == 0)
@@ -35,10 +35,10 @@ namespace MyEiu.API.Controllers.Staff
                                                   .OrderBy(d => d.RecordID)
                                                   .ToListAsync();
        
-            departmentViewModel = _mapper.Map<List<DepartmentEiuViewModel>>(result);
+            departmentstaffViewModel = _mapper.Map<List<DepartmentStaffEiuViewModel>>(result);
 
             
-            return Ok(departmentViewModel);
+            return Ok(departmentstaffViewModel);
         }
         [HttpGet]
 
@@ -83,5 +83,6 @@ namespace MyEiu.API.Controllers.Staff
 
             return Ok(pagingResult);
         }
+
     }
 }

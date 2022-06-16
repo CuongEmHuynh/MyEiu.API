@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyEiu.API.Dtos;
@@ -74,35 +75,40 @@ namespace MyEiu.API.Controllers.Web
 
         public async Task<ActionResult> PagingPosts(PostPagingDto postpagingdto)
         {
-            List<PostWebViewModel> postViewModelList = new();
+            //List<PostWebViewModel> postViewModelList = new();
 
-            List<PostWebEiu> result = new();
+            //List<PostWebEiu> result = new();
 
-            if (postpagingdto.Post_Type != "all")
-            {
-                result = await _webeiudbcontext.Posts.Where(p => p.Post_Status == "publish" && p.Post_Type == postpagingdto.Post_Type
-                                                    && p.TranslationWebEiu.Language_Code == postpagingdto.Post_Language)
-                                                    .Include(p => p.ThumbnailWebEius).Include(p => p.UserWebEiu)
-                                                     .OrderByDescending(rs => rs.Post_Date)
-                                                     .ToListAsync();
-            }
-            else
-            {
-                result = await _webeiudbcontext.Posts.Where(p => p.Post_Status == "publish" && (p.Post_Type == "post" || p.Post_Type == "events")
-                                                    && p.TranslationWebEiu.Language_Code == postpagingdto.Post_Language)
-                                                    .Include(p => p.ThumbnailWebEius).Include(p => p.UserWebEiu)
-                                                     .OrderByDescending(rs => rs.Post_Date)
-                                                     .ToListAsync();
-            }
-
-
-            postViewModelList = _mapper.Map<List<PostWebViewModel>>(result);
-
-            var pagingResult = postViewModelList.ToPaginationAsync(postpagingdto.Current_Page, postpagingdto.Page_Size);
+            //if (postpagingdto.Post_Type != "all")
+            //{
+            //    result = await _webeiudbcontext.Posts.Where(p => p.Post_Status == "publish" && p.Post_Type == postpagingdto.Post_Type
+            //                                        && p.TranslationWebEiu.Language_Code == postpagingdto.Post_Language)
+            //                                        .Include(p => p.ThumbnailWebEius).Include(p => p.UserWebEiu)
+            //                                         .OrderByDescending(rs => rs.Post_Date)
+            //                                         .ToListAsync();
+            //}
+            //else
+            //{
+            //    result = await _webeiudbcontext.Posts.Where(p => p.Post_Status == "publish" && (p.Post_Type == "post" || p.Post_Type == "events")
+            //                                        && p.TranslationWebEiu.Language_Code == postpagingdto.Post_Language)
+            //                                        .Include(p => p.ThumbnailWebEius).Include(p => p.UserWebEiu)
+            //                                         .OrderByDescending(rs => rs.Post_Date)
+            //                                         .ToListAsync();
+            //}
 
 
+            //postViewModelList = _mapper.Map<List<PostWebViewModel>>(result);
 
+            //var pagingResult = postViewModelList.ToPaginationAsync(postpagingdto.Current_Page, postpagingdto.Page_Size);
 
+            var query = _webeiudbcontext.Posts!.AsQueryable().Where(p => p.Post_Status == "publish"
+                                                 && p.TranslationWebEiu!.Language_Code == postpagingdto.Post_Language);
+
+            var result = query.Where(p => p.Post_Type == postpagingdto.Post_Type);
+            if (postpagingdto.Post_Type == "all")
+                result = query.Where(x => x.Post_Type == "post" || x.Post_Type == "events");
+
+            var pagingResult = await result.OrderByDescending(x => x.Post_Date).AsQueryable().ProjectTo<PostWebViewModel>(_configMapper).ToPaginationAsync(postpagingdto.Current_Page, postpagingdto.Page_Size);
             return Ok(pagingResult);
         }
     }

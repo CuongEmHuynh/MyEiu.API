@@ -31,7 +31,7 @@ namespace MyEiu.API.Controllers.Web
 
             result = await _webeiudbcontext.Posts.Where(p => p.Post_Status == "publish" && (p.Post_Type == "post" || p.Post_Type == "events")
                                                    && p.TranslationWebEiu.Language_Code == language)
-                                                    .Include(p => p.ThumbnailWebEius)
+                                                    .Include(p => p.ThumbnailWebEiu)
                                                     .Include(p => p.UserWebEiu)
 
                                                    .OrderByDescending(rs => rs.Post_Date)
@@ -52,7 +52,7 @@ namespace MyEiu.API.Controllers.Web
             {
                 result = await _webeiudbcontext.Posts.Where(p => p.Post_Status == "publish" && p.Post_Type == posttype
                                                    && p.TranslationWebEiu.Language_Code == language)
-                                                   .Include(p => p.ThumbnailWebEius).Include(p => p.UserWebEiu)
+                                                   //.Include(p => p.ThumbnailWebEiu).Include(p => p.UserWebEiu)
                                                    .OrderByDescending(rs => rs.Post_Date)
                                                    .Take(10).ToListAsync();
             }
@@ -60,7 +60,7 @@ namespace MyEiu.API.Controllers.Web
             {
                 result = await _webeiudbcontext.Posts.Where(p => p.Post_Status == "publish" && (p.Post_Type == "post" || p.Post_Type == "events")
                                                   && p.TranslationWebEiu.Language_Code == language)
-                                                  .Include(p => p.ThumbnailWebEius).Include(p => p.UserWebEiu)
+                                                  //.Include(p => p.ThumbnailWebEiu).Include(p => p.UserWebEiu)
                                                   .OrderByDescending(rs => rs.Post_Date)
                                                   .Take(10).ToListAsync();
             }
@@ -82,7 +82,7 @@ namespace MyEiu.API.Controllers.Web
             {
                 result = await _webeiudbcontext.Posts.Where(p => p.Post_Status == "publish" && p.Post_Type == postpagingdto.Post_Type
                                                     && p.TranslationWebEiu.Language_Code == postpagingdto.Post_Language)
-                                                    .Include(p => p.ThumbnailWebEius).Include(p => p.UserWebEiu)
+                                                    //.Include(p => p.ThumbnailWebEiu).Include(p => p.UserWebEiu)
                                                      .OrderByDescending(rs => rs.Post_Date)
                                                      .ToListAsync();
             }
@@ -90,7 +90,7 @@ namespace MyEiu.API.Controllers.Web
             {
                 result = await _webeiudbcontext.Posts.Where(p => p.Post_Status == "publish" && (p.Post_Type == "post" || p.Post_Type == "events")
                                                     && p.TranslationWebEiu.Language_Code == postpagingdto.Post_Language)
-                                                    .Include(p => p.ThumbnailWebEius).Include(p => p.UserWebEiu)
+                                                    //.Include(p => p.ThumbnailWebEiu).Include(p => p.UserWebEiu)
                                                      .OrderByDescending(rs => rs.Post_Date)
                                                      .ToListAsync();
             }

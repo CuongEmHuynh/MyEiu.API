@@ -28,10 +28,10 @@ namespace MyEiu.Data.EF.DbContexts
                .HasOne(p => p.UserWebEiu)
                .WithMany(u => u.Posts)
                .HasForeignKey(p => p.Post_Author);
-            modelBuilder.Entity<ThumbnailWebEiu>()
-                .HasOne(t => t.Post)
-                .WithMany(p => p.ThumbnailWebEius)
-                .HasForeignKey(t => t.object_id);
+            modelBuilder.Entity<PostWebEiu>()
+                .HasOne(p => p.ThumbnailWebEiu)
+                .WithOne(t => t.PostWebEiu)
+                .HasForeignKey<ThumbnailWebEiu>(t => t.object_id);
             modelBuilder.Entity<PostWebEiu>()
                 .HasOne(p => p.TranslationWebEiu)
                 .WithOne(t => t.PostWebEiu)

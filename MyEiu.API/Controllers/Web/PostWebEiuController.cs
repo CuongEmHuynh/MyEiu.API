@@ -9,13 +9,13 @@ using MyEiu.Utilities;
 
 namespace MyEiu.API.Controllers.Web
 {
-    public class PostController : APIBaseController
+    public class PostWebEiuController : APIBaseController
     {
         private readonly IMapper _mapper;
         private readonly WebEiuDbContext _webeiudbcontext;
         private readonly MapperConfiguration _configMapper;
 
-        public PostController(IMapper mapper, WebEiuDbContext webeiudbcontext, MapperConfiguration configMapper)
+        public PostWebEiuController(IMapper mapper, WebEiuDbContext webeiudbcontext, MapperConfiguration configMapper)
         {
             _mapper = mapper;
             _webeiudbcontext = webeiudbcontext;
@@ -48,12 +48,23 @@ namespace MyEiu.API.Controllers.Web
             List<PostWebViewModel> postViewModelList = new();
             List<PostWebEiu> result = new();
 
-
-            result = await _webeiudbcontext.Posts.Where(p => p.Post_Status == "publish" && p.Post_Type == posttype
+            if(posttype != "all")
+            {
+                result = await _webeiudbcontext.Posts.Where(p => p.Post_Status == "publish" && p.Post_Type == posttype
                                                    && p.Translation.FirstOrDefault().Language_Code == language)
                                                    .Include(p => p.Translation).Include(p => p.ThumbnailWebEius).Include(p => p.UserWebEiu)
                                                    .OrderByDescending(rs => rs.Post_Date)
                                                    .Take(10).ToListAsync();
+            }
+            else
+            {
+                result = await _webeiudbcontext.Posts.Where(p => p.Post_Status == "publish" && (p.Post_Type == "post" || p.Post_Type == "events")
+                                                  && p.Translation.FirstOrDefault().Language_Code == language)
+                                                  .Include(p => p.Translation).Include(p => p.ThumbnailWebEius).Include(p => p.UserWebEiu)
+                                                  .OrderByDescending(rs => rs.Post_Date)
+                                                  .Take(10).ToListAsync();
+            }
+            
 
             postViewModelList = _mapper.Map<List<PostWebViewModel>>(result);
 
@@ -65,11 +76,25 @@ namespace MyEiu.API.Controllers.Web
         {
             List<PostWebViewModel> postViewModelList = new();
 
-            List<PostWebEiu> result = await _webeiudbcontext.Posts.Where(p => p.Post_Status == "publish" && p.Post_Type == postpagingdto.Post_Type
+            List<PostWebEiu> result = new();
+                
+            if(postpagingdto.Post_Type !="all")
+            {
+                result = await _webeiudbcontext.Posts.Where(p => p.Post_Status == "publish" && p.Post_Type == postpagingdto.Post_Type
                                                      && p.Translation.FirstOrDefault().Language_Code == postpagingdto.Post_Language)
                                                     .Include(p => p.Translation).Include(p => p.ThumbnailWebEius).Include(p => p.UserWebEiu)
                                                      .OrderByDescending(rs => rs.Post_Date)
                                                      .ToListAsync();
+            }
+            else
+            {
+                result = await _webeiudbcontext.Posts.Where(p => p.Post_Status == "publish" && (p.Post_Type == "post" || p.Post_Type == "events")
+                                                     && p.Translation.FirstOrDefault().Language_Code == postpagingdto.Post_Language)
+                                                    .Include(p => p.Translation).Include(p => p.ThumbnailWebEius).Include(p => p.UserWebEiu)
+                                                     .OrderByDescending(rs => rs.Post_Date)
+                                                     .ToListAsync();
+            }
+            
 
             postViewModelList = _mapper.Map<List<PostWebViewModel>>(result);
 

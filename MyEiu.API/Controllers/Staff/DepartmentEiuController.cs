@@ -7,12 +7,12 @@ using MyEiu.Data.Entities.Staff;
 
 namespace MyEiu.API.Controllers.Staff
 {
-    public class DepartmentController : APIBaseController
+    public class DepartmentEiuController : APIBaseController
     {
         private readonly IMapper _mapper;
         private readonly StaffEiuDbContext _staffEiuDbContext;
 
-        public DepartmentController(IMapper mapper, StaffEiuDbContext staffEiuDbContext)
+        public DepartmentEiuController(IMapper mapper, StaffEiuDbContext staffEiuDbContext)
         {
             _mapper = mapper;
             _staffEiuDbContext = staffEiuDbContext;

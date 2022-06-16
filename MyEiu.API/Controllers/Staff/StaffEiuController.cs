@@ -9,13 +9,13 @@ using MyEiu.Utilities;
 
 namespace MyEiu.API.Controllers.Staff
 {
-    public class StaffController : APIBaseController
+    public class StaffEiuController : APIBaseController
     {
         private readonly IMapper _mapper;
         private readonly StaffEiuDbContext _staffeiudbcontext;
         private readonly MapperConfiguration _configMapper;
 
-        public StaffController(IMapper mapper, StaffEiuDbContext staffeiudbcontext, MapperConfiguration configMapper)
+        public StaffEiuController(IMapper mapper, StaffEiuDbContext staffeiudbcontext, MapperConfiguration configMapper)
         {
             _mapper = mapper;
             _staffeiudbcontext = staffeiudbcontext;

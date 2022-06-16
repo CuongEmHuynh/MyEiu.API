@@ -6,11 +6,6 @@ namespace MyEiu.Data.Entities.Web
     [Table("wp_posts")]
     public class PostWebEiu
     {
-        public PostWebEiu()
-        {
-            ThumbnailWebEius = new HashSet<ThumbnailWebEiu>();
-            Translation = new HashSet<TranslationWebEiu>();
-        }
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
@@ -28,7 +23,7 @@ namespace MyEiu.Data.Entities.Web
         public string? Ping_Status { get; set; }
 
         public virtual UserWebEiu? UserWebEiu { get; set; }
-        public virtual ICollection<TranslationWebEiu> Translation { get; set; }
+        public virtual TranslationWebEiu? TranslationWebEiu { get; set; }
         public virtual ICollection<ThumbnailWebEiu> ThumbnailWebEius { get; set; }
 
     }

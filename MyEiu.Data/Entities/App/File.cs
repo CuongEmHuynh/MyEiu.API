@@ -14,7 +14,7 @@ namespace MyEiu.Data.Entities.App
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-        [Required]
+        [Required(ErrorMessage ="DisplayName is required.")]
         public string DisplayName { get; set; }//user input when uploading file
         public string? FileName { get; set; }
         [Required]

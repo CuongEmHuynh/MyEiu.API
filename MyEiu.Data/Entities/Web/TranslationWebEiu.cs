@@ -13,7 +13,7 @@ namespace MyEiu.Data.Entities.Web
         public int Element_Id { get; set; }
         public string? Language_Code { get; set; }
 
-        public virtual PostWebEiu Post { get; set; }
+        public virtual PostWebEiu PostWebEiu { get; set; }
 
 
 

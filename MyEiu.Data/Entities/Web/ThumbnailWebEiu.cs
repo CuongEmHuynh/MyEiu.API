@@ -10,7 +10,12 @@ namespace MyEiu.Data.Entities.Web
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
         [ForeignKey("wp_posts")]
+        public int object_id { get; set; }
+        public string object_type { get; set; }
+        public string object_sub_type { get; set; }
+        public string post_status { get; set; }
         public int post_parent { get; set; }
+        public string open_graph_image { get; set; }
         public string Twitter_Image { get; set; }
         public virtual PostWebEiu Post { get; set; }
 

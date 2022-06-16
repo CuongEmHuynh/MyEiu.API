@@ -31,7 +31,7 @@ namespace MyEiu.Data.EF.DbContexts
             modelBuilder.Entity<ThumbnailWebEiu>()
                 .HasOne(t => t.Post)
                 .WithMany(p => p.ThumbnailWebEius)
-                .HasForeignKey(t => t.post_parent);
+                .HasForeignKey(t => t.object_id);
             modelBuilder.Entity<TranslationWebEiu>()
                 .HasOne(t => t.Post)
                 .WithMany(p => p.Translation)

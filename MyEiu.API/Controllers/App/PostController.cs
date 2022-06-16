@@ -4,7 +4,7 @@ namespace MyEiu.API.Controllers.App
 {
     public class PostController : APIBaseController
     {
-        [HttpPost]
-        public async 
+        //[HttpPost]
+        //public async 
     }
 }

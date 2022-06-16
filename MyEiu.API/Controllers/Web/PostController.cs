@@ -31,7 +31,8 @@ namespace MyEiu.API.Controllers.Web
 
             result = await _webeiudbcontext.Posts.Where(p => p.Post_Status == "publish" && (p.Post_Type == "post" || p.Post_Type == "events")
                                                    && p.Translation.FirstOrDefault().Language_Code == language)
-                                                    .Include(p => p.Translation).Include(p => p.ThumbnailWebEius).Include(p => p.UserWebEiu)
+                                                    .Include(p => p.Translation).Include(p => p.ThumbnailWebEius)
+                                                    .Include(p => p.UserWebEiu)
 
                                                    .OrderByDescending(rs => rs.Post_Date)
                                                    .Take(5).ToListAsync();

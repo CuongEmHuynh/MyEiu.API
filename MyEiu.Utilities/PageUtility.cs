@@ -16,19 +16,7 @@ namespace MyEiu.Utilities
             //Lấy ra số lượng record của trang hiện tại
             var items = await query.Skip(skip).Take(pageSize).ToListAsync();
             return new Pager(items, count, currentPage, pageSize, pageSize);
-        }
-        public static Pager ToPaginationAsync<T>(this List<T> query, int currentPage, int pageSize = Commons.PageSize)
-        {
-            //Tính tổng số lượng record
-            var count = query.Count();
-
-            //Tính số lượng bỏ qua
-            int skip = (currentPage - 1) * pageSize;
-
-            //Lấy ra số lượng record của trang hiện tại
-            var items = query.Skip(skip).Take(pageSize).ToList();
-            return new Pager(items, count, currentPage, pageSize, pageSize);
-        }
+        }       
     }
 
     public class Pager

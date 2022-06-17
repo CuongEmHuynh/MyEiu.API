@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyEiu.API.Dtos;
@@ -24,64 +25,60 @@ namespace MyEiu.API.Controllers.Staff
 
         [HttpGet]
 
-        public async Task<ActionResult> Departments()
+        public ActionResult Departments()
         {
-            List<DepartmentStaffEiuViewModel> departmentstaffViewModel = new();
-            List<DepartmentEiu> result = new();
+            var result = _staffeiudbcontext.Departments.Where(d => d.IsDeleted == 0)
+                                                   .Include(d => d.Staffs.Where(s => s.IsDeleted == 0 && s.Type != 4)//4: type of member not staff
+                                                    .OrderBy(s => s.StaffID))
+                                                  .OrderBy(d => d.RecordID);
 
-            result = await _staffeiudbcontext.Departments.Where(d => d.IsDeleted == 0)
-                                                   .Include(d => d.Staffs.Where(s => s.IsDeleted == 0 && s.Type!=4)//4: type of member not staff
-                                                    .OrderBy(s=>s.StaffID))
-                                                  .OrderBy(d => d.RecordID)
-                                                  .ToListAsync();
-       
-            departmentstaffViewModel = _mapper.Map<List<DepartmentStaffEiuViewModel>>(result);
+
+            var departmentstaffViewModel = _mapper.Map<List<DepartmentStaffEiuViewModel>>(result);
 
             
             return Ok(departmentstaffViewModel);
         }
         [HttpGet]
-
-        public async Task<ActionResult> Staffs()
+        public ActionResult Staffs()
         {
-            List<StaffEiuViewModel> staffViewModel = new();
-            List<StaffEiu> result = new();
+            var result = _staffeiudbcontext.StaffEius.Where(s => s.IsDeleted == 0 && s.Type != 4)   //4: type of member not staff                                             
+                                                  .Include(s => s.DepartmentEiu)
+                                                    .OrderBy(s => s.StaffID);
+                     
 
-            result = await _staffeiudbcontext.StaffEius.Where(s => s.IsDeleted == 0 && s.Type!=4)   //4: type of member not staff                                             
-                                                  .OrderBy(s => s.StaffID)
-                                                  .ToListAsync();
+            var staffViewModel =  _mapper.Map<List<StaffEiuViewModel>>(result);
 
-            staffViewModel = _mapper.Map<List<StaffEiuViewModel>>(result);
+
+            return Ok(staffViewModel);
+        }
+        [HttpGet]
+        public async Task<ActionResult> Staff(string email)
+        {
+            StaffEiuViewModel staffViewModel = new();
+
+            StaffEiu? result = await _staffeiudbcontext.StaffEius.Include(s=>s.DepartmentEiu)
+                                            .FirstOrDefaultAsync(s => s.IsDeleted == 0 && s.Type != 4 && s.SchoolEmail == email);   //4: type of member not staff                                                                                               
+                                                  
+
+            staffViewModel = _mapper.Map<StaffEiuViewModel>(result);
 
 
             return Ok(staffViewModel);
         }
         [HttpPost]
-
-        public async Task<ActionResult> PagingStaffs(StaffPagingDto staff)
-        {
-            List<StaffEiuViewModel> staffViewModel = new();
-            List<StaffEiu> result = new();
-
-            if(staff.Search_Key is null)
+        public async Task<ActionResult> PagingStaffs(StaffPagingDto staffpagingdto)
+        {                     
+            //
+            var result = _staffeiudbcontext.StaffEius.Where(s => s.IsDeleted == 0 && s.Type != 4);    
+            if(staffpagingdto.Search_Key != null)
             {
-                result = await _staffeiudbcontext.StaffEius.Where(s => s.IsDeleted == 0 && s.Type != 4)
-                                                .OrderBy(s => s.StaffID)
-                                                .ToListAsync();
+                result = _staffeiudbcontext.StaffEius.Where(s => s.IsDeleted == 0 && s.Type != 4 && s.FullName!.Contains(staffpagingdto.Search_Key));
             }
-            else
-            {
-                result = await _staffeiudbcontext.StaffEius.Where(s => s.IsDeleted == 0 && s.FullName.Contains(staff.Search_Key) && s.Type != 4)
-                                                .OrderBy(s => s.StaffID)
-                                                .ToListAsync();
-            }
-          
 
-            staffViewModel = _mapper.Map<List<StaffEiuViewModel>>(result);
+            var pagingResult = await result.OrderBy(s => s.StaffID).ProjectTo<StaffEiuViewModel>(_configMapper)
+                                        .ToPaginationAsync(staffpagingdto.Current_Page, staffpagingdto.Page_Size);
 
-            //var pagingResult = staffViewModel.ToPaginationAsync(staff.Current_Page, staff.Page_Size);
-
-            return Ok(staffViewModel);
+            return Ok(pagingResult);
         }
 
     }

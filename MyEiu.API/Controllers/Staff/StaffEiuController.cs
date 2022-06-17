@@ -79,9 +79,9 @@ namespace MyEiu.API.Controllers.Staff
 
             staffViewModel = _mapper.Map<List<StaffEiuViewModel>>(result);
 
-            var pagingResult = staffViewModel.ToPaginationAsync(staff.Current_Page, staff.Page_Size);
+            //var pagingResult = staffViewModel.ToPaginationAsync(staff.Current_Page, staff.Page_Size);
 
-            return Ok(pagingResult);
+            return Ok(staffViewModel);
         }
 
     }

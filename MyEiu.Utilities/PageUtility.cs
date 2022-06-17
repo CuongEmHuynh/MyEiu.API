@@ -26,7 +26,7 @@ namespace MyEiu.Utilities
             int skip = (currentPage - 1) * pageSize;
 
             //Lấy ra số lượng record của trang hiện tại
-            var items =  query.Skip(skip).Take(pageSize).ToList();
+            var items = query.Skip(skip).Take(pageSize).ToList();
             return new Pager(items, count, currentPage, pageSize, pageSize);
         }
     }

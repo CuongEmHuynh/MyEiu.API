@@ -17,7 +17,7 @@ namespace MyEiu.Data.Entities.Web
         public int post_parent { get; set; }
         public string open_graph_image { get; set; }
         public string Twitter_Image { get; set; }
-        public virtual PostWebEiu Post { get; set; }
+        public virtual PostWebEiu PostWebEiu { get; set; }
 
     }
 }

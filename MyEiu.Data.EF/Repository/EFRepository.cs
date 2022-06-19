@@ -7,9 +7,9 @@ namespace MyEiu.Data.EF.Repository
 {
     public class EFRepository<T> : IRepository<T>, IDisposable where T : class
     {
-        private readonly AppDbContext _context;
+        private readonly MobileAppDbContext _context;
 
-        public EFRepository(AppDbContext context)
+        public EFRepository(MobileAppDbContext context)
         {
             _context = context;
         }

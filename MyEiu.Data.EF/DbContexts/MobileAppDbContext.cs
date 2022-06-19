@@ -48,13 +48,15 @@ namespace MyEiu.Data.EF.DbContexts
             }
         }
 
-        public DbSet<Entities.App.File>? File_Apps { get; set; }
-        public DbSet<Notification>? Notification_Apps { get; set; }
-        public DbSet<Post>? Post_Apps{ get; set; }
-        public DbSet<PostFile>? PostFile_Apps { get; set; }
-        public DbSet<PostType>? PostType_Apps { get; set; }
-        public DbSet<User>? User_Apps { get; set; }
-        public DbSet<UserRole>? UserRole_Apps { get; set; }
+        public DbSet<Entities.App.File>? Files { get; set; }
+        public DbSet<Notification>? Notifications { get; set; }
+        public DbSet<NotificationGroup>? NotificationGroups { get; set; }
+        public DbSet<NotificationUser>? NotificationUsers { get; set; }
+        public DbSet<Post>? Posts{ get; set; }
+        public DbSet<PostFile>? PostFiles { get; set; }
+        public DbSet<PostType>? PostTypes { get; set; }
+        public DbSet<User>? Users { get; set; }
+        public DbSet<UserRole>? UserRoles { get; set; }
 
     }
 }

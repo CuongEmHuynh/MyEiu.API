@@ -1,4 +1,5 @@
 ﻿using MyEiu.API.Installer.Settings;
+using MyEiu.Application.Services.App.Users;
 
 namespace MyEiu.API.Installer
 {
@@ -9,7 +10,7 @@ namespace MyEiu.API.Installer
         {
             //Add Other services           
 
-            throw new NotImplementedException();
+            //services.AddScoped<IUserService, UserService>();
         }
     }
 }

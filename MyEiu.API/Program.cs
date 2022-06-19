@@ -1,13 +1,13 @@
 
 using Microsoft.EntityFrameworkCore;
 using MyEiu.API.Configtion.Middleware;
+using MyEiu.Application.Services.App.Users;
 using MyEiu.Automapper.Settings;
 using MyEiu.Data.EF.DbContexts;
 //using System.Text.Json.Serialization;
 
 
 var builder = WebApplication.CreateBuilder(args);
-
 
 
 // Add services to the container.
@@ -20,10 +20,12 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
 );
-
+//add mapper
 builder.Services.AddSingleton(AutoMapperConfig.RegisterMappings().CreateMapper());
 builder.Services.AddSingleton(AutoMapperConfig.RegisterMappings());
-
+//add service
+builder.Services.AddScoped<IUserService, UserService>();
+//add DBContext
 string EiuDbConnectionStr = builder.Configuration.GetConnectionString("WebEiuDbConnection");
 builder.Services.AddDbContext<WebEiuDbContext>(options => options.UseMySql(EiuDbConnectionStr, ServerVersion.AutoDetect(EiuDbConnectionStr)));
 
@@ -46,6 +48,9 @@ if (app.Environment.IsDevelopment())
 }
 
 //app.UseMiddleware<ApiKeyMiddleware>();
+app.UseCors(x => x.AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowAnyOrigin());
 
 app.UseHttpsRedirection();
 

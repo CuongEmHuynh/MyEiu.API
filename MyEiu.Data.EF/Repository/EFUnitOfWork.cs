@@ -5,9 +5,9 @@ namespace MyEiu.Data.EF.Repository
 {
     public class EFUnitOfWork : IUnitOfWork
     {
-        private readonly AppDbContext _context;
+        private readonly MobileAppDbContext _context;
 
-        public EFUnitOfWork(AppDbContext context)
+        public EFUnitOfWork(MobileAppDbContext context)
         {
             _context = context;
         }

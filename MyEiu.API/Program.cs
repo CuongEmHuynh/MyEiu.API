@@ -4,6 +4,8 @@ using MyEiu.API.Configtion.Middleware;
 using MyEiu.Application.Services.App.Users;
 using MyEiu.Automapper.Settings;
 using MyEiu.Data.EF.DbContexts;
+using MyEiu.Data.EF.Interface;
+using MyEiu.Data.EF.Repository;
 //using System.Text.Json.Serialization;
 
 
@@ -23,8 +25,13 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
 //add mapper
 builder.Services.AddSingleton(AutoMapperConfig.RegisterMappings().CreateMapper());
 builder.Services.AddSingleton(AutoMapperConfig.RegisterMappings());
+
 //add service
+builder.Services.AddScoped(typeof(IUnitOfWork), typeof(EFUnitOfWork));
+builder.Services.AddScoped(typeof(IRepository<>), typeof(EFRepository<>));
 builder.Services.AddScoped<IUserService, UserService>();
+
+
 //add DBContext
 string EiuDbConnectionStr = builder.Configuration.GetConnectionString("WebEiuDbConnection");
 builder.Services.AddDbContext<WebEiuDbContext>(options => options.UseMySql(EiuDbConnectionStr, ServerVersion.AutoDetect(EiuDbConnectionStr)));

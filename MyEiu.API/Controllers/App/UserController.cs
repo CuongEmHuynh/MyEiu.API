@@ -12,12 +12,17 @@ namespace MyEiu.API.Controllers.App
     {
         private readonly IUserService _uService;
         private readonly MobileAppDbContext _context;
+        private OperationResult? operationResult;
 
         public UserController(MobileAppDbContext context, IUserService uService)
         {
             _context = context;
-            _uService = uService;   
+            _uService = uService;
         }
+        //public UserController(MobileAppDbContext context)
+        //{
+        //    _context = context;
+        //}
         [HttpPost]
         [AllowAnonymous]
         public async Task<ActionResult> CheckUserExist(LoginUserDto model) => Ok(await _uService.CheckUserExist(model));

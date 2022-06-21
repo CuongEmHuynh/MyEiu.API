@@ -7,9 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Services\App\Department\" />
-    <Folder Include="Services\App\User\" />
-    <Folder Include="Services\App\Notification\" />
+    <Folder Include="Services\App\Departments\" />
+    <Folder Include="Services\App\Users\" />
+    <Folder Include="Services\App\Notifications\" />
   </ItemGroup>
 
   <ItemGroup>

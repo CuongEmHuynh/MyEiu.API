@@ -43,7 +43,7 @@ namespace MyEiu.Data.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("File");
+                    b.ToTable("File", (string)null);
                 });
 
             modelBuilder.Entity("MyEiu.Data.Entities.App.Group", b =>
@@ -65,7 +65,7 @@ namespace MyEiu.Data.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Group");
+                    b.ToTable("Group", (string)null);
                 });
 
             modelBuilder.Entity("MyEiu.Data.Entities.App.Notification", b =>
@@ -91,7 +91,7 @@ namespace MyEiu.Data.EF.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Notification");
+                    b.ToTable("Notification", (string)null);
                 });
 
             modelBuilder.Entity("MyEiu.Data.Entities.App.NotificationGroup", b =>
@@ -121,7 +121,7 @@ namespace MyEiu.Data.EF.Migrations
 
                     b.HasIndex("NotificationId");
 
-                    b.ToTable("NotificationGroup");
+                    b.ToTable("NotificationGroup", (string)null);
                 });
 
             modelBuilder.Entity("MyEiu.Data.Entities.App.NotificationUser", b =>
@@ -155,7 +155,7 @@ namespace MyEiu.Data.EF.Migrations
 
                     b.HasIndex("NotificationId");
 
-                    b.ToTable("NotificationUser");
+                    b.ToTable("NotificationUser", (string)null);
                 });
 
             modelBuilder.Entity("MyEiu.Data.Entities.App.Post", b =>
@@ -204,7 +204,7 @@ namespace MyEiu.Data.EF.Migrations
 
                     b.HasIndex("PostTypeId");
 
-                    b.ToTable("Post");
+                    b.ToTable("Post", (string)null);
                 });
 
             modelBuilder.Entity("MyEiu.Data.Entities.App.PostFile", b =>
@@ -227,7 +227,7 @@ namespace MyEiu.Data.EF.Migrations
 
                     b.HasIndex("PostId");
 
-                    b.ToTable("PostFile");
+                    b.ToTable("PostFile", (string)null);
                 });
 
             modelBuilder.Entity("MyEiu.Data.Entities.App.PostType", b =>
@@ -246,7 +246,7 @@ namespace MyEiu.Data.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PostType");
+                    b.ToTable("PostType", (string)null);
                 });
 
             modelBuilder.Entity("MyEiu.Data.Entities.App.User", b =>
@@ -307,7 +307,7 @@ namespace MyEiu.Data.EF.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("User");
+                    b.ToTable("User", (string)null);
                 });
 
             modelBuilder.Entity("MyEiu.Data.Entities.App.UserRole", b =>
@@ -326,7 +326,7 @@ namespace MyEiu.Data.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UserRole");
+                    b.ToTable("UserRole", (string)null);
                 });
 
             modelBuilder.Entity("MyEiu.Data.Entities.App.Notification", b =>

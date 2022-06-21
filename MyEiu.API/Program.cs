@@ -1,6 +1,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using MyEiu.API.Configtion.Middleware;
+using MyEiu.Application.Services.App.Posts;
 using MyEiu.Application.Services.App.Users;
 using MyEiu.Automapper.Settings;
 using MyEiu.Data.EF.DbContexts;
@@ -30,6 +31,7 @@ builder.Services.AddSingleton(AutoMapperConfig.RegisterMappings());
 builder.Services.AddScoped(typeof(IUnitOfWork), typeof(EFUnitOfWork));
 builder.Services.AddScoped(typeof(IRepository<>), typeof(EFRepository<>));
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IPostService, PostService>();
 
 
 //add DBContext

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using MyEiu.Application.Const;
-using MyEiu.Automapper.ViewModel.App;
+using MyEiu.Automapper.ViewModel.App.Posts;
 using MyEiu.Data.EF.Interface;
 using MyEiu.Data.Entities.App;
 using MyEiu.Utilities.Dtos;
@@ -18,7 +18,7 @@ namespace MyEiu.Application.Services.App.Posts
     {
         Task<OperationResult> NewPost(IFormFile file);       
         Task<OperationResult> SuspendedPost(int postid);
-        Task<OperationResult> GetPostsByUser(int userid);
+        Task<List<PostViewModel>> GetPostsByUser(int userid);
         Task<OperationResult> PushNotification(int postid);//push notification to mobile app
 
     }
@@ -39,28 +39,10 @@ namespace MyEiu.Application.Services.App.Posts
             _configMapper = configMapper;
         }
 
-        public async Task<OperationResult> GetPostsByUser(int userid)
+        public async Task<List<PostViewModel>> GetPostsByUser(int userid)
         {
-            var item = await _repository.FindAll(p => p.CreateBy == userid).ToListAsync();
-            if (item != null)
-            {
-                operationResult = new OperationResult
-                {
-                    StatusCode = Const.StatusCodee.Ok,
-                    Data = item,
-                    Success = true
-                };
-            }
-            else
-            {
-                operationResult = new OperationResult
-                {
-                    StatusCode = Const.StatusCodee.Ok,
-                    Success = false,
-                    Message = "No data"
-                };
-            }
-            return operationResult;
+            var item = await _repository.FindAll(p => p.CreateBy == userid).Include(p => p.Author).Include(p=>p.Editor).ToListAsync();
+            return _mapper.Map<List<PostViewModel>>(item);
         }
 
         public Task<OperationResult> NewPost(IFormFile file)

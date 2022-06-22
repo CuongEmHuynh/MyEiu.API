@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace MyEiu.Data.EF.Migrations
 {
-    public partial class init : Migration
+    public partial class init1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -45,7 +45,7 @@ namespace MyEiu.Data.EF.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -75,24 +75,24 @@ namespace MyEiu.Data.EF.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MiddleName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Birthday = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     RoleId = table.Column<int>(type: "int", nullable: false),
-                    GroupID = table.Column<int>(type: "int", nullable: true),
                     Phone = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsDeleted = table.Column<int>(type: "int", nullable: true),
-                    ImagePath = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    ImagePath = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    GroupId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_User", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_User_Group_GroupID",
-                        column: x => x.GroupID,
+                        name: "FK_User_Group_GroupId",
+                        column: x => x.GroupId,
                         principalTable: "Group",
                         principalColumn: "Id");
                     table.ForeignKey(
@@ -115,6 +115,7 @@ namespace MyEiu.Data.EF.Migrations
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Priority = table.Column<int>(type: "int", nullable: false),
                     Disable = table.Column<bool>(type: "bit", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
                     CreateBy = table.Column<int>(type: "int", nullable: true),
                     ModifyBy = table.Column<int>(type: "int", nullable: true),
                     CreateDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -196,7 +197,7 @@ namespace MyEiu.Data.EF.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "NotificationGroup",
+                name: "NotificationGroups",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -208,15 +209,15 @@ namespace MyEiu.Data.EF.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_NotificationGroup", x => x.Id);
+                    table.PrimaryKey("PK_NotificationGroups", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_NotificationGroup_Group_GroupId",
+                        name: "FK_NotificationGroups_Group_GroupId",
                         column: x => x.GroupId,
                         principalTable: "Group",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_NotificationGroup_Notification_NotificationId",
+                        name: "FK_NotificationGroups_Notification_NotificationId",
                         column: x => x.NotificationId,
                         principalTable: "Notification",
                         principalColumn: "Id",
@@ -224,32 +225,53 @@ namespace MyEiu.Data.EF.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "NotificationUser",
+                name: "NotificationUsers",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    NotificationId = table.Column<int>(type: "int", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DepartmentCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DepartmentName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false)
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    NotificationId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_NotificationUser", x => x.Id);
+                    table.PrimaryKey("PK_NotificationUsers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_NotificationUser_Notification_NotificationId",
+                        name: "FK_NotificationUsers_Notification_NotificationId",
                         column: x => x.NotificationId,
                         principalTable: "Notification",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_NotificationUser_User_UserId",
-                        column: x => x.UserId,
-                        principalTable: "User",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.InsertData(
+                table: "PostType",
+                columns: new[] { "Id", "Description", "Name" },
+                values: new object[] { 1, "Gửi thông báo sự kiện đến người dùng", "Thông báo" });
+
+            migrationBuilder.InsertData(
+                table: "UserRole",
+                columns: new[] { "Id", "Description", "Name" },
+                values: new object[] { 1, "Người quản trị hệ thống", "Admin" });
+
+            migrationBuilder.InsertData(
+                table: "UserRole",
+                columns: new[] { "Id", "Description", "Name" },
+                values: new object[] { 2, "Người dùng phần mềm", "User" });
+
+            migrationBuilder.InsertData(
+                table: "User",
+                columns: new[] { "Id", "Birthday", "Code", "Email", "FirstName", "GroupId", "ImagePath", "IsDeleted", "LastName", "MiddleName", "Password", "Phone", "RoleId", "Username" },
+                values: new object[] { 1, new DateTime(1988, 9, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), "040016", "ngu.nguyen@eiu.edu.vn", "Ngữ", null, null, 0, "Nguyễn", null, null, "0977317173", 2, "ngu.nguyen" });
+
+            migrationBuilder.InsertData(
+                table: "Post",
+                columns: new[] { "Id", "Content", "CreateBy", "CreateDate", "Description", "Disable", "ModifyBy", "ModifyDate", "PostTypeId", "Priority", "Status", "Title" },
+                values: new object[] { 1, "Sample", 1, null, "Sample", false, null, null, 1, 0, 0, "Sample" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Notification_PostId",
@@ -262,24 +284,19 @@ namespace MyEiu.Data.EF.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_NotificationGroup_GroupId",
-                table: "NotificationGroup",
+                name: "IX_NotificationGroups_GroupId",
+                table: "NotificationGroups",
                 column: "GroupId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_NotificationGroup_NotificationId",
-                table: "NotificationGroup",
+                name: "IX_NotificationGroups_NotificationId",
+                table: "NotificationGroups",
                 column: "NotificationId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_NotificationUser_NotificationId",
-                table: "NotificationUser",
+                name: "IX_NotificationUsers_NotificationId",
+                table: "NotificationUsers",
                 column: "NotificationId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_NotificationUser_UserId",
-                table: "NotificationUser",
-                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Post_CreateBy",
@@ -307,9 +324,9 @@ namespace MyEiu.Data.EF.Migrations
                 column: "PostId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_User_GroupID",
+                name: "IX_User_GroupId",
                 table: "User",
-                column: "GroupID");
+                column: "GroupId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_User_RoleId",
@@ -320,10 +337,10 @@ namespace MyEiu.Data.EF.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "NotificationGroup");
+                name: "NotificationGroups");
 
             migrationBuilder.DropTable(
-                name: "NotificationUser");
+                name: "NotificationUsers");
 
             migrationBuilder.DropTable(
                 name: "PostFile");

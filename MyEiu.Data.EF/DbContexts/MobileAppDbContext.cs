@@ -16,7 +16,7 @@ namespace MyEiu.Data.EF.DbContexts
         public MobileAppDbContext(DbContextOptions options) : base(options)
         {
         }
-        protected override void OnModelCreating(ModelBuilder builder)
+        protected override async void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
             builder.Entity<Post>()
@@ -29,6 +29,8 @@ namespace MyEiu.Data.EF.DbContexts
                .WithMany(u => u.PostEditors)
                .HasForeignKey(p => p.ModifyBy)
                .OnDelete(DeleteBehavior.Restrict);
+
+            //await new DbInitializer(builder).Seed();
            
 
         }    

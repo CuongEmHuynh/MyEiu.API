@@ -29,14 +29,14 @@ namespace MyEiu.Data.Entities.App
         [ForeignKey("UserRole")]
         [Required]
         public int RoleId { get; set; }
-        [ForeignKey("Group")]
-        public int? GroupID { get; set; }
+        //[ForeignKey("Group")]
+        //public int? GroupID { get; set; }
         public string? Phone { get; set; }
         public int? IsDeleted { get; set; }
         public string? ImagePath { get; set; }
 
         public virtual UserRole UserRole { get; set; }
-        public virtual Group Group { get; set; }    
+        //public virtual Group Group { get; set; }    
         public virtual ICollection<Post> PostAuthors { get; set; }
         public virtual ICollection<Post> PostEditors { get; set; }
         public virtual ICollection<Notification> Notifications { get; set; }

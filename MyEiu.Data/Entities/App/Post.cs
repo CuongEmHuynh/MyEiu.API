@@ -25,6 +25,7 @@ namespace MyEiu.Data.Entities.App
       
         public PostPriority Priority { get; set; }
         public bool Disable { get; set; }
+        public PostStatus Status { get; set; }
 
         public virtual PostType PostType { get; set; }    
         public virtual User Author { get; set; }      

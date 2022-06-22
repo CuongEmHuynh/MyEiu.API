@@ -43,7 +43,7 @@ namespace MyEiu.Data.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("File", (string)null);
+                    b.ToTable("File");
                 });
 
             modelBuilder.Entity("MyEiu.Data.Entities.App.Group", b =>
@@ -65,7 +65,7 @@ namespace MyEiu.Data.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Group", (string)null);
+                    b.ToTable("Group");
                 });
 
             modelBuilder.Entity("MyEiu.Data.Entities.App.Notification", b =>
@@ -91,7 +91,7 @@ namespace MyEiu.Data.EF.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Notification", (string)null);
+                    b.ToTable("Notification");
                 });
 
             modelBuilder.Entity("MyEiu.Data.Entities.App.NotificationGroup", b =>
@@ -121,7 +121,7 @@ namespace MyEiu.Data.EF.Migrations
 
                     b.HasIndex("NotificationId");
 
-                    b.ToTable("NotificationGroup", (string)null);
+                    b.ToTable("NotificationGroups");
                 });
 
             modelBuilder.Entity("MyEiu.Data.Entities.App.NotificationUser", b =>
@@ -155,7 +155,7 @@ namespace MyEiu.Data.EF.Migrations
 
                     b.HasIndex("NotificationId");
 
-                    b.ToTable("NotificationUser", (string)null);
+                    b.ToTable("NotificationUsers");
                 });
 
             modelBuilder.Entity("MyEiu.Data.Entities.App.Post", b =>
@@ -193,6 +193,9 @@ namespace MyEiu.Data.EF.Migrations
                     b.Property<int>("Priority")
                         .HasColumnType("int");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
@@ -204,7 +207,21 @@ namespace MyEiu.Data.EF.Migrations
 
                     b.HasIndex("PostTypeId");
 
-                    b.ToTable("Post", (string)null);
+                    b.ToTable("Post");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Content = "Sample",
+                            CreateBy = 1,
+                            Description = "Sample",
+                            Disable = false,
+                            PostTypeId = 1,
+                            Priority = 0,
+                            Status = 0,
+                            Title = "Sample"
+                        });
                 });
 
             modelBuilder.Entity("MyEiu.Data.Entities.App.PostFile", b =>
@@ -227,7 +244,7 @@ namespace MyEiu.Data.EF.Migrations
 
                     b.HasIndex("PostId");
 
-                    b.ToTable("PostFile", (string)null);
+                    b.ToTable("PostFile");
                 });
 
             modelBuilder.Entity("MyEiu.Data.Entities.App.PostType", b =>
@@ -241,12 +258,21 @@ namespace MyEiu.Data.EF.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Name")
-                        .HasColumnType("int");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("PostType", (string)null);
+                    b.ToTable("PostType");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Gửi thông báo sự kiện đến người dùng",
+                            Name = "Thông báo"
+                        });
                 });
 
             modelBuilder.Entity("MyEiu.Data.Entities.App.User", b =>
@@ -271,7 +297,7 @@ namespace MyEiu.Data.EF.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("GroupID")
+                    b.Property<int?>("GroupId")
                         .HasColumnType("int");
 
                     b.Property<string>("ImagePath")
@@ -288,7 +314,6 @@ namespace MyEiu.Data.EF.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Phone")
@@ -303,11 +328,26 @@ namespace MyEiu.Data.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GroupID");
+                    b.HasIndex("GroupId");
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("User", (string)null);
+                    b.ToTable("User");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Birthday = new DateTime(1988, 9, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Code = "040016",
+                            Email = "ngu.nguyen@eiu.edu.vn",
+                            FirstName = "Ngữ",
+                            IsDeleted = 0,
+                            LastName = "Nguyễn",
+                            Phone = "0977317173",
+                            RoleId = 2,
+                            Username = "ngu.nguyen"
+                        });
                 });
 
             modelBuilder.Entity("MyEiu.Data.Entities.App.UserRole", b =>
@@ -326,7 +366,21 @@ namespace MyEiu.Data.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UserRole", (string)null);
+                    b.ToTable("UserRole");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Người quản trị hệ thống",
+                            Name = "Admin"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Người dùng phần mềm",
+                            Name = "User"
+                        });
                 });
 
             modelBuilder.Entity("MyEiu.Data.Entities.App.Notification", b =>
@@ -420,7 +474,7 @@ namespace MyEiu.Data.EF.Migrations
                 {
                     b.HasOne("MyEiu.Data.Entities.App.Group", null)
                         .WithMany("Users")
-                        .HasForeignKey("GroupID");
+                        .HasForeignKey("GroupId");
 
                     b.HasOne("MyEiu.Data.Entities.App.UserRole", "UserRole")
                         .WithMany("Users")

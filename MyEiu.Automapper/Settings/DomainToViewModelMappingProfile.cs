@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using MyEiu.Automapper.ViewModel.App.Posts;
 using MyEiu.Automapper.ViewModel.Staff;
 using MyEiu.Automapper.ViewModel.Web;
+using MyEiu.Data.Entities.App;
 using MyEiu.Data.Entities.Staff;
 using MyEiu.Data.Entities.Web;
 
@@ -11,7 +13,7 @@ namespace MyEiu.Automapper.Settings
 
        public DomainToViewModelMappingProfile()
         {
-            //post -> postviewmodel
+            //postWEB -> postviewmodelWEB
             CreateMap<PostWebEiu, PostWebViewModel>().ForMember(des => des.Post_Description, options => options.MapFrom(src => src.Post_Excerpt))
                 .ForMember(des => des.Post_Url,options =>options.MapFrom(src=>src.Guid))
                 .ForMember(des=>des.Post_Url,options =>options.MapFrom(src=> "https://eiu.edu.vn/?p=" + src.Id))
@@ -34,6 +36,11 @@ namespace MyEiu.Automapper.Settings
             CreateMap<DepartmentEiu, DepartmentEiuViewModel>().ForMember(des => des.Id, options => options.MapFrom(src => src.RecordID))
                 .ForMember(des => des.Name, options => options.MapFrom(src => src.FullName))
                 ;
+            //postAPP -> postviewmodelAPP
+            CreateMap<Post, PostViewModel>().ForMember(des => des.Author, options => options.MapFrom(src => src.Author.LastName +" "+ src.Author.FirstName))
+                .ForMember(des => des.Editor, options => options.MapFrom(src => src.Editor.LastName + src.Editor.FirstName))              
+                ;
+
         }
 
     }

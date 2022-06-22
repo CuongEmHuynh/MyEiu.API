@@ -55,8 +55,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+else
+{
+    app.UseMiddleware<ApiKeyMiddleware>();
+}
 
-//app.UseMiddleware<ApiKeyMiddleware>();
+
 app.UseCors(x => x.AllowAnyHeader()
             .AllowAnyMethod()
             .AllowAnyOrigin());

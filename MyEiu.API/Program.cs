@@ -2,12 +2,15 @@
 using Microsoft.EntityFrameworkCore;
 using MyEiu.API.Configtion.Middleware;
 using MyEiu.Application.Services.App.Users;
+using MyEiu.Application.Services.Salary;
 using MyEiu.Automapper.Settings;
 using MyEiu.Data.EF.DbContexts;
 //using System.Text.Json.Serialization;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseAutofac();
 
 
 // Add services to the container.
@@ -24,7 +27,8 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
 builder.Services.AddSingleton(AutoMapperConfig.RegisterMappings().CreateMapper());
 builder.Services.AddSingleton(AutoMapperConfig.RegisterMappings());
 //add service
-builder.Services.AddScoped<IUserService, UserService>();
+//builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IPayrollService, PayrollService>();
 //add DBContext
 string EiuDbConnectionStr = builder.Configuration.GetConnectionString("WebEiuDbConnection");
 builder.Services.AddDbContext<WebEiuDbContext>(options => options.UseMySql(EiuDbConnectionStr, ServerVersion.AutoDetect(EiuDbConnectionStr)));

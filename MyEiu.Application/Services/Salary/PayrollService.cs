@@ -11,16 +11,18 @@ namespace MyEiu.Application.Services.Salary
 {
     public interface IPayrollService
     {
-        Task<Payroll> GetMonthlyAsync(
+        Payroll GetMonthlyAsync(
         [NotNull] int year,
         [NotNull] int month,
         [NotNull] string staffId,
         [NotNull] string payrollFormId
     );
+
+        string GetTemplateSalary();
     }
     public class PayrollService : IPayrollService
     {
-        public Task<Payroll> GetMonthlyAsync([NotNull] int year, [NotNull] int month, [NotNull] string staffId, [NotNull] string payrollFormId)
+        public Payroll GetMonthlyAsync([NotNull] int year, [NotNull] int month, [NotNull] string staffId, [NotNull] string payrollFormId)
         {
             Employee employ = new Employee();
             string employId = employ.Id;
@@ -29,7 +31,37 @@ namespace MyEiu.Application.Services.Salary
 
             EmployeeInsuranceSalary employeeInsuranceSalary = new EmployeeInsuranceSalary();
 
+            var payroll = new Payroll()
+            {
+                EmployeeId= "1306",
+                StaffId ="0900012",
+                Department ="09",
+                FullName="Huỳnh Cường Em",
+                FixedSalary=5555555555,
+                UnEmploymentInsuranceSalary= 444444444,
+                SocialAndHealthInsuranceSalary= 3333333333,
+                Position="1"
+            };
+            List<PayrollForm> payrollForms = new List<PayrollForm>() ;
+            for (int i = 0; i < 3; i++)
+            {
+                PayrollDetail payrollDetail = new PayrollDetail();
+                payrollDetail.PayrollItem = "k1"+i;
+                payrollDetail.PayrollItemName = "A1" + i;
+                payrollDetail.Value = 180000 + i;
 
+                payroll.PayrollDetails.Add(payrollDetail);
+            }
+
+            
+
+            return payroll;
+
+            
+        }
+
+        public string GetTemplateSalary()
+        {
             throw new NotImplementedException();
         }
     }

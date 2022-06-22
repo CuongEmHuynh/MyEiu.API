@@ -42,7 +42,7 @@ namespace MyEiu.Application.Services.App.Users
             {
                 operationResult = new OperationResult
                 {
-                    StatusCode = StatusCode.Ok,
+                    StatusCode = StatusCodee.Ok,
                     Data = item,
                     Success = true
                 };
@@ -51,7 +51,7 @@ namespace MyEiu.Application.Services.App.Users
             {
                 operationResult = new OperationResult
                 {
-                    StatusCode = StatusCode.Ok,
+                    StatusCode = StatusCodee.Ok,
                     Success = false,
                     Message = "Người dùng không được tìm thấy"
                 };

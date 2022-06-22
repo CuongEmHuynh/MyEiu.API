@@ -18,7 +18,7 @@ namespace MyEiu.Application.Services.App.Posts
     {
         Task<OperationResult> NewPost(IFormFile file);       
         Task<OperationResult> SuspendedPost(int postid);
-        Task<OperationResult> GetPosts();
+        Task<OperationResult> GetPostsByUser(int userid);
         Task<OperationResult> PushNotification(int postid);//push notification to mobile app
 
     }
@@ -37,16 +37,16 @@ namespace MyEiu.Application.Services.App.Posts
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _configMapper = configMapper;
-        }      
+        }
 
-        public async Task<OperationResult> GetPosts()
+        public async Task<OperationResult> GetPostsByUser(int userid)
         {
-            var item = await _repository.FindAll().ToListAsync();
+            var item = await _repository.FindAll(p => p.CreateBy == userid).ToListAsync();
             if (item != null)
             {
                 operationResult = new OperationResult
                 {
-                    StatusCode = StatusCode.Ok,
+                    StatusCode = Const.StatusCodee.Ok,
                     Data = item,
                     Success = true
                 };
@@ -55,7 +55,7 @@ namespace MyEiu.Application.Services.App.Posts
             {
                 operationResult = new OperationResult
                 {
-                    StatusCode = StatusCode.Ok,
+                    StatusCode = Const.StatusCodee.Ok,
                     Success = false,
                     Message = "No data"
                 };

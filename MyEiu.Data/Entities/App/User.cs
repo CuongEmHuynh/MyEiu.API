@@ -36,6 +36,7 @@ namespace MyEiu.Data.Entities.App
         public string? ImagePath { get; set; }
 
         public virtual UserRole UserRole { get; set; }
+        public virtual Group Group { get; set; }    
         public virtual ICollection<Post> PostAuthors { get; set; }
         public virtual ICollection<Post> PostEditors { get; set; }
         public virtual ICollection<Notification> Notifications { get; set; }

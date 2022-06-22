@@ -14,7 +14,7 @@ namespace MyEiu.API.Controllers.App
         }
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ActionResult> GetPosts() => Ok(await _service.GetPosts());
+        public async Task<ActionResult> GetPostsByUser(int userid) => Ok(await _service.GetPostsByUser(userid));
 
     }
 }

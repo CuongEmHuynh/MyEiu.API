@@ -61,7 +61,7 @@ namespace MyEiu.Application.Services
 
                 operationResult = new OperationResult
                 {
-                    StatusCode = StatusCode.Ok,
+                    StatusCode = StatusCodee.Ok,
                     Message = MessageReponse.AddSuccess,
                     Success = true,
                     Data = item
@@ -85,7 +85,7 @@ namespace MyEiu.Application.Services
 
                     operationResult = new OperationResult()
                     {
-                        StatusCode = StatusCode.Ok,
+                        StatusCode = StatusCodee.Ok,
                         Message = MessageReponse.DeleteSuccess,
                         Success = true,
                         Data = item
@@ -95,7 +95,7 @@ namespace MyEiu.Application.Services
                 {
                     operationResult = new OperationResult()
                     {
-                        StatusCode = StatusCode.BadRequest,
+                        StatusCode = StatusCodee.BadRequest,
                         Message = MessageReponse.NotFoundData,
                         Success = false
                     };
@@ -131,7 +131,7 @@ namespace MyEiu.Application.Services
 
                 operationResult = new OperationResult()
                 {
-                    StatusCode = StatusCode.Ok,
+                    StatusCode = StatusCodee.Ok,
                     Message = MessageReponse.UpdateSuccess,
                     Success = true,
                     Data = item

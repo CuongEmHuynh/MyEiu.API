@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MyEiu.Application.Const
 {
-    public class StatusCode
+    public class StatusCodee
     {
         public static int Ok = 200;
         public static int NoContent = 204;

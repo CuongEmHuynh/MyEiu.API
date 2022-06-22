@@ -3,10 +3,12 @@ using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyEiu.API.Dtos;
+using MyEiu.Application.Const;
 using MyEiu.Automapper.ViewModel.Staff;
 using MyEiu.Data.EF.DbContexts;
 using MyEiu.Data.Entities.Staff;
 using MyEiu.Utilities;
+using MyEiu.Utilities.Dtos;
 
 namespace MyEiu.API.Controllers.Staff
 {
@@ -15,6 +17,7 @@ namespace MyEiu.API.Controllers.Staff
         private readonly IMapper _mapper;
         private readonly StaffEiuDbContext _staffeiudbcontext;
         private readonly MapperConfiguration _configMapper;
+        private OperationResult operationResult;
 
         public StaffEiuController(IMapper mapper, StaffEiuDbContext staffeiudbcontext, MapperConfiguration configMapper)
         {
@@ -52,7 +55,7 @@ namespace MyEiu.API.Controllers.Staff
             return Ok(staffViewModel);
         }
         [HttpGet]
-        public async Task<ActionResult> Staff(string email)
+        public async Task<OperationResult> Staff(string email)
         {
             StaffEiuViewModel staffViewModel = new();
 
@@ -62,8 +65,26 @@ namespace MyEiu.API.Controllers.Staff
 
             staffViewModel = _mapper.Map<StaffEiuViewModel>(result);
 
+            if(staffViewModel != null)
+            {
+                operationResult = new OperationResult
+                {
+                    StatusCode = StatusCodee.Ok,
+                    Data = staffViewModel,
+                    Success = true
+                };
+            }
+            else
+            {
+                operationResult = new OperationResult
+                {
+                   StatusCode = StatusCodee.Ok,
+                   Success = false,
+                   Message = "No user found"
+                };
+            }
 
-            return Ok(staffViewModel);
+            return operationResult;
         }
         [HttpPost]
         public async Task<ActionResult> PagingStaffs(StaffPagingDto staffpagingdto)

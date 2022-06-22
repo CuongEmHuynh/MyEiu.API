@@ -14,7 +14,7 @@ namespace MyEiu.Application.Extensions
                 message += " \n " + ex.InnerException.Message;
             }
 
-            return new OperationResult { StatusCode = StatusCode.InternalServerError, Message = message, Success = false };
+            return new OperationResult { StatusCode = StatusCodee.InternalServerError, Message = message, Success = false };
             
 
         }

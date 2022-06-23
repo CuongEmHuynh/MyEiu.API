@@ -5,23 +5,23 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace MyEiu.Data.EF.Migrations
 {
-    public partial class init1 : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "File",
+                name: "FileData",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    DisplayName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FileName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Path = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_File", x => x.Id);
+                    table.PrimaryKey("PK_FileData", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -68,7 +68,7 @@ namespace MyEiu.Data.EF.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "User",
+                name: "UserApp",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -89,14 +89,14 @@ namespace MyEiu.Data.EF.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_User", x => x.Id);
+                    table.PrimaryKey("PK_UserApp", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_User_Group_GroupId",
+                        name: "FK_UserApp_Group_GroupId",
                         column: x => x.GroupId,
                         principalTable: "Group",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_User_UserRole_RoleId",
+                        name: "FK_UserApp_UserRole_RoleId",
                         column: x => x.RoleId,
                         principalTable: "UserRole",
                         principalColumn: "Id",
@@ -113,9 +113,9 @@ namespace MyEiu.Data.EF.Migrations
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Priority = table.Column<int>(type: "int", nullable: false),
-                    Disable = table.Column<bool>(type: "bit", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false),
+                    Priority = table.Column<int>(type: "int", nullable: true),
+                    Disable = table.Column<bool>(type: "bit", nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: true),
                     CreateBy = table.Column<int>(type: "int", nullable: true),
                     ModifyBy = table.Column<int>(type: "int", nullable: true),
                     CreateDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -131,15 +131,15 @@ namespace MyEiu.Data.EF.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Post_User_CreateBy",
+                        name: "FK_Post_UserApp_CreateBy",
                         column: x => x.CreateBy,
-                        principalTable: "User",
+                        principalTable: "UserApp",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Post_User_ModifyBy",
+                        name: "FK_Post_UserApp_ModifyBy",
                         column: x => x.ModifyBy,
-                        principalTable: "User",
+                        principalTable: "UserApp",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -152,7 +152,7 @@ namespace MyEiu.Data.EF.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     PostId = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: true)
+                    UserAppId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -164,32 +164,32 @@ namespace MyEiu.Data.EF.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Notification_User_UserId",
-                        column: x => x.UserId,
-                        principalTable: "User",
+                        name: "FK_Notification_UserApp_UserAppId",
+                        column: x => x.UserAppId,
+                        principalTable: "UserApp",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
-                name: "PostFile",
+                name: "PostFileData",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     PostId = table.Column<int>(type: "int", nullable: false),
-                    FileId = table.Column<int>(type: "int", nullable: false)
+                    FileDataId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PostFile", x => x.Id);
+                    table.PrimaryKey("PK_PostFileData", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_PostFile_File_FileId",
-                        column: x => x.FileId,
-                        principalTable: "File",
+                        name: "FK_PostFileData_FileData_FileDataId",
+                        column: x => x.FileDataId,
+                        principalTable: "FileData",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_PostFile_Post_PostId",
+                        name: "FK_PostFileData_Post_PostId",
                         column: x => x.PostId,
                         principalTable: "Post",
                         principalColumn: "Id",
@@ -248,40 +248,15 @@ namespace MyEiu.Data.EF.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.InsertData(
-                table: "PostType",
-                columns: new[] { "Id", "Description", "Name" },
-                values: new object[] { 1, "Gửi thông báo sự kiện đến người dùng", "Thông báo" });
-
-            migrationBuilder.InsertData(
-                table: "UserRole",
-                columns: new[] { "Id", "Description", "Name" },
-                values: new object[] { 1, "Người quản trị hệ thống", "Admin" });
-
-            migrationBuilder.InsertData(
-                table: "UserRole",
-                columns: new[] { "Id", "Description", "Name" },
-                values: new object[] { 2, "Người dùng phần mềm", "User" });
-
-            migrationBuilder.InsertData(
-                table: "User",
-                columns: new[] { "Id", "Birthday", "Code", "Email", "FirstName", "GroupId", "ImagePath", "IsDeleted", "LastName", "MiddleName", "Password", "Phone", "RoleId", "Username" },
-                values: new object[] { 1, new DateTime(1988, 9, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), "040016", "ngu.nguyen@eiu.edu.vn", "Ngữ", null, null, 0, "Nguyễn", null, null, "0977317173", 2, "ngu.nguyen" });
-
-            migrationBuilder.InsertData(
-                table: "Post",
-                columns: new[] { "Id", "Content", "CreateBy", "CreateDate", "Description", "Disable", "ModifyBy", "ModifyDate", "PostTypeId", "Priority", "Status", "Title" },
-                values: new object[] { 1, "Sample", 1, null, "Sample", false, null, null, 1, 0, 0, "Sample" });
-
             migrationBuilder.CreateIndex(
                 name: "IX_Notification_PostId",
                 table: "Notification",
                 column: "PostId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Notification_UserId",
+                name: "IX_Notification_UserAppId",
                 table: "Notification",
-                column: "UserId");
+                column: "UserAppId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_NotificationGroups_GroupId",
@@ -314,23 +289,23 @@ namespace MyEiu.Data.EF.Migrations
                 column: "PostTypeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PostFile_FileId",
-                table: "PostFile",
-                column: "FileId");
+                name: "IX_PostFileData_FileDataId",
+                table: "PostFileData",
+                column: "FileDataId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PostFile_PostId",
-                table: "PostFile",
+                name: "IX_PostFileData_PostId",
+                table: "PostFileData",
                 column: "PostId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_User_GroupId",
-                table: "User",
+                name: "IX_UserApp_GroupId",
+                table: "UserApp",
                 column: "GroupId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_User_RoleId",
-                table: "User",
+                name: "IX_UserApp_RoleId",
+                table: "UserApp",
                 column: "RoleId");
         }
 
@@ -343,13 +318,13 @@ namespace MyEiu.Data.EF.Migrations
                 name: "NotificationUsers");
 
             migrationBuilder.DropTable(
-                name: "PostFile");
+                name: "PostFileData");
 
             migrationBuilder.DropTable(
                 name: "Notification");
 
             migrationBuilder.DropTable(
-                name: "File");
+                name: "FileData");
 
             migrationBuilder.DropTable(
                 name: "Post");
@@ -358,7 +333,7 @@ namespace MyEiu.Data.EF.Migrations
                 name: "PostType");
 
             migrationBuilder.DropTable(
-                name: "User");
+                name: "UserApp");
 
             migrationBuilder.DropTable(
                 name: "Group");

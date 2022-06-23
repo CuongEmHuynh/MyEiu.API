@@ -22,7 +22,7 @@ namespace MyEiu.Data.EF.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("MyEiu.Data.Entities.App.File", b =>
+            modelBuilder.Entity("MyEiu.Data.Entities.App.FileData", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -31,7 +31,6 @@ namespace MyEiu.Data.EF.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("DisplayName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FileName")
@@ -43,7 +42,7 @@ namespace MyEiu.Data.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("File");
+                    b.ToTable("FileData");
                 });
 
             modelBuilder.Entity("MyEiu.Data.Entities.App.Group", b =>
@@ -82,14 +81,14 @@ namespace MyEiu.Data.EF.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<int?>("UserId")
+                    b.Property<int?>("UserAppId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("PostId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserAppId");
 
                     b.ToTable("Notification");
                 });
@@ -178,7 +177,7 @@ namespace MyEiu.Data.EF.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("Disable")
+                    b.Property<bool?>("Disable")
                         .HasColumnType("bit");
 
                     b.Property<int?>("ModifyBy")
@@ -190,10 +189,10 @@ namespace MyEiu.Data.EF.Migrations
                     b.Property<int>("PostTypeId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Priority")
+                    b.Property<int?>("Priority")
                         .HasColumnType("int");
 
-                    b.Property<int>("Status")
+                    b.Property<int?>("Status")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
@@ -208,23 +207,9 @@ namespace MyEiu.Data.EF.Migrations
                     b.HasIndex("PostTypeId");
 
                     b.ToTable("Post");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Content = "Sample",
-                            CreateBy = 1,
-                            Description = "Sample",
-                            Disable = false,
-                            PostTypeId = 1,
-                            Priority = 0,
-                            Status = 0,
-                            Title = "Sample"
-                        });
                 });
 
-            modelBuilder.Entity("MyEiu.Data.Entities.App.PostFile", b =>
+            modelBuilder.Entity("MyEiu.Data.Entities.App.PostFileData", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -232,7 +217,7 @@ namespace MyEiu.Data.EF.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("FileId")
+                    b.Property<int>("FileDataId")
                         .HasColumnType("int");
 
                     b.Property<int>("PostId")
@@ -240,11 +225,11 @@ namespace MyEiu.Data.EF.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FileId");
+                    b.HasIndex("FileDataId");
 
                     b.HasIndex("PostId");
 
-                    b.ToTable("PostFile");
+                    b.ToTable("PostFileData");
                 });
 
             modelBuilder.Entity("MyEiu.Data.Entities.App.PostType", b =>
@@ -265,17 +250,9 @@ namespace MyEiu.Data.EF.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("PostType");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Description = "Gửi thông báo sự kiện đến người dùng",
-                            Name = "Thông báo"
-                        });
                 });
 
-            modelBuilder.Entity("MyEiu.Data.Entities.App.User", b =>
+            modelBuilder.Entity("MyEiu.Data.Entities.App.UserApp", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -332,22 +309,7 @@ namespace MyEiu.Data.EF.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("User");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Birthday = new DateTime(1988, 9, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Code = "040016",
-                            Email = "ngu.nguyen@eiu.edu.vn",
-                            FirstName = "Ngữ",
-                            IsDeleted = 0,
-                            LastName = "Nguyễn",
-                            Phone = "0977317173",
-                            RoleId = 2,
-                            Username = "ngu.nguyen"
-                        });
+                    b.ToTable("UserApp");
                 });
 
             modelBuilder.Entity("MyEiu.Data.Entities.App.UserRole", b =>
@@ -367,20 +329,6 @@ namespace MyEiu.Data.EF.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("UserRole");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Description = "Người quản trị hệ thống",
-                            Name = "Admin"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Description = "Người dùng phần mềm",
-                            Name = "User"
-                        });
                 });
 
             modelBuilder.Entity("MyEiu.Data.Entities.App.Notification", b =>
@@ -391,9 +339,9 @@ namespace MyEiu.Data.EF.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MyEiu.Data.Entities.App.User", null)
+                    b.HasOne("MyEiu.Data.Entities.App.UserApp", null)
                         .WithMany("Notifications")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserAppId");
                 });
 
             modelBuilder.Entity("MyEiu.Data.Entities.App.NotificationGroup", b =>
@@ -428,12 +376,12 @@ namespace MyEiu.Data.EF.Migrations
 
             modelBuilder.Entity("MyEiu.Data.Entities.App.Post", b =>
                 {
-                    b.HasOne("MyEiu.Data.Entities.App.User", "Author")
+                    b.HasOne("MyEiu.Data.Entities.App.UserApp", "Author")
                         .WithMany("PostAuthors")
                         .HasForeignKey("CreateBy")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("MyEiu.Data.Entities.App.User", "Editor")
+                    b.HasOne("MyEiu.Data.Entities.App.UserApp", "Editor")
                         .WithMany("PostEditors")
                         .HasForeignKey("ModifyBy")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -451,11 +399,11 @@ namespace MyEiu.Data.EF.Migrations
                     b.Navigation("PostType");
                 });
 
-            modelBuilder.Entity("MyEiu.Data.Entities.App.PostFile", b =>
+            modelBuilder.Entity("MyEiu.Data.Entities.App.PostFileData", b =>
                 {
-                    b.HasOne("MyEiu.Data.Entities.App.File", "File")
+                    b.HasOne("MyEiu.Data.Entities.App.FileData", "FileData")
                         .WithMany("PostFiles")
-                        .HasForeignKey("FileId")
+                        .HasForeignKey("FileDataId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -465,12 +413,12 @@ namespace MyEiu.Data.EF.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("File");
+                    b.Navigation("FileData");
 
                     b.Navigation("Post");
                 });
 
-            modelBuilder.Entity("MyEiu.Data.Entities.App.User", b =>
+            modelBuilder.Entity("MyEiu.Data.Entities.App.UserApp", b =>
                 {
                     b.HasOne("MyEiu.Data.Entities.App.Group", null)
                         .WithMany("Users")
@@ -485,7 +433,7 @@ namespace MyEiu.Data.EF.Migrations
                     b.Navigation("UserRole");
                 });
 
-            modelBuilder.Entity("MyEiu.Data.Entities.App.File", b =>
+            modelBuilder.Entity("MyEiu.Data.Entities.App.FileData", b =>
                 {
                     b.Navigation("PostFiles");
                 });
@@ -514,7 +462,7 @@ namespace MyEiu.Data.EF.Migrations
                     b.Navigation("Posts");
                 });
 
-            modelBuilder.Entity("MyEiu.Data.Entities.App.User", b =>
+            modelBuilder.Entity("MyEiu.Data.Entities.App.UserApp", b =>
                 {
                     b.Navigation("Notifications");
 

@@ -23,18 +23,18 @@ namespace MyEiu.Data.Entities.App
         public string? Description { get; set; }
         public string? Content { get; set; }
       
-        public PostPriority Priority { get; set; }
-        public bool Disable { get; set; }
-        public PostStatus Status { get; set; }
+        public PostPriority? Priority { get; set; }
+        public bool? Disable { get; set; }
+        public PostStatus? Status { get; set; }
 
-        public virtual PostType PostType { get; set; }    
-        public virtual User Author { get; set; }      
-        public virtual User Editor { get; set; }
-        public virtual  ICollection<PostFile>? PostFiles { get; set; }
+        public virtual PostType? PostType { get; set; }    
+        public virtual UserApp? Author { get; set; }      
+        public virtual UserApp? Editor { get; set; }
+        public virtual  ICollection<PostFileData>? PostFiles { get; set; }
         public virtual ICollection<Notification>? Notifications { get; set; }
-        [ForeignKey("User")]
+        [ForeignKey("UserApp")]
         public int? CreateBy { get ; set ; }
-        [ForeignKey("User")]
+        [ForeignKey("UserApp")]
         public int? ModifyBy { get ; set ; }
         public DateTime? CreateDate { get ; set ; }
         public DateTime? ModifyDate { get ; set ; }

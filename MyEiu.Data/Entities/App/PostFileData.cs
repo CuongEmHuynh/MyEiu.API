@@ -8,17 +8,17 @@ using System.Threading.Tasks;
 
 namespace MyEiu.Data.Entities.App
 {
-    [Table("PostFile")]
-    public class PostFile
+    [Table("PostFileData")]
+    public class PostFileData
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         [ForeignKey("Post")]
         public int PostId { get; set; }
-        [ForeignKey("File")]
-        public int FileId { get; set; }
+        [ForeignKey("FileData")]
+        public int FileDataId { get; set; }
         public virtual Post Post { get; set; }
-        public virtual File File { get; set; } 
+        public virtual FileData FileData { get; set; } 
     }
 }

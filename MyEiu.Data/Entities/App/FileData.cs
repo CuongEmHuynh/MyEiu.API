@@ -8,17 +8,16 @@ using System.Threading.Tasks;
 
 namespace MyEiu.Data.Entities.App
 {
-    [Table("File")]
-    public class File
+    [Table("FileData")]
+    public class FileData
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
-        [Required(ErrorMessage ="DisplayName is required.")]
-        public string DisplayName { get; set; }//user input when uploading file
+        public int Id { get; set; }        
+        public string? DisplayName { get; set; }//user input when uploading file
         public string? FileName { get; set; }
         [Required]
         public string Path { get; set; }
-        public virtual ICollection<PostFile> PostFiles { get; set; }
+        public virtual ICollection<PostFileData> PostFiles { get; set; }
     }
 }

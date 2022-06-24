@@ -14,29 +14,29 @@ namespace MyEiu.API
 {
     public class Startup
     {
-        private readonly IConfiguration _configuration;
         public Startup(IConfiguration configuration)
         {
-            _configuration = configuration;
+            Configuration = configuration;
         }
         public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
-           services.AddControllers();
+            services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-           services.AddEndpointsApiExplorer();
-           services.AddSwaggerGen();
+            services.AddEndpointsApiExplorer();
+            services.AddSwaggerGen();
             //Ignore cycle loop if an object has number of children > 32
-           services.AddControllers().AddNewtonsoftJson(options =>
-                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-            );
+            services.AddControllers().AddNewtonsoftJson(options =>
+                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+             );
             //add mapper
-           services.AddSingleton(AutoMapperConfig.RegisterMappings().CreateMapper());
-           services.AddSingleton(AutoMapperConfig.RegisterMappings());
+            //services.AddAutoMapper(typeof(Startup));
+            services.AddSingleton(AutoMapperConfig.RegisterMappings().CreateMapper());
+            services.AddSingleton(AutoMapperConfig.RegisterMappings());
             //add service
             //builder.Services.AddScoped<IUserService, UserService>();
-           services.AddScoped<IPayrollService, PayrollService>();
+            services.AddScoped<IPayrollService, PayrollService>();
             services.AddScoped(typeof(IUnitOfWork), typeof(EFUnitOfWork));
             services.AddScoped(typeof(IRepository<>), typeof(EFRepository<>));
             services.AddScoped<IUserService, UserService>();
@@ -44,19 +44,19 @@ namespace MyEiu.API
             services.AddScoped<IFileService, FileService>();
             services.AddScoped<IFileDataService, FileDataService>();
 
-
-
-
             //add DBContext
             string EiuDbConnectionStr = Configuration.GetConnectionString("WebEiuDbConnection");
-           services.AddDbContext<WebEiuDbContext>(options => options.UseMySql(EiuDbConnectionStr, ServerVersion.AutoDetect(EiuDbConnectionStr)));
+            services.AddDbContext<WebEiuDbContext>(options => options.UseMySql(EiuDbConnectionStr, ServerVersion.AutoDetect(EiuDbConnectionStr)));
 
             string StaffEiuDbConnectionStr = Configuration.GetConnectionString("StaffEiuDbConnection");
-           services.AddDbContext<StaffEiuDbContext>(options => options.UseMySql(StaffEiuDbConnectionStr, ServerVersion.AutoDetect(StaffEiuDbConnectionStr)));
-
-           services.AddDbContext<MobileAppDbContext>(options =>
+            services.AddDbContext<StaffEiuDbContext>(options => options.UseMySql(StaffEiuDbConnectionStr, ServerVersion.AutoDetect(StaffEiuDbConnectionStr)));
+            var connect = Configuration.GetConnectionString("MobileAppDbConnection");
+            services.AddDbContext<MobileAppDbContext>(options =>
                                    options.UseSqlServer(
                                        Configuration.GetConnectionString("MobileAppDbConnection")));
+
+
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

@@ -41,7 +41,7 @@ namespace MyEiu.Data.EF.DbContexts
             {              
                 IConfigurationRoot configuration = new ConfigurationBuilder()
                     .SetBasePath(Directory.GetCurrentDirectory())
-                    .AddJsonFile("appsettings.json")          
+                    .AddJsonFile(@"appsettings.json")          
                     .Build();
                 var builder = new DbContextOptionsBuilder<MobileAppDbContext>();
                 var connectionString = configuration.GetConnectionString("MobileAppDbConnection");

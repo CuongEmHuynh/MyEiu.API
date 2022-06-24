@@ -1,16 +1,19 @@
 
 using Microsoft.EntityFrameworkCore;
 using MyEiu.API.Configtion.Middleware;
-using MyEiu.Application.Services.App.Posts;
 using MyEiu.Application.Services.App.Users;
 using MyEiu.Automapper.Settings;
 using MyEiu.Data.EF.DbContexts;
-using MyEiu.Data.EF.Interface;
-using MyEiu.Data.EF.Repository;
 //using System.Text.Json.Serialization;
 
+using MyEiu.API;
 
-var builder = WebApplication.CreateBuilder(args);
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        CreateHostBuilder(args).Build().Run();
+    }
 
 
 // Add services to the container.
@@ -26,14 +29,8 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
 //add mapper
 builder.Services.AddSingleton(AutoMapperConfig.RegisterMappings().CreateMapper());
 builder.Services.AddSingleton(AutoMapperConfig.RegisterMappings());
-
 //add service
-builder.Services.AddScoped(typeof(IUnitOfWork), typeof(EFUnitOfWork));
-builder.Services.AddScoped(typeof(IRepository<>), typeof(EFRepository<>));
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IPostService, PostService>();
-
-
 //add DBContext
 string EiuDbConnectionStr = builder.Configuration.GetConnectionString("WebEiuDbConnection");
 builder.Services.AddDbContext<WebEiuDbContext>(options => options.UseMySql(EiuDbConnectionStr, ServerVersion.AutoDetect(EiuDbConnectionStr)));
@@ -60,7 +57,7 @@ else
     app.UseMiddleware<ApiKeyMiddleware>();
 }
 
-
+//app.UseMiddleware<ApiKeyMiddleware>();
 app.UseCors(x => x.AllowAnyHeader()
             .AllowAnyMethod()
             .AllowAnyOrigin());

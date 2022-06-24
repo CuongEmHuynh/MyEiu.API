@@ -1,5 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyEiu.API.Configtion.Middleware;
+using MyEiu.Application.Services.App.FileDatas;
+using MyEiu.Application.Services.App.Posts;
+using MyEiu.Application.Services.App.Users;
 using MyEiu.Application.Services.Salary;
 using MyEiu.Application.Services.System;
 using MyEiu.Automapper.Settings;

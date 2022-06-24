@@ -9,6 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\PostFiles\**" />
+    <Content Remove="wwwroot\PostFiles\**" />
+    <EmbeddedResource Remove="wwwroot\PostFiles\**" />
+    <None Remove="wwwroot\PostFiles\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="11.0.1" />
     <PackageReference Include="Becamex.Salary" Version="1.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.5" />
@@ -28,7 +35,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\PostFiles\" />
+    <Folder Include="wwwroot\FileUpload\Post\" />
   </ItemGroup>
 
 </Project>

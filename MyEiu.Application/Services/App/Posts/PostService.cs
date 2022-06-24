@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using MyEiu.Application.Const;
+using MyEiu.Application.Extensions;
 using MyEiu.Automapper.ViewModel.App.Posts;
 using MyEiu.Data.EF.Interface;
 using MyEiu.Data.Entities.App;
@@ -16,7 +17,7 @@ namespace MyEiu.Application.Services.App.Posts
 {
     public interface IPostService : IBaseService<PostViewModel>
     {
-        Task<OperationResult> NewPost(IFormFile file);       
+        Task<OperationResult> Add(PostViewModel model);       
         Task<OperationResult> SuspendedPost(int postid);
         Task<List<PostViewModel>> GetPostsByUser(int userid);
         Task<OperationResult> PushNotification(int postid);//push notification to mobile app
@@ -45,9 +46,26 @@ namespace MyEiu.Application.Services.App.Posts
             return _mapper.Map<List<PostViewModel>>(item);
         }
 
-        public Task<OperationResult> NewPost(IFormFile file)
+        public async Task<OperationResult> Add(PostViewModel model)
         {
-            throw new NotImplementedException();
+            var item = _mapper.Map<Post>(model);
+            try
+            {
+                await _repository.AddAsync(item);
+                await _unitOfWork.SaveChangeAsync();
+                operationResult = new OperationResult
+                {
+                    StatusCode = StatusCodee.Ok,
+                    Message = MessageReponse.AddSuccess,
+                    Success = true,
+                    Data = item
+                };
+            }
+            catch(Exception ex)
+            {
+                operationResult = ex.GetMessageError();
+            }
+           return operationResult;
         }
 
         public Task<OperationResult> PushNotification(int postid)

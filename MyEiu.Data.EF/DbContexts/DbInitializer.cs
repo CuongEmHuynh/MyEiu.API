@@ -27,8 +27,8 @@ namespace MyEiu.Data.EF.DbContexts
                 new UserRole {Id=1, Name = "Admin", Description = "Người quản trị hệ thống" },
                  new UserRole {Id=2, Name = "User", Description = "Người dùng phần mềm" }
                 );
-            _modelBuilder.Entity<User>().HasData(
-                new User {
+            _modelBuilder.Entity<UserApp>().HasData(
+                new UserApp {
                     Id=1,
                     Code = "040016",
                     Username = "ngu.nguyen",

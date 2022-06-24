@@ -1,7 +1,9 @@
 
 using Microsoft.EntityFrameworkCore;
 using MyEiu.API.Configtion.Middleware;
+using MyEiu.Application.Services.App.Posts;
 using MyEiu.Application.Services.App.Users;
+using MyEiu.Application.Services.System;
 using MyEiu.Automapper.Settings;
 using MyEiu.Data.EF.DbContexts;
 //using System.Text.Json.Serialization;
@@ -31,6 +33,12 @@ builder.Services.AddSingleton(AutoMapperConfig.RegisterMappings().CreateMapper()
 builder.Services.AddSingleton(AutoMapperConfig.RegisterMappings());
 //add service
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IPostService, PostService>();
+builder.Services.AddScoped<IFileService, FileService>();
+builder.Services.AddScoped<IFileDataService, FileDataService>();
+
+
+
 //add DBContext
 string EiuDbConnectionStr = builder.Configuration.GetConnectionString("WebEiuDbConnection");
 builder.Services.AddDbContext<WebEiuDbContext>(options => options.UseMySql(EiuDbConnectionStr, ServerVersion.AutoDetect(EiuDbConnectionStr)));

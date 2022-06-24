@@ -18,15 +18,15 @@ namespace MyEiu.Application.Services.App.Users
     {
         Task<OperationResult> CheckUserExist(LoginUserDto model);
     }
-    public class UserService : BaseService<User,UserViewModel>, IUserService
+    public class UserService : BaseService<UserApp,UserViewModel>, IUserService
     {
-        private readonly IRepository<User> _repository;
+        private readonly IRepository<UserApp> _repository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly MapperConfiguration _configMapper;
         private OperationResult? operationResult;
 
-        public UserService(IRepository<User> repository, IUnitOfWork unitOfWork, IMapper mapper, MapperConfiguration configMapper) 
+        public UserService(IRepository<UserApp> repository, IUnitOfWork unitOfWork, IMapper mapper, MapperConfiguration configMapper) 
             : base(repository, unitOfWork, mapper, configMapper)
         {
             _repository = repository;

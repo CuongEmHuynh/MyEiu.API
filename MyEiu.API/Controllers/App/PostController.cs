@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyEiu.Application.Services.App.Posts;
+using MyEiu.Automapper.ViewModel.App.Posts;
 using MyEiu.Utilities.Dtos;
 
 namespace MyEiu.API.Controllers.App
@@ -16,6 +17,9 @@ namespace MyEiu.API.Controllers.App
         [HttpGet]
         [AllowAnonymous]
         public async Task<ActionResult> GetPostsByUser(int userid) => Ok(await _service.GetPostsByUser(userid));
+        [HttpPost]
+        [AllowAnonymous]
+        public async Task<OperationResult> Add(PostViewModel model) => await _service.Add(model);
 
     }
 }

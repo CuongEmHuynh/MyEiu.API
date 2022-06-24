@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace MyEiu.Data.Entities.App
 {
-    [Table("User")]
-    public class User
+    [Table("UserApp")]
+    public class UserApp
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

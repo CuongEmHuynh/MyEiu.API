@@ -18,6 +18,6 @@ namespace MyEiu.Data.Entities.App
         public string? FullName { get; set; }
         public int IsDeleted { get; set; }
 
-        public virtual ICollection<User> Users { get; set; }
+        public virtual ICollection<UserApp> Users { get; set; }
     }
 }

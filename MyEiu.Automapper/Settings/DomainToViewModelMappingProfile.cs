@@ -37,8 +37,7 @@ namespace MyEiu.Automapper.Settings
                 .ForMember(des => des.Name, options => options.MapFrom(src => src.FullName))
                 ;
             //postAPP -> postviewmodelAPP
-            CreateMap<Post, PostViewModel>().ForMember(des => des.Author, options => options.MapFrom(src => src.Author.LastName +" "+ src.Author.FirstName))
-                .ForMember(des => des.Editor, options => options.MapFrom(src => src.Editor.LastName + src.Editor.FirstName))              
+            CreateMap<Post, PostViewModel>();              
                 ;
 
         }

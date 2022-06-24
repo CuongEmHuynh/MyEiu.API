@@ -1,7 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MyEiu.Application.Services.App.FileDatas;
+using MyEiu.Application.Services.App.Posts;
+using MyEiu.Application.Services.App.Users;
 using MyEiu.Application.Services.Salary;
+using MyEiu.Application.Services.System;
 using MyEiu.Automapper.Settings;
 using MyEiu.Data.EF.DbContexts;
+using MyEiu.Data.EF.Interface;
+using MyEiu.Data.EF.Repository;
 
 namespace MyEiu.API
 {
@@ -30,6 +36,16 @@ namespace MyEiu.API
             //add service
             //builder.Services.AddScoped<IUserService, UserService>();
            services.AddScoped<IPayrollService, PayrollService>();
+            services.AddScoped(typeof(IUnitOfWork), typeof(EFUnitOfWork));
+            services.AddScoped(typeof(IRepository<>), typeof(EFRepository<>));
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IPostService, PostService>();
+            services.AddScoped<IFileService, FileService>();
+            services.AddScoped<IFileDataService, FileDataService>();
+
+
+
+
             //add DBContext
             string EiuDbConnectionStr = Configuration.GetConnectionString("WebEiuDbConnection");
            services.AddDbContext<WebEiuDbContext>(options => options.UseMySql(EiuDbConnectionStr, ServerVersion.AutoDetect(EiuDbConnectionStr)));

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MyEiu.API.Configtion.Middleware;
 using MyEiu.Application.Services.Salary;
 using MyEiu.Automapper.Settings;
 using MyEiu.Data.EF.DbContexts;
@@ -48,6 +49,8 @@ namespace MyEiu.API
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+                app.UseMiddleware<ApiKeyMiddleware>();
 
             app.UseCors(x => x.AllowAnyHeader()
             .AllowAnyMethod()

@@ -19,6 +19,7 @@ namespace MyEiu.Automapper.ViewModel.App.Posts
         public PostPriority? Priority { get; set; }
 
         public PostStatus? Status { get; set; }
+        public bool? Disable { get; set; }
         public int? CreateBy { get; set; }
         //public string? Author { get; set; }
         public DateTime? CreateDate { get; set; }// get CreateDate or ModifyDate, select one which newer

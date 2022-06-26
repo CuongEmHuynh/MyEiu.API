@@ -126,8 +126,13 @@ namespace MyEiu.Application.Services.App.Posts
                 _httpClient.DefaultRequestHeaders.Add("IDCAppApiKey", "IDC@123456");
                 HttpResponseMessage response = await _httpClient.PostAsJsonAsync("https://api.becamex.com.vn/eiu/sys/push-notif", notif);
 
-                response.EnsureSuccessStatusCode();
+                response.EnsureSuccessStatusCode();// make sure return ok, fail go to Catch Exception
                 string apiResponse = await response.Content.ReadAsStringAsync();
+
+                //change status post from Draft to Send
+                item.Status = Data.Enum.PostStatus.Sent;
+                _mobileAppDbContext.Posts.Update(item);
+                await _unitOfWork.SaveChangeAsync();
 
                 operationResult = new OperationResult()
                 {

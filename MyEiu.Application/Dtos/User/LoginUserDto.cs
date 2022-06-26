@@ -8,7 +8,7 @@ namespace MyEiu.Application.Dtos.User
 {
     public class LoginUserDto
     {
-        public string Email { get; set; }
-        public string Username { get; set; }
+        public string? Email { get; set; }
+        public string? Username { get; set; }
     }
 }

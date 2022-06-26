@@ -7,13 +7,21 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Services\App\Departments\" />
+    <Compile Remove="Services\App\Departments\**" />
+    <Compile Remove="Services\App\Notifications\**" />
+    <EmbeddedResource Remove="Services\App\Departments\**" />
+    <EmbeddedResource Remove="Services\App\Notifications\**" />
+    <None Remove="Services\App\Departments\**" />
+    <None Remove="Services\App\Notifications\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Services\App\Users\" />
-    <Folder Include="Services\App\Notifications\" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="DevExtreme.AspNet.Data" Version="2.8.6" />
+    <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.9" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
   </ItemGroup>

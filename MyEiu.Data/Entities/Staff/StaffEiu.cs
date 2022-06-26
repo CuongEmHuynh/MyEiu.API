@@ -27,6 +27,6 @@ namespace MyEiu.Data.Entities.Staff
         public int? IsDeleted { get; set; }
         public string? ImagePath { get; set; }
 
-        public virtual DepartmentEiu DepartmentEiu { get; set; }
+        public virtual DepartmentEiu? DepartmentEiu { get; set; }
     }
 }

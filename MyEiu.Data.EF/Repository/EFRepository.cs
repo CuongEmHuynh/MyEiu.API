@@ -17,8 +17,7 @@ namespace MyEiu.Data.EF.Repository
         public T FindById(object id)
         {
             return _context.Set<T>().Find(id);
-        }
-
+        }        
         public async Task<T> FindByIdAsync(object id)
         {
             return await _context.Set<T>().FindAsync(id);

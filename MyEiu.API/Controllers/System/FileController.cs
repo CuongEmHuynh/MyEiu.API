@@ -21,19 +21,15 @@ namespace MyEiu.API.Controllers.System
         }
 
         [HttpPost]
-        public async Task<OperationFileResult> UploadMultiFiles([FromForm] List<IFormFile> files, int userid)
+        public async Task<IActionResult> UploadMultiFiles([FromForm] List<IFormFile> files, int userid)
         {
-            OperationFileResult rs = await _service.UploadMultiFiles(files, userid);
-
-            return rs;
+            return Ok( await _service.UploadMultiFiles(files, userid));            
         }
 
         [HttpPost]
-        public async Task<OperationFileResult> UploadFile([FromForm] IFormFile file, int userid,string folderpath)
+        public async Task<IActionResult> UploadFile([FromForm] IFormFile file, int userid)
         {
-            OperationFileResult rs = await _service.UploadFile(file, userid,folderpath);
-
-            return rs;
+            return Ok( await _service.UploadFile(file, userid));
         }
     }
 }

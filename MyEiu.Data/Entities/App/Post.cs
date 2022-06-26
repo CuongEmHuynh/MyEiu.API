@@ -18,7 +18,7 @@ namespace MyEiu.Data.Entities.App
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         [ForeignKey("PostType")]
-        public int PostTypeId { get; set; }
+        public int? PostTypeId { get; set; }
         public string? Title { get; set; }
         public string? Description { get; set; }
         public string? Content { get; set; }
@@ -26,17 +26,18 @@ namespace MyEiu.Data.Entities.App
         public PostPriority? Priority { get; set; }
         public bool? Disable { get; set; }
         public PostStatus? Status { get; set; }
-
+        [ForeignKey("UserApp")]
+        public int? CreateBy { get; set; }
+        [ForeignKey("UserApp")]
+        public int? ModifyBy { get; set; }
+        public DateTime? CreateDate { get; set; }
+        public DateTime? ModifyDate { get; set; }
         public virtual PostType? PostType { get; set; }    
         public virtual UserApp? Author { get; set; }      
         public virtual UserApp? Editor { get; set; }
-        public virtual  ICollection<PostFileData>? PostFiles { get; set; }
-        public virtual ICollection<Notification>? Notifications { get; set; }
-        [ForeignKey("UserApp")]
-        public int? CreateBy { get ; set ; }
-        [ForeignKey("UserApp")]
-        public int? ModifyBy { get ; set ; }
-        public DateTime? CreateDate { get ; set ; }
-        public DateTime? ModifyDate { get ; set ; }
+        public virtual  ICollection<PostFileData>? PostFileDatas { get; set; }
+        public virtual ICollection<PostGroup>? PostGroups { get; set; }
+        public virtual ICollection<PostUser>? PostUsers { get; set; }
+        
     }
 }

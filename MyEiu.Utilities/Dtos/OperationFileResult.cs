@@ -27,12 +27,12 @@
 
     public class FileResponse
     {
-        public string FileFullPath { get; set; }
-        public string FileOriginalName { get; set; }
-        public string FileLocalName { get; set; }
-        public string FileType { get; set; }
-        public string Path { get; set; }
-        public string FileExtension { get; set; }
+        public string? FileFullPath { get; set; }
+        public string? FileOriginalName { get; set; }
+        public string? FileLocalName { get; set; }
+        public string? FileType { get; set; }
+        public string? Path { get; set; }
+        public string? FileExtension { get; set; }
         public int? Position { get; set; }
         public bool IsImage { get; set; }
     }

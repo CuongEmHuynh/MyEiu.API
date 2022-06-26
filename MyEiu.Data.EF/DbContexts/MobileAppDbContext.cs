@@ -30,7 +30,7 @@ namespace MyEiu.Data.EF.DbContexts
                .HasForeignKey(p => p.ModifyBy)
                .OnDelete(DeleteBehavior.Restrict);
 
-            //await new DbInitializer(builder).Seed();
+            await new DbInitializer(builder).Seed();
            
 
         }    
@@ -50,10 +50,9 @@ namespace MyEiu.Data.EF.DbContexts
             }
         }
 
-        public DbSet<FileData>? FileDatas { get; set; }
-        public DbSet<Notification>? Notifications { get; set; }
-        public DbSet<NotificationGroup>? NotificationGroups { get; set; }
-        public DbSet<NotificationUser>? NotificationUsers { get; set; }
+        public DbSet<FileData>? FileDatas { get; set; }      
+        public DbSet<PostGroup>? PostGroups { get; set; }
+        public DbSet<PostUser>? PostUsers { get; set; }
         public DbSet<Post>? Posts{ get; set; }
         public DbSet<PostFileData>? PostFileDatas { get; set; }
         public DbSet<PostType>? PostTypes { get; set; }

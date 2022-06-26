@@ -43,6 +43,7 @@ namespace MyEiu.API
             services.AddScoped<IPostService, PostService>();
             services.AddScoped<IFileService, FileService>();
             services.AddScoped<IFileDataService, FileDataService>();
+            services.AddHttpClient();
 
             //add DBContext
             string EiuDbConnectionStr = Configuration.GetConnectionString("WebEiuDbConnection");

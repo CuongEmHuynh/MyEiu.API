@@ -14,10 +14,8 @@ namespace MyEiu.Automapper.Settings
         public ViewModelToDomainMappingProfile()
         {
             //postviewmodel -> postdto
-          
-            CreateMap<PostViewModel, Post>().ForMember(des => des.CreateBy, options => options.MapFrom(src => src.AuthorId))
-                    .ForMember(des => des.ModifyBy, options => options.MapFrom(src => src.EditorId))
-                    ;
+
+            CreateMap<PostViewModel, Post>();
             CreateMap<FileDataViewModel, FileData>().ForMember(des => des.DisplayName, options => options.MapFrom(src => src.FileName));
         }
        

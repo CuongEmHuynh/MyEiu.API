@@ -17,7 +17,7 @@ namespace MyEiu.Data.Entities.App
         public string? DisplayName { get; set; }//user input when uploading file
         public string? FileName { get; set; }
         [Required]
-        public string Path { get; set; }
-        public virtual ICollection<PostFileData> PostFiles { get; set; }
+        public string? Path { get; set; }
+        public virtual PostFileData? PostFileData { get; set; }
     }
 }

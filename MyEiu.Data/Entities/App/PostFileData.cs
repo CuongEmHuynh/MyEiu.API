@@ -15,10 +15,10 @@ namespace MyEiu.Data.Entities.App
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         [ForeignKey("Post")]
-        public int PostId { get; set; }
+        public int? PostId { get; set; }
         [ForeignKey("FileData")]
-        public int FileDataId { get; set; }
-        public virtual Post Post { get; set; }
-        public virtual FileData FileData { get; set; } 
+        public int? FileDataId { get; set; }
+        public virtual Post? Post { get; set; }
+        public virtual FileData? FileData { get; set; } 
     }
 }

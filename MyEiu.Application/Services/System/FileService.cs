@@ -15,7 +15,7 @@ namespace MyEiu.Application.Services.System
 {
     public interface IFileService
     {
-        Task<OperationFileResult> UploadFile(IFormFile file, int userid,string folderpath);
+        Task<OperationFileResult> UploadFile(IFormFile file, int userid);
         Task<OperationFileResult> UploadMultiFiles(List<IFormFile> files, int userid);
         OperationResult RemoveFilePost(string filename);      
     }
@@ -66,8 +66,9 @@ namespace MyEiu.Application.Services.System
             }
             return operationResult;
         }
-        public async Task<OperationFileResult> UploadFile(IFormFile file, int userid, string folderPath = "FileUpload/Post/")
+        public async Task<OperationFileResult> UploadFile(IFormFile file, int userid)
         {
+            string folderPath = "FileUpload/Post/";
             string folderRoot = _env.WebRootPath;
             bool exists = Directory.Exists(Path.Combine(folderRoot, folderPath));
             if (!exists)

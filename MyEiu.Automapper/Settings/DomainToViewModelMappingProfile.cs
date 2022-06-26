@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using MyEiu.Automapper.ViewModel.App.Notification;
 using MyEiu.Automapper.ViewModel.App.Posts;
 using MyEiu.Automapper.ViewModel.Staff;
 using MyEiu.Automapper.ViewModel.Web;
@@ -23,7 +24,7 @@ namespace MyEiu.Automapper.Settings
             //staff -> staffviewmodel
             CreateMap<StaffEiu, StaffEiuViewModel>().ForMember(des => des.Id, options => options.MapFrom(src => src.StaffID))
                 .ForMember(des => des.Name, options => options.MapFrom(src => src.LastName + " " + src.MiddleName + " " + src.FirstName))
-                .ForMember(des => des.DepartmentName, options => options.MapFrom(src => src.DepartmentEiu.FullName))
+                .ForMember(des => des.DepartmentName, options => options.MapFrom(src => src.DepartmentEiu!.FullName))
                 .ForMember(des => des.Email, options => options.MapFrom(src => src.SchoolEmail))
                 .ForMember(des => des.Avatar, options => options.MapFrom(src => "http://it.eiu.vn/pcntt/img/ImageStaff/" + src.ImagePath))
                 ;
@@ -33,11 +34,11 @@ namespace MyEiu.Automapper.Settings
                 .ForMember(des => des.Data, options => options.MapFrom(src => src.Staffs))
                 ;
             //department -> departmentViewModel
-            CreateMap<DepartmentEiu, DepartmentEiuViewModel>().ForMember(des => des.Id, options => options.MapFrom(src => src.RecordID))
-                .ForMember(des => des.Name, options => options.MapFrom(src => src.FullName))
-                ;
+            CreateMap<DepartmentEiu, DepartmentEiuViewModel>();
             //postAPP -> postviewmodelAPP
             CreateMap<Post, PostViewModel>();              
+                ;
+            CreateMap<Post, NotificationViewModel>().ForMember(des => des.CreatBy, options => options.MapFrom(src =>src.Author!.LastName + " " + src.Author.FirstName))
                 ;
 
         }

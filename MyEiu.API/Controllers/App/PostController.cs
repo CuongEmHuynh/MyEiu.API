@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MyEiu.API.Dtos;
 using MyEiu.Application.Const;
+using MyEiu.Application.Dtos;
 using MyEiu.Application.Extensions;
 using MyEiu.Application.Services.App.Posts;
-using MyEiu.Automapper.ViewModel.App.FileDatas;
 using MyEiu.Automapper.ViewModel.App.Posts;
 using MyEiu.Data.EF.DbContexts;
 using MyEiu.Data.Entities.App;
@@ -54,16 +55,28 @@ namespace MyEiu.API.Controllers.App
         }
 
         [HttpPost]
-        public async Task<ActionResult> PushNoti(int postid)
+        public async Task<OperationResult> PushNoti(int postid)
         {
-            string rs = await _service.PushNoti(postid);
-            return Ok(rs);
+            return await _service.PushNoti(postid);
+            
         }
         [HttpGet]
-        public async Task<OperationResult> ViewNoti(int postid)
+        public async Task<OperationResult> NotiDetails(int postid)
         {
-            return await _service.ViewNoti(postid);
+            return await _service.NotiDetails(postid);
             
+        }
+        [HttpGet]
+        public async Task<OperationResult> NotiListByUser(string email)
+        {
+            return await _service.NotiListByUser(email);
+
+        }
+        [HttpPost]
+        public async Task<ActionResult> PagingNoti(PostAppPagingDto pagingdto)
+        {
+            return Ok( await _service.PagingNoti(pagingdto));
+
         }
     }
 }

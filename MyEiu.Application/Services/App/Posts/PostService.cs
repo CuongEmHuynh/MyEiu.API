@@ -1,15 +1,19 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using MyEiu.API.Dtos;
 using MyEiu.Application.Const;
+using MyEiu.Application.Dtos;
 using MyEiu.Application.Extensions;
 using MyEiu.Automapper.ViewModel.App.Notification;
 using MyEiu.Automapper.ViewModel.App.Posts;
 using MyEiu.Data.EF.DbContexts;
 using MyEiu.Data.EF.Interface;
 using MyEiu.Data.Entities.App;
+using MyEiu.Utilities;
 using MyEiu.Utilities.Dtos;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,9 +31,10 @@ namespace MyEiu.Application.Services.App.Posts
         Task<OperationResult> Update(PostViewModel model);
         Task<List<PostViewModel>> GetPostsByUser(int userid);
 
-        Task<OperationResult> GetNotiByUser(string email);
-        Task<OperationResult> ViewNoti(int postid);//user view notification in details     
-        Task<string> PushNoti(int postid);//push notification to mobile app
+        Task<OperationResult> NotiListByUser(string email);
+        Task<OperationResult> NotiDetails(int postid);//user view notification in details     
+        Task<OperationResult> PushNoti(int postid);//push notification to mobile app
+        Task<Pager> PagingNoti(PostAppPagingDto pagingdto);
 
     }
     public class PostService : BaseService<Post, PostViewModel>, IPostService
@@ -87,7 +92,7 @@ namespace MyEiu.Application.Services.App.Posts
             throw new NotImplementedException();
         }
 
-        public async Task<string> PushNoti(int postid)
+        public async Task<OperationResult> PushNoti(int postid)
         {
             try
             {
@@ -124,23 +129,30 @@ namespace MyEiu.Application.Services.App.Posts
                 response.EnsureSuccessStatusCode();
                 string apiResponse = await response.Content.ReadAsStringAsync();
 
-                return apiResponse;
+                operationResult = new OperationResult()
+                {
+                    Data = notif,
+                    Message = apiResponse,
+                    StatusCode = 200,
+                    Success = true
+                };
+                
               
             }
             catch(Exception ex)
             {
-                return ex.Message;
+                operationResult = ex.GetMessageError();
             }
-          
+            return operationResult;
         }
 
-        public async Task<OperationResult> ViewNoti(int postid)
+        public async Task<OperationResult> NotiDetails(int postid)
         {
             try
-            {                
+            {
                 //get all relevant emails with post
-                Post item = await _mobileAppDbContext.Posts.Where(p => p.Id == postid).Include(p => p.Author)
-                                                        .Include(p => p.PostFileDatas).ThenInclude(pf=>pf.FileData)
+                Post item = await _mobileAppDbContext.Posts!.Where(p => p.Id == postid && p.Disable == false).Include(p => p.Author)
+                                                        .Include(p => p.PostFileDatas).ThenInclude(pf => pf.FileData)
                                                         .FirstOrDefaultAsync();
 
                 if (item != null)
@@ -176,13 +188,57 @@ namespace MyEiu.Application.Services.App.Posts
             return operationResult;
         }
 
-        public Task<OperationResult> GetNotiByUser(string email)
+        public async Task<OperationResult> NotiListByUser(string email)
         {
-            throw new NotImplementedException();
+            try
+            {
+                //get all relevant emails with post
+                var items = await _mobileAppDbContext.PostUsers!.Where(pu => pu.Email == email).Include(pu => pu.Post).OrderByDescending(pu=>pu.Post!.CreateDate).ToListAsync();
+                                                        
+
+                if (items != null && items.Count>0)
+                {
+                    List<NotificationViewModel> models = new List<NotificationViewModel>();
+                    foreach (var item in items)
+                    {
+                        models.Add(_mapper.Map<NotificationViewModel>(item.Post));
+                    }                                
+
+                    operationResult = new OperationResult()
+                    {
+                        Data = models,
+                        Message = "Get data success",
+                        StatusCode = StatusCodee.Ok,
+                        Success = true
+                    };
+                }
+                else
+                {
+                    operationResult = new OperationResult()
+                    {
+                        Message = "No record found",
+                        StatusCode = StatusCodee.NotFound,
+                        Success = true
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                operationResult = ex.GetMessageError();
+            }
+            return operationResult;
         }
 
+        public async Task<Pager> PagingNoti(PostAppPagingDto pagingdto)
+        {
+
+            var query = _mobileAppDbContext.Posts!.Where(s => s.Disable == false).OrderByDescending(p => p.CreateDate);
 
 
+            var pagingResult = await query.ProjectTo<NotificationViewModel>(_configMapper)
+                                        .ToPaginationAsync(pagingdto.Current_Page, pagingdto.Page_Size);
 
+            return pagingResult;
+        }
     }
 }

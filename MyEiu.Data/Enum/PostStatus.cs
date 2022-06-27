@@ -9,9 +9,8 @@ namespace MyEiu.Data.Enum
     public enum PostStatus
     {
         Draft,
-        Sent,
         Delivered,
-        Seen,
-
+        New,
+        Seen
     }
 }

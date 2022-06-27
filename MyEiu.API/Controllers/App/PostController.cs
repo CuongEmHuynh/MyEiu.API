@@ -61,15 +61,21 @@ namespace MyEiu.API.Controllers.App
             
         }
         [HttpGet]
-        public async Task<OperationResult> NotiDetails(int postid)
+        public async Task<OperationResult> NotiDetails(int postid,string email)
         {
-            return await _service.NotiDetails(postid);
+            return await _service.NotiDetails(postid,email);
             
         }
         [HttpGet]
         public async Task<OperationResult> NotiListByUser(string email)
         {
             return await _service.NotiListByUser(email);
+
+        }
+        [HttpGet]
+        public async Task<OperationResult> CountNewNotifUser(string email)
+        {
+            return await _service.CountNewNotifUser(email);
 
         }
         [HttpPost]

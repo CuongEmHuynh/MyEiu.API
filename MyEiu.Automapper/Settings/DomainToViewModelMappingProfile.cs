@@ -38,7 +38,9 @@ namespace MyEiu.Automapper.Settings
             //postAPP -> postviewmodelAPP
             CreateMap<Post, PostViewModel>();              
                 ;
+            //post -> Notifmodel
             CreateMap<Post, NotificationViewModel>().ForMember(des => des.CreatBy, options => options.MapFrom(src =>src.Author!.LastName + " " + src.Author.FirstName))
+              
                 ;
 
         }

@@ -153,7 +153,7 @@ namespace MyEiu.Data.EF.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     GroupId = table.Column<int>(type: "int", nullable: false),
                     GroupName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PostId = table.Column<int>(type: "int", nullable: false)
+                    PostId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -162,8 +162,7 @@ namespace MyEiu.Data.EF.Migrations
                         name: "FK_PostGroup_Post_PostId",
                         column: x => x.PostId,
                         principalTable: "Post",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -175,7 +174,8 @@ namespace MyEiu.Data.EF.Migrations
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DepartmentId = table.Column<int>(type: "int", nullable: true),
                     DepartmentName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PostId = table.Column<int>(type: "int", nullable: false)
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    PostId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -184,8 +184,7 @@ namespace MyEiu.Data.EF.Migrations
                         name: "FK_PostUser_Post_PostId",
                         column: x => x.PostId,
                         principalTable: "Post",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.InsertData(
@@ -207,6 +206,11 @@ namespace MyEiu.Data.EF.Migrations
                 table: "UserApp",
                 columns: new[] { "Id", "Birthday", "Code", "Email", "FirstName", "ImagePath", "IsDeleted", "LastName", "MiddleName", "Password", "Phone", "RoleId", "Username" },
                 values: new object[] { 1, new DateTime(1988, 9, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), "040016", "ngu.nguyen@eiu.edu.vn", "Ngữ", null, 0, "Nguyễn", null, null, "0977317173", 2, "ngu.nguyen" });
+
+            migrationBuilder.InsertData(
+                table: "UserApp",
+                columns: new[] { "Id", "Birthday", "Code", "Email", "FirstName", "ImagePath", "IsDeleted", "LastName", "MiddleName", "Password", "Phone", "RoleId", "Username" },
+                values: new object[] { 2, new DateTime(1997, 9, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), "040017", "em.huynh@eiu.edu.vn", "Em", null, 0, "Huynh", null, null, "0977888888", 2, "em.huynh" });
 
             migrationBuilder.InsertData(
                 table: "Post",

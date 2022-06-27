@@ -12,7 +12,7 @@ using MyEiu.Data.EF.DbContexts;
 namespace MyEiu.Data.EF.Migrations
 {
     [DbContext(typeof(MobileAppDbContext))]
-    [Migration("20220625105420_init")]
+    [Migration("20220627020400_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -151,7 +151,7 @@ namespace MyEiu.Data.EF.Migrations
                     b.Property<string>("GroupName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PostId")
+                    b.Property<int?>("PostId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -205,7 +205,10 @@ namespace MyEiu.Data.EF.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PostId")
+                    b.Property<int?>("PostId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -278,6 +281,19 @@ namespace MyEiu.Data.EF.Migrations
                             Phone = "0977317173",
                             RoleId = 2,
                             Username = "ngu.nguyen"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Birthday = new DateTime(1997, 9, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Code = "040017",
+                            Email = "em.huynh@eiu.edu.vn",
+                            FirstName = "Em",
+                            IsDeleted = 0,
+                            LastName = "Huynh",
+                            Phone = "0977888888",
+                            RoleId = 2,
+                            Username = "em.huynh"
                         });
                 });
 
@@ -356,9 +372,7 @@ namespace MyEiu.Data.EF.Migrations
                 {
                     b.HasOne("MyEiu.Data.Entities.App.Post", "Post")
                         .WithMany("PostGroups")
-                        .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PostId");
 
                     b.Navigation("Post");
                 });
@@ -367,9 +381,7 @@ namespace MyEiu.Data.EF.Migrations
                 {
                     b.HasOne("MyEiu.Data.Entities.App.Post", "Post")
                         .WithMany("PostUsers")
-                        .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PostId");
 
                     b.Navigation("Post");
                 });

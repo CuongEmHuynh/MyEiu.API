@@ -32,7 +32,8 @@ namespace MyEiu.Application.Services.App.Posts
         Task<List<PostViewModel>> GetPostsByUser(int userid);
 
         Task<OperationResult> NotiListByUser(string email);
-        Task<OperationResult> NotiDetails(int postid);//user view notification in details     
+        Task<OperationResult> CountNewNotifUser(string email);
+        Task<OperationResult> NotiDetails(int postid,string email);//user view notification in details     
         Task<OperationResult> PushNoti(int postid);//push notification to mobile app
         Task<Pager> PagingNoti(PostAppPagingDto pagingdto);
 
@@ -48,10 +49,12 @@ namespace MyEiu.Application.Services.App.Posts
         private readonly HttpClient _httpClient;
         private readonly StaffEiuDbContext _staffEiuDbContext;
 
-        public PostService(IRepository<Post> postRepository, IUnitOfWork unitOfWork, IMapper mapper, MapperConfiguration configMapper, HttpClient httpClient,StaffEiuDbContext staffEiuDbContext)
+        public PostService(IRepository<Post> postRepository, IRepository<PostUser> repoPostUser, IUnitOfWork unitOfWork, IMapper mapper, MapperConfiguration configMapper, 
+            HttpClient httpClient,StaffEiuDbContext staffEiuDbContext)
             : base(postRepository, unitOfWork, mapper, configMapper)
         {
             _repoPost = postRepository;
+            _repoPostUser = repoPostUser;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _configMapper = configMapper;
@@ -90,7 +93,41 @@ namespace MyEiu.Application.Services.App.Posts
         {
             throw new NotImplementedException();
         }
+        public async Task<OperationResult> CountNewNotifUser(string email)
+        {
+            try
+            {
+                //get all relevant emails with post
+                var num = await _repoPostUser.FindAll(pu => pu.Email == email && pu.Status == Data.Enum.PostStatus.New).CountAsync();
 
+
+                if (num != null)
+                {                    
+                    operationResult = new OperationResult()
+                    {
+                        Data = num,
+                        Message = "Get data success",
+                        StatusCode = StatusCodee.Ok,
+                        Success = true
+                    };
+                }
+                else
+                {
+                    operationResult = new OperationResult()
+                    {
+                        Data = 0,
+                        Message = "No record found",
+                        StatusCode = StatusCodee.NotFound,
+                        Success = true
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                operationResult = ex.GetMessageError();
+            }
+            return operationResult;
+        }
         public async Task<OperationResult> PushNoti(int postid)
         {
             try
@@ -119,7 +156,7 @@ namespace MyEiu.Application.Services.App.Posts
 
                     //declare data
                     notif.Data!.Title = item.Title;
-                    notif.Data.body = item.Description;
+                    notif.Data.Body = item.Description;
                     notif.Data.PostId = item.Id;
                 }
 
@@ -129,8 +166,8 @@ namespace MyEiu.Application.Services.App.Posts
                 response.EnsureSuccessStatusCode();// make sure return ok, fail go to Catch Exception
                 string apiResponse = await response.Content.ReadAsStringAsync();
 
-                //change status post from Draft to Send
-                item.Status = Data.Enum.PostStatus.Sent;
+                //change status post from Draft to delivered
+                item.Status = Data.Enum.PostStatus.Delivered;
                 _repoPost.Update(item);
                 await _unitOfWork.SaveChangeAsync();
 
@@ -151,7 +188,7 @@ namespace MyEiu.Application.Services.App.Posts
             return operationResult;
         }
 
-        public async Task<OperationResult> NotiDetails(int postid)
+        public async Task<OperationResult> NotiDetails(int postid, string email)
         {
             try
             {
@@ -162,15 +199,22 @@ namespace MyEiu.Application.Services.App.Posts
 
                 if (item != null)
                 {
-                    NotificationViewModel model = _mapper.Map<NotificationViewModel>(item);
+
+                    NotificationViewModel notifmodel = _mapper.Map<NotificationViewModel>(item);
                     foreach(var pfiledata in item.PostFileDatas!)
                     {
-                        model.FilesUrl.Add(pfiledata.FileData.Path);
+                        notifmodel.FilesUrl.Add(new NotifFile { Name = pfiledata.FileData.DisplayName, Path = "/" + pfiledata.FileData.Path});
                     }
-                   
+
+                    PostUser postuser = await _repoPostUser.FindAll(pu => pu.Email==email && pu.PostId == postid).FirstOrDefaultAsync();
+                    postuser.Status = Data.Enum.PostStatus.Seen;
+                    notifmodel.Status = postuser.Status;
+                    _repoPostUser.Update(postuser);
+                    await _unitOfWork.SaveChangeAsync();
+
                     operationResult = new OperationResult()
                     {
-                        Data = model,
+                        Data = notifmodel,
                         Message = "Get data success",
                         StatusCode = StatusCodee.Ok,
                         Success = true
@@ -206,7 +250,9 @@ namespace MyEiu.Application.Services.App.Posts
                     List<NotificationViewModel> models = new List<NotificationViewModel>();
                     foreach (var item in items)
                     {
-                        models.Add(_mapper.Map<NotificationViewModel>(item.Post));
+                        var notimodel = _mapper.Map<NotificationViewModel>(item.Post);
+                        notimodel.Status = item.Status;
+                        models.Add(notimodel);
                     }                                
 
                     operationResult = new OperationResult()

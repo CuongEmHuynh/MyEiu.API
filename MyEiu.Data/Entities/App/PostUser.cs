@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MyEiu.Data.Enum;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -16,9 +17,8 @@ namespace MyEiu.Data.Entities.App
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; } = 0;      
         public string? Email { get; set; }
-
-        public int? DepartmentId { get; set; }
-        public string? DepartmentName { get; set; }
+      
+        public PostStatus Status { get; set; }
 
         [ForeignKey("Post")]
         public int? PostId { get; set; }       

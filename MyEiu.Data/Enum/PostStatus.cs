@@ -11,8 +11,7 @@ namespace MyEiu.Data.Enum
         Draft,
         Sent,
         Delivered,
-        Read,
-        Ready
+        Seen,
 
     }
 }

@@ -42,7 +42,23 @@ namespace MyEiu.Data.EF.DbContexts
                     Phone = "0977317173",
                     IsDeleted = 0,
                     ImagePath = null
-                    }
+                    },
+                new UserApp
+                {
+                    Id = 2,
+                    Code = "040017",
+                    Username = "em.huynh",
+                    Password = null,
+                    LastName = "Huynh",
+                    FirstName = "Em",
+                    Birthday = new DateTime(1997, 9, 20),
+                    Email = "em.huynh@eiu.edu.vn",
+                    RoleId = 2,
+                    //GroupID = null,
+                    Phone = "0977888888",
+                    IsDeleted = 0,
+                    ImagePath = null
+                }
                 );
             _modelBuilder.Entity<Post>().HasData(
                 new Post { Id=1,PostTypeId=1,Title="Sample",Description="Sample",Content="Sample",Priority=Enum.PostPriority.Important,Disable=false,CreateBy=1}

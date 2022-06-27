@@ -39,30 +39,29 @@ namespace MyEiu.Application.Services.App.Posts
     }
     public class PostService : BaseService<Post, PostViewModel>, IPostService
     {
-        private readonly IRepository<Post> _repository;        
+        private readonly IRepository<Post> _repoPost;
+        private readonly IRepository<PostUser> _repoPostUser;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly MapperConfiguration _configMapper;
         private OperationResult? operationResult;
         private readonly HttpClient _httpClient;
         private readonly StaffEiuDbContext _staffEiuDbContext;
-        private readonly MobileAppDbContext _mobileAppDbContext;
 
-        public PostService(IRepository<Post> postRepository, IUnitOfWork unitOfWork, IMapper mapper, MapperConfiguration configMapper, HttpClient httpClient,StaffEiuDbContext staffEiuDbContext, MobileAppDbContext mobileAppDbContext)
+        public PostService(IRepository<Post> postRepository, IUnitOfWork unitOfWork, IMapper mapper, MapperConfiguration configMapper, HttpClient httpClient,StaffEiuDbContext staffEiuDbContext)
             : base(postRepository, unitOfWork, mapper, configMapper)
         {
-            _repository = postRepository;
+            _repoPost = postRepository;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _configMapper = configMapper;
             _httpClient = httpClient;
             _staffEiuDbContext = staffEiuDbContext;
-            _mobileAppDbContext = mobileAppDbContext;
         }
 
         public async Task<List<PostViewModel>> GetPostsByUser(int userid)
         {
-            var item = await _repository.FindAll(p => p.CreateBy == userid).Include(p => p.Author).Include(p=>p.Editor).ToListAsync();
+            var item = await _repoPost.FindAll(p => p.CreateBy == userid).Include(p => p.Author).Include(p=>p.Editor).ToListAsync();
             return _mapper.Map<List<PostViewModel>>(item);
         }
 
@@ -71,7 +70,7 @@ namespace MyEiu.Application.Services.App.Posts
             var post = _mapper.Map<Post>(model);           
             try
             {
-                await _repository.AddAsync(post);             
+                await _repoPost.AddAsync(post);             
                 await _unitOfWork.SaveChangeAsync();
                 operationResult = new OperationResult
                 {
@@ -98,7 +97,8 @@ namespace MyEiu.Application.Services.App.Posts
             {
                 NotificationDto notif = new NotificationDto();
                 //get all relevant emails with post
-                Post item = await _mobileAppDbContext.Posts.Where(p => p.Id == postid).Include(p => p.PostGroups).Include(p => p.PostUsers).FirstOrDefaultAsync();
+                //Post item = await _mobileAppDbContext.Posts.Where(p => p.Id == postid).Include(p => p.PostGroups).Include(p => p.PostUsers).FirstOrDefaultAsync();
+                Post item = await _repoPost.FindAll(p => p.Id == postid).Include(p => p.PostGroups).Include(p => p.PostUsers).FirstOrDefaultAsync();
                 if (item != null)
                 {
                     notif.Type = item.PostTypeId;
@@ -131,7 +131,7 @@ namespace MyEiu.Application.Services.App.Posts
 
                 //change status post from Draft to Send
                 item.Status = Data.Enum.PostStatus.Sent;
-                _mobileAppDbContext.Posts.Update(item);
+                _repoPost.Update(item);
                 await _unitOfWork.SaveChangeAsync();
 
                 operationResult = new OperationResult()
@@ -156,7 +156,7 @@ namespace MyEiu.Application.Services.App.Posts
             try
             {
                 //get all relevant emails with post
-                Post item = await _mobileAppDbContext.Posts!.Where(p => p.Id == postid && p.Disable == false).Include(p => p.Author)
+                Post item = await _repoPost.FindAll(p => p.Id == postid && p.Disable == false).Include(p => p.Author)
                                                         .Include(p => p.PostFileDatas).ThenInclude(pf => pf.FileData)
                                                         .FirstOrDefaultAsync();
 
@@ -198,9 +198,9 @@ namespace MyEiu.Application.Services.App.Posts
             try
             {
                 //get all relevant emails with post
-                var items = await _mobileAppDbContext.PostUsers!.Where(pu => pu.Email == email).Include(pu => pu.Post).OrderByDescending(pu=>pu.Post!.CreateDate).ToListAsync();
-                                                        
+                var items = await _repoPostUser.FindAll(pu => pu.Email == email).Include(pu => pu.Post).OrderByDescending(pu=>pu.Post!.CreateDate).ToListAsync();
 
+               
                 if (items != null && items.Count>0)
                 {
                     List<NotificationViewModel> models = new List<NotificationViewModel>();
@@ -237,7 +237,7 @@ namespace MyEiu.Application.Services.App.Posts
         public async Task<Pager> PagingNoti(PostAppPagingDto pagingdto)
         {
 
-            var query = _mobileAppDbContext.Posts!.Where(s => s.Disable == false).OrderByDescending(p => p.CreateDate);
+            var query = _repoPost.FindAll(s => s.Disable == false).OrderByDescending(p => p.CreateDate);
 
 
             var pagingResult = await query.ProjectTo<NotificationViewModel>(_configMapper)

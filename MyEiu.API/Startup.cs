@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Becamex.Salary;
+using Microsoft.EntityFrameworkCore;
 using MyEiu.API.Configtion.Middleware;
 using MyEiu.Application.Services.App.FileDatas;
 using MyEiu.Application.Services.App.Posts;
@@ -22,6 +23,9 @@ namespace MyEiu.API
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddApplication<SalaryModule>();
+
+           
             services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             services.AddEndpointsApiExplorer();
@@ -36,7 +40,7 @@ namespace MyEiu.API
             services.AddSingleton(AutoMapperConfig.RegisterMappings());
             //add service
             //builder.Services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IPayrollService, PayrollService>();
+            services.AddScoped<ISalaryService, SalaryService>();
             services.AddScoped(typeof(IUnitOfWork), typeof(EFUnitOfWork));
             services.AddScoped(typeof(IRepository<>), typeof(EFRepository<>));
             services.AddScoped<IUserService, UserService>();
@@ -68,7 +72,7 @@ namespace MyEiu.API
             }
             else
                 app.UseMiddleware<ApiKeyMiddleware>();
-
+            app.UseUnitOfWork();
             app.UseCors(x => x.AllowAnyHeader()
             .AllowAnyMethod()
             .AllowAnyOrigin());

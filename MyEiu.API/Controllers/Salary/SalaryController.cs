@@ -6,19 +6,21 @@ namespace MyEiu.API.Controllers.Salary
 {
     public class SalaryController :APIBaseController
     {
-        private readonly IPayrollService _service;
+       private readonly ISalaryService _salaryService;
 
-        public SalaryController(IPayrollService service)
+        public SalaryController(ISalaryService salaryService)
         {
-            _service = service;
+            _salaryService = salaryService;
         }
 
-        [HttpGet]        
-        
-        public ActionResult GetMonthlyAsync([NotNull] int year, [NotNull] int month, [NotNull] string staffId, [NotNull] string payrollFormId)
+        [HttpGet]
+        public async Task<ActionResult> GetMonthlyAsync([NotNull] int year , [NotNull] int month , [NotNull] string staffId )
         {
-            return Ok(_service.GetMonthlyAsync(year,month,staffId,payrollFormId));
+            return Ok(await _salaryService.GetSalary(year, month, staffId));
         }
+
+
+
 
     }
 }

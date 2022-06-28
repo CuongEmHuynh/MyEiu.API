@@ -69,6 +69,7 @@ namespace MyEiu.API
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseMiddleware<ApiKeyMiddleware>();
             }
             else
                 app.UseMiddleware<ApiKeyMiddleware>();

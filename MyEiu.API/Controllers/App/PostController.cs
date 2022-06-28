@@ -30,7 +30,17 @@ namespace MyEiu.API.Controllers.App
         [HttpPost]
         [AllowAnonymous]
         public async Task<ActionResult> Add([FromBody] PostViewModel model) => Ok(await _service.AddAsync(model));
-
+        [HttpPost]
+        public async Task<OperationResult> AddPush([FromBody] PostViewModel model)
+        {
+            return await _service.AddPush(model);
+            
+        }
+        [HttpPost]
+        public async Task<OperationResult> PushNoti(int postid)
+        {
+            return await _service.PushNoti(postid);
+        }
         [HttpPost]
         [AllowAnonymous]
         public async Task<OperationResult> AddPostType(PostType posttypedto)
@@ -54,12 +64,7 @@ namespace MyEiu.API.Controllers.App
            return _operationResult;
         }
 
-        [HttpPost]
-        public async Task<OperationResult> PushNoti(int postid)
-        {
-            return await _service.PushNoti(postid);
-            
-        }
+        
         [HttpGet]
         public async Task<OperationResult> NotiDetails(int postid,string email)
         {

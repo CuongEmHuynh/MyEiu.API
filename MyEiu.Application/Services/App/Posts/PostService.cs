@@ -26,15 +26,15 @@ namespace MyEiu.Application.Services.App.Posts
 {
     public interface IPostService : IBaseService<PostViewModel>
     {
-        //Task<OperationResult> Add(PostViewModel model,FileDataViewModel f_model);
-        Task<OperationResult> Add(PostViewModel model);
+        //Task<OperationResult> Add(PostViewModel model,FileDataViewModel f_model);       
+        Task<OperationResult> AddPush(PostViewModel model);
+        Task<OperationResult> PushNoti(int id);
         Task<OperationResult> Update(PostViewModel model);
         Task<List<PostViewModel>> GetPostsByUser(int userid);
 
         Task<OperationResult> NotiListByUser(string email);
         Task<OperationResult> CountNewNotifUser(string email);
-        Task<OperationResult> NotiDetails(int postid,string email);//user view notification in details     
-        Task<OperationResult> PushNoti(int postid);//push notification to mobile app
+        Task<OperationResult> NotiDetails(int postid,string email);//user view notification in details           
         Task<Pager> PagingNoti(PostAppPagingDto pagingdto);
 
     }
@@ -67,27 +67,84 @@ namespace MyEiu.Application.Services.App.Posts
             var item = await _repoPost.FindAll(p => p.CreateBy == userid).Include(p => p.Author).Include(p=>p.Editor).ToListAsync();
             return _mapper.Map<List<PostViewModel>>(item);
         }
-
-        public async Task<OperationResult> Add(PostViewModel model)
+        
+        public async Task<OperationResult> AddPush(PostViewModel model)
         {
-            var post = _mapper.Map<Post>(model);           
+            var post = _mapper.Map<Post>(model);
             try
             {
-                await _repoPost.AddAsync(post);             
+                await _repoPost.AddAsync(post);
                 await _unitOfWork.SaveChangeAsync();
-                operationResult = new OperationResult
+                operationResult = new OperationResult()
                 {
-                    StatusCode = StatusCodee.Ok,
-                    Message = MessageReponse.AddSuccess,
-                    Success = true,
-                    Data = post
+                    Message = "Check lưu thành công"
                 };
+                operationResult = await PushNoti(post.Id);               
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 operationResult = ex.GetMessageError();
             }
-           return operationResult;
+            return operationResult;
+        }
+        public async Task<OperationResult> PushNoti(int postid)
+        {
+            try
+            {
+                NotificationDto notif = new NotificationDto();
+                //get all relevant emails with post
+                //Post item = await _mobileAppDbContext.Posts.Where(p => p.Id == postid).Include(p => p.PostGroups).Include(p => p.PostUsers).FirstOrDefaultAsync();
+                Post item = await _repoPost.FindAll(p => p.Id == postid).Include(p => p.PostGroups).Include(p => p.PostUsers).FirstOrDefaultAsync();
+                if (item != null)
+                {
+                    notif.Type = item.PostTypeId;
+
+                    foreach (var p in item.PostUsers!)
+                    {
+                        notif.Emails!.Add(p.Email!);
+                    }
+
+                    foreach (var p in item.PostGroups!)
+                    {
+                        var temp = await _staffEiuDbContext.StaffEius!.Where(d => d.IsDeleted == 0 && d.Type != 4 && d.DepartmentEiu!.RecordID == p.GroupId).Select(s => s.SchoolEmail).ToListAsync();
+                        if (temp != null)
+                        {
+                            notif.Emails!.AddRange(temp!);
+                        }
+                    }
+
+                    //declare data
+                    notif.Data!.Title = item.Title;
+                    notif.Data.Body = item.Description;
+                    notif.Data.PostId = item.Id;
+                }
+
+                _httpClient.DefaultRequestHeaders.Add("IDCAppApiKey", "IDC@123456");
+                HttpResponseMessage response = await _httpClient.PostAsJsonAsync("https://api.becamex.com.vn/eiu/sys/push-notif", notif);
+
+                response.EnsureSuccessStatusCode();// make sure return ok, fail go to Catch Exception
+                string apiResponse = await response.Content.ReadAsStringAsync();
+
+                //change status post from Draft to delivered
+                item.Status = Data.Enum.PostStatus.Delivered;
+                _repoPost.Update(item);
+                await _unitOfWork.SaveChangeAsync();
+
+                operationResult = new OperationResult()
+                {
+                    Data = notif,
+                    Message = apiResponse,
+                    StatusCode = 200,
+                    Success = true
+                };
+
+
+            }
+            catch (Exception ex)
+            {
+                operationResult = ex.GetMessageError();
+            }
+            return operationResult;
         }
         public Task<OperationResult> Update(PostViewModel model)
         {
@@ -128,65 +185,7 @@ namespace MyEiu.Application.Services.App.Posts
             }
             return operationResult;
         }
-        public async Task<OperationResult> PushNoti(int postid)
-        {
-            try
-            {
-                NotificationDto notif = new NotificationDto();
-                //get all relevant emails with post
-                //Post item = await _mobileAppDbContext.Posts.Where(p => p.Id == postid).Include(p => p.PostGroups).Include(p => p.PostUsers).FirstOrDefaultAsync();
-                Post item = await _repoPost.FindAll(p => p.Id == postid).Include(p => p.PostGroups).Include(p => p.PostUsers).FirstOrDefaultAsync();
-                if (item != null)
-                {
-                    notif.Type = item.PostTypeId;
-
-                    foreach (var p in item.PostUsers!)
-                    {
-                        notif.Emails!.Add(p.Email!);
-                    }
-
-                    foreach (var p in item.PostGroups!)
-                    {
-                        var temp =  await _staffEiuDbContext.StaffEius!.Where(d => d.IsDeleted == 0 && d.Type != 4 && d.DepartmentEiu!.RecordID == p.GroupId).Select(s=>s.SchoolEmail).ToListAsync();
-                        if (temp!=null)
-                        {
-                            notif.Emails!.AddRange(temp!);
-                        }
-                    }
-
-                    //declare data
-                    notif.Data!.Title = item.Title;
-                    notif.Data.Body = item.Description;
-                    notif.Data.PostId = item.Id;
-                }
-
-                _httpClient.DefaultRequestHeaders.Add("IDCAppApiKey", "IDC@123456");
-                HttpResponseMessage response = await _httpClient.PostAsJsonAsync("https://api.becamex.com.vn/eiu/sys/push-notif", notif);
-
-                response.EnsureSuccessStatusCode();// make sure return ok, fail go to Catch Exception
-                string apiResponse = await response.Content.ReadAsStringAsync();
-
-                //change status post from Draft to delivered
-                item.Status = Data.Enum.PostStatus.Delivered;
-                _repoPost.Update(item);
-                await _unitOfWork.SaveChangeAsync();
-
-                operationResult = new OperationResult()
-                {
-                    Data = notif,
-                    Message = apiResponse,
-                    StatusCode = 200,
-                    Success = true
-                };
-                
-              
-            }
-            catch(Exception ex)
-            {
-                operationResult = ex.GetMessageError();
-            }
-            return operationResult;
-        }
+       
 
         public async Task<OperationResult> NotiDetails(int postid, string email)
         {
@@ -242,7 +241,8 @@ namespace MyEiu.Application.Services.App.Posts
             try
             {
                 //get all relevant emails with post
-                var items = await _repoPostUser.FindAll(pu => pu.Email == email).Include(pu => pu.Post).OrderByDescending(pu=>pu.Post!.CreateDate).ToListAsync();
+                var items = await _repoPostUser.FindAll(pu => pu.Email == email && pu.Post.Status == Data.Enum.PostStatus.Delivered).Include(pu => pu.Post)
+                                    .OrderByDescending(pu=>pu.Post!.CreateDate).ToListAsync();
 
                
                 if (items != null && items.Count>0)

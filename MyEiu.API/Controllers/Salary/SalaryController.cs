@@ -14,13 +14,16 @@ namespace MyEiu.API.Controllers.Salary
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetMonthlyAsync([NotNull] int year , [NotNull] int month , [NotNull] string staffId )
+        public async Task<ActionResult> GetMonthlyAsync([NotNull] int year , [NotNull] int month , [NotNull] string email )
         {
-            return Ok(await _salaryService.GetSalary(year, month, staffId));
+            return Ok(await _salaryService.GetSalary(year, month, email));
         }
 
-
-
+        //[HttpGet]
+        //public async Task<ActionResult> GetMonthlyAsync2([NotNull] int year, [NotNull] int month, [NotNull] string staffId, [NotNull] string payrollFormId)
+        //{
+        //    return Ok(await _salaryService.GetMonthlyAsync(year, month, staffId,payrollFormId));
+        //}
 
     }
 }

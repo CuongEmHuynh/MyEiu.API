@@ -79,7 +79,65 @@ namespace MyEiu.Application.Services.App.Posts
                 {
                     Message = "Check lưu thành công"
                 };
-                operationResult = await PushNoti(post.Id);               
+                operationResult = await PushNoti(post);               
+            }
+            catch (Exception ex)
+            {
+                operationResult = ex.GetMessageError();
+            }
+            return operationResult;
+        }
+        public async Task<OperationResult> PushNoti(Post item)
+        {
+            try
+            {
+                NotificationDto notif = new NotificationDto();
+                //get all relevant emails with post
+                //Post item = await _mobileAppDbContext.Posts.Where(p => p.Id == postid).Include(p => p.PostGroups).Include(p => p.PostUsers).FirstOrDefaultAsync();                
+                if (item != null)
+                {
+                    notif.Type = item.PostTypeId;
+
+                    foreach (var p in item.PostUsers!)
+                    {
+                        notif.Emails!.Add(p.Email!);
+                    }
+
+                    foreach (var p in item.PostGroups!)
+                    {
+                        var temp = await _staffEiuDbContext.StaffEius!.Where(d => d.IsDeleted == 0 && d.Type != 4 && d.DepartmentEiu!.RecordID == p.GroupId).Select(s => s.SchoolEmail).ToListAsync();
+                        if (temp != null)
+                        {
+                            notif.Emails!.AddRange(temp!);
+                        }
+                    }
+
+                    //declare data
+                    notif.Data!.Title = item.Title;
+                    notif.Data.Body = item.Description;
+                    notif.Data.PostId = item.Id;
+                }
+
+                _httpClient.DefaultRequestHeaders.Add("IDCAppApiKey", "IDC@123456");
+                HttpResponseMessage response = await _httpClient.PostAsJsonAsync("https://api.becamex.com.vn/eiu/sys/push-notif", notif);
+
+                response.EnsureSuccessStatusCode();// make sure return ok, fail go to Catch Exception
+                string apiResponse = await response.Content.ReadAsStringAsync();
+
+                //change status post from Draft to delivered
+                item.Status = Data.Enum.PostStatus.Delivered;
+                _repoPost.Update(item);
+                await _unitOfWork.SaveChangeAsync();
+
+                operationResult = new OperationResult()
+                {
+                    Data = notif,
+                    Message = apiResponse,
+                    StatusCode = 200,
+                    Success = true
+                };
+
+
             }
             catch (Exception ex)
             {

@@ -52,16 +52,16 @@ namespace MyEiu.API.Controllers.Staff
         }
 
         [HttpPost]
-        public async Task<OperationResult> StaffsInDeparts(List<int> departmentids)
+        public async Task<OperationResult> GetEmailInDeparts(List<int> departmentids)
         {
             try
             {
-                List<StaffEiu> result = new();
+                List<string> result = new();
                 var query = _staffEiuDbContext.StaffEius.Where(d => d.IsDeleted == 0 && d.Type != 4);
 
                 foreach (int id in departmentids)
                 {
-                    result.AddRange(await query.Where(d => d.DepartmentEiu!.RecordID == id).ToListAsync());
+                    result.AddRange(await query.Where(d => d.DepartmentEiu!.RecordID == id).Select(d=>d.SchoolEmail).ToListAsync());
                 }
                 if(result.Count > 0)
                 {
@@ -70,7 +70,7 @@ namespace MyEiu.API.Controllers.Staff
                         StatusCode = 200,
                         Message = "Get data OK",
                         Success = true,
-                        Data = _mapper.Map<List<StaffEiuViewModel>>(result)
+                        Data = _mapper.Map<List<string>>(result)
                     };
                 }
                else

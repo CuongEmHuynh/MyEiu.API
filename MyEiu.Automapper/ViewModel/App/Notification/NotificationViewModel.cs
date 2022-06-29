@@ -13,6 +13,7 @@ namespace MyEiu.Automapper.ViewModel.App.Notification
         public string? Title { get; set; }
         public string? Description { get; set; }
         public string? Content { get; set; }
+        public string? Image { get; set; }
         public string? CreatBy { get; set; }
         public DateTime? CreateDate { get; set; }
         public PostStatus Status { get; set; }

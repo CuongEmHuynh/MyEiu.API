@@ -56,12 +56,12 @@ namespace MyEiu.API.Controllers.Staff
         {
             try
             {
-                List<string> result = new();
+                List<object> result = new();
                 var query = _staffEiuDbContext.StaffEius.Where(d => d.IsDeleted == 0 && d.Type != 4);
 
                 foreach (int id in departmentids)
                 {
-                    result.AddRange(await query.Where(d => d.DepartmentEiu!.RecordID == id).Select(d=>d.SchoolEmail).ToListAsync());
+                    result.AddRange(await query.Where(d => d.DepartmentEiu!.RecordID == id).Select(d=>new {d.DepartmentID,d.SchoolEmail }).ToListAsync());
                 }
                 if(result.Count > 0)
                 {
@@ -70,7 +70,7 @@ namespace MyEiu.API.Controllers.Staff
                         StatusCode = 200,
                         Message = "Get data OK",
                         Success = true,
-                        Data = _mapper.Map<List<string>>(result)
+                        Data = result
                     };
                 }
                else

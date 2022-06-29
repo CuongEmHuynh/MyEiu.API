@@ -12,7 +12,7 @@ using MyEiu.Data.EF.DbContexts;
 namespace MyEiu.Data.EF.Migrations
 {
     [DbContext(typeof(MobileAppDbContext))]
-    [Migration("20220627020400_init")]
+    [Migration("20220629090156_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -196,14 +196,11 @@ namespace MyEiu.Data.EF.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int?>("DepartmentId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("DepartmentName")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("GroupId")
+                        .HasColumnType("int");
 
                     b.Property<int?>("PostId")
                         .HasColumnType("int");

@@ -32,7 +32,7 @@ namespace MyEiu.Application.Services.App.Posts
         Task<OperationResult> Update(PostViewModel model);
         Task<List<PostViewModel>> GetPostsByUser(int userid);
 
-        Task<OperationResult> NotiListByUser(string email);
+        Task<OperationResult> NotiListByUser(NotifPagingDto pagingdto);
         Task<OperationResult> CountNewNotifUser(string email);
         Task<OperationResult> NotiDetails(int postid,string email);//user view notification in details           
         Task<Pager> PagingNoti(PostAppPagingDto pagingdto);
@@ -294,42 +294,25 @@ namespace MyEiu.Application.Services.App.Posts
             return operationResult;
         }
 
-        public async Task<OperationResult> NotiListByUser(string email)
+        public async Task<OperationResult> NotiListByUser(NotifPagingDto pagingdto)
         {
             try
             {
                 //get all relevant emails with post
-                var items = await _repoPostUser.FindAll(pu => pu.Email == email && pu.Post.Status == Data.Enum.PostStatus.Delivered).Include(pu => pu.Post)
-                                    .OrderByDescending(pu=>pu.Post!.CreateDate).ToListAsync();
+                var query =  _repoPostUser.FindAll(pu => pu.Email == pagingdto.Email && pu.Post!.Status == Data.Enum.PostStatus.Delivered).Include(pu => pu.Post!.Author)
+                                    .OrderByDescending(pu => pu.Post!.CreateDate);
 
-               
-                if (items != null && items.Count>0)
-                {
-                    List<NotificationViewModel> models = new List<NotificationViewModel>();
-                    foreach (var item in items)
-                    {
-                        var notimodel = _mapper.Map<NotificationViewModel>(item.Post);
-                        notimodel.Status = item.Status;
-                        models.Add(notimodel);
-                    }                                
 
-                    operationResult = new OperationResult()
-                    {
-                        Data = models,
-                        Message = "Get data success",
-                        StatusCode = StatusCodee.Ok,
-                        Success = true
-                    };
-                }
-                else
+                var pagingResult = await query.ProjectTo<NotificationViewModel>(_configMapper)
+                                       .ToPaginationAsync(pagingdto.Current_Page, pagingdto.Page_Size);
+
+                operationResult = new OperationResult()
                 {
-                    operationResult = new OperationResult()
-                    {
-                        Message = "No record found",
-                        StatusCode = StatusCodee.NotFound,
-                        Success = true
-                    };
-                }
+                    Data = pagingResult,
+                    Message = "Get data success",
+                    StatusCode = StatusCodee.Ok,
+                    Success = true
+                };
             }
             catch (Exception ex)
             {

@@ -42,6 +42,15 @@ namespace MyEiu.Automapper.Settings
             CreateMap<Post, NotificationViewModel>().ForMember(des => des.CreatBy, options => options.MapFrom(src =>src.Author!.LastName + " " + src.Author.FirstName))
               
                 ;
+            //post -> Notifmodel
+            CreateMap<PostUser, NotificationViewModel>().ForMember(des => des.CreatBy, options => options.MapFrom(src => src.Post!.Author!.LastName + " " + src.Post.Author.FirstName))
+                    .ForMember(des => des.Id, options => options.MapFrom(src => src.Post!.Id))
+                    .ForMember(des => des.Title, options => options.MapFrom(src => src.Post!.Title))
+                    .ForMember(des => des.Description, options => options.MapFrom(src => src.Post!.Description))
+                    .ForMember(des => des.Content, options => options.MapFrom(src => src.Post!.Content))
+                    .ForMember(des => des.CreateDate, options => options.MapFrom(src => src.Post!.CreateDate))
+                    .ForMember(des => des.Status, options => options.MapFrom(src => src.Status))
+                ;
 
         }
 

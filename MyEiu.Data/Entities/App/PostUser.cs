@@ -17,7 +17,7 @@ namespace MyEiu.Data.Entities.App
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; } = 0;      
         public string? Email { get; set; }
-        public int GroupId { get; set; }
+        public int? GroupId { get; set; }
 
         public PostStatus Status { get; set; }
 

@@ -61,7 +61,7 @@ namespace MyEiu.Data.EF.DbContexts
                 }
                 );
             _modelBuilder.Entity<Post>().HasData(
-                new Post { Id=1,PostTypeId=1,Title="Sample",Description="Sample",Content="Sample",Priority=Enum.PostPriority.Important,Disable=false,CreateBy=1}
+                new Post { Id=1,PostTypeId=1,Title="Sample",Description="Sample",Content="Sample",Priority=Enum.PostPriority.Important,Disable=false,Status = Enum.PostStatus.Draft,CreateBy=1,CreateDate = new DateTime(2022,06,30)}
                 );
 
 

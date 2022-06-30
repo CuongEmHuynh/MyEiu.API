@@ -87,7 +87,7 @@ namespace MyEiu.Application.Services.App.Posts
             }
             return operationResult;
         }
-        public async Task<OperationResult> PushNoti(Post item)
+        private async Task<OperationResult> PushNoti(Post item)
         {
             try
             {
@@ -126,6 +126,8 @@ namespace MyEiu.Application.Services.App.Posts
 
                 //change status post from Draft to delivered
                 item.Status = Data.Enum.PostStatus.Delivered;
+                item.PostUsers!.Select(pu => { pu.Status = Data.Enum.PostStatus.New; return pu; }).ToList();
+
                 _repoPost.Update(item);
                 await _unitOfWork.SaveChangeAsync();
 
@@ -185,6 +187,8 @@ namespace MyEiu.Application.Services.App.Posts
 
                 //change status post from Draft to delivered
                 item.Status = Data.Enum.PostStatus.Delivered;
+                item.PostUsers!.Select(pu => { pu.Status = Data.Enum.PostStatus.New; return pu; }).ToList();
+
                 _repoPost.Update(item);
                 await _unitOfWork.SaveChangeAsync();
 

@@ -18,6 +18,7 @@ namespace MyEiu.API.Controllers.App
         private readonly MobileAppDbContext _context;
         private OperationResult _operationResult;
         private readonly HttpClient _client;
+
         public PostController(IPostService service, MobileAppDbContext context, HttpClient httpClient)
         {
             _service = service;
@@ -36,7 +37,8 @@ namespace MyEiu.API.Controllers.App
             return await _service.AddPush(model);
             
         }
-        [HttpPost]
+
+        [HttpGet]
         public async Task<OperationResult> PushNoti(int postid)
         {
             return await _service.PushNoti(postid);
@@ -72,7 +74,7 @@ namespace MyEiu.API.Controllers.App
             
         }
         [HttpPost]
-        public async Task<OperationResult> NotiListByUser(NotifPagingDto pagingdto)
+        public async Task<OperationResult> NotiListByUser( NotifPagingDto pagingdto)
         {
             return await _service.NotiListByUser(pagingdto);
 

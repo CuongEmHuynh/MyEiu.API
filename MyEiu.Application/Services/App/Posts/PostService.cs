@@ -96,7 +96,8 @@ namespace MyEiu.Application.Services.App.Posts
                 //Post item = await _mobileAppDbContext.Posts.Where(p => p.Id == postid).Include(p => p.PostGroups).Include(p => p.PostUsers).FirstOrDefaultAsync();                
                 if (item != null)
                 {
-                    notif.Type = item.PostTypeId;
+                    if(item.PostTypeId == 1)
+                        notif.Type = 0;
 
                     foreach (var p in item.PostUsers!)
                     {
@@ -157,7 +158,8 @@ namespace MyEiu.Application.Services.App.Posts
                 Post item = await _repoPost.FindAll(p => p.Id == postid).Include(p => p.PostGroups).Include(p => p.PostUsers).FirstOrDefaultAsync();
                 if (item != null)
                 {
-                    notif.Type = item.PostTypeId;
+                    if (item.PostTypeId == 1)
+                        notif.Type = 0;
 
                     foreach (var p in item.PostUsers!)
                     {

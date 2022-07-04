@@ -17,7 +17,10 @@ namespace MyEiu.Automapper.Settings
             //postWEB -> postviewmodelWEB
             CreateMap<PostWebEiu, PostWebViewModel>().ForMember(des => des.Post_Description, options => options.MapFrom(src => src.Post_Excerpt))
                 .ForMember(des => des.Post_Url,options =>options.MapFrom(src=>src.Guid))
-                .ForMember(des=>des.Post_Url,options =>options.MapFrom(src=> "https://eiu.edu.vn/?p=" + src.Id))
+                
+                 .ForMember(des => des.Post_Url, options => options.MapFrom(src => "https://eiu.edu.vn" + (src.TranslationWebEiu!.Language_Code=="en" ? "/en" : "") 
+                    + (src.Post_Type=="post" ? "/news" : "/events") + "/" + src.Post_Name +"/"))
+
                 .ForMember(des =>des.Post_Author,options => options.MapFrom(src=>src.UserWebEiu!.display_name))
                 .ForMember(des => des.Post_Thumbnail, options => options.MapFrom(src => src.ThumbnailWebEiu.open_graph_image))
                 ;           

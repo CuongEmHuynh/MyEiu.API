@@ -14,8 +14,9 @@ namespace MyEiu.Data.Entities.Web
 
         public string? Post_Excerpt { get; set; }
 
-        public string Post_Title { get; set; }
-        public string Guid { get; set; }
+        public string? Post_Title { get; set; }
+        public string? Post_Name { get; set; }       
+        public string? Guid { get; set; }
         public DateTime Post_Date { get; set; }
 
         public string? Post_Type { get; set; }

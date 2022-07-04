@@ -29,6 +29,7 @@ namespace MyEiu.API.Controllers.Web
         {
             var result = _webeiudbcontext.Posts!.Where(p => p.Post_Status == "publish" && (p.Post_Type == "post" || p.Post_Type == "events")
                                                    && p.TranslationWebEiu!.Language_Code == language)
+                                                    .Include(p => p.TranslationWebEiu)
                                                     .Include(p => p.ThumbnailWebEiu)
                                                     .Include(p => p.UserWebEiu)
 
@@ -42,21 +43,22 @@ namespace MyEiu.API.Controllers.Web
         [HttpGet]
 
         public IList<PostWebViewModel> TenPosts(string posttype, string language)
-        {
+        {           
             var result = _webeiudbcontext.Posts!.Where(p => p.Post_Status == "publish" && p.Post_Type == posttype
-                                                   && p.TranslationWebEiu!.Language_Code == language)
+                                                   && p.TranslationWebEiu!.Language_Code == language).Include(p=>p.TranslationWebEiu)
                                                    .Include(p => p.ThumbnailWebEiu).Include(p => p.UserWebEiu)
                                                    .OrderByDescending(rs => rs.Post_Date)
                                                    .Take(10);
             if(posttype == "all")
             {
                 result = _webeiudbcontext.Posts!.Where(p => p.Post_Status == "publish" && (p.Post_Type == "post" || p.Post_Type == "events")
-                                                  && p.TranslationWebEiu!.Language_Code == language)
+                                                  && p.TranslationWebEiu!.Language_Code == language).Include(p => p.TranslationWebEiu)
                                                   .Include(p => p.ThumbnailWebEiu).Include(p => p.UserWebEiu)
                                                   .OrderByDescending(rs => rs.Post_Date)
                                                   .Take(10);
             }
             var postViewModelList = _mapper.Map<List<PostWebViewModel>>(result);
+
 
             return postViewModelList;
         }

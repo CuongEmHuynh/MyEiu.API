@@ -1,5 +1,6 @@
 ﻿using Becamex.Salary;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using MyEiu.API.Configtion.Middleware;
 using MyEiu.Application.Services.App.FileDatas;
 using MyEiu.Application.Services.App.Posts;
@@ -27,6 +28,7 @@ namespace MyEiu.API
 
            
             services.AddControllers();
+           
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
@@ -74,6 +76,15 @@ namespace MyEiu.API
             else
                 app.UseMiddleware<ApiKeyMiddleware>();
             app.UseUnitOfWork();
+
+            app.UseDefaultFiles();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                Path.Combine(env.ContentRootPath, "wwwroot")),
+                RequestPath = "/FileUpload"
+            });
+
             app.UseCors(x => x.AllowAnyHeader()
             .AllowAnyMethod()
             .AllowAnyOrigin());

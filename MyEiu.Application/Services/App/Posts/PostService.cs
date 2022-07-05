@@ -64,7 +64,11 @@ namespace MyEiu.Application.Services.App.Posts
 
         public async Task<List<PostViewModel>> GetPostsByUser(int userid)
         {
-            var item = await _repoPost.FindAll(p => p.CreateBy == userid).Include(p => p.Author).Include(p=>p.Editor).ToListAsync();
+            var item = await _repoPost.FindAll(p => p.CreateBy == userid)
+                .Include(p => p.Author)
+                .Include(p => p.Editor)
+                .Include(p => p.PostFileDatas!).ThenInclude(p => p.FileData)
+                .ToListAsync();
             return _mapper.Map<List<PostViewModel>>(item);
         }
         
@@ -126,7 +130,7 @@ namespace MyEiu.Application.Services.App.Posts
                 string apiResponse = await response.Content.ReadAsStringAsync();
 
                 //change status post from Draft to delivered
-                item.Status = Data.Enum.PostStatus.Delivered;
+                item!.Status = Data.Enum.PostStatus.Delivered;
                 item.PostUsers!.Select(pu => { pu.Status = Data.Enum.PostStatus.New; return pu; }).ToList();
 
                 _repoPost.Update(item);
@@ -159,7 +163,7 @@ namespace MyEiu.Application.Services.App.Posts
                 if (item != null)
                 {
                     if (item.PostTypeId == 1)
-                        notif.Type = 0;
+                        notif.Type = 0;// type of CĐS
 
                     foreach (var p in item.PostUsers!)
                     {

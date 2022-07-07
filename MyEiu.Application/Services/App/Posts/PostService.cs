@@ -74,6 +74,7 @@ namespace MyEiu.Application.Services.App.Posts
         
         public async Task<OperationResult> AddPush(PostViewModel model)
         {
+            model.CreateDate = DateTime.Now;
             var post = _mapper.Map<Post>(model);
             try
             {

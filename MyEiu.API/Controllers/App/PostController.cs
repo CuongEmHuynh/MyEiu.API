@@ -30,7 +30,11 @@ namespace MyEiu.API.Controllers.App
         public async Task<ActionResult> GetPostsByUser(int userid) => Ok(await _service.GetPostsByUser(userid));
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ActionResult> Add([FromBody] PostViewModel model) => Ok(await _service.AddAsync(model));
+        public async Task<ActionResult> Add([FromBody] PostViewModel model)
+        {
+            model.CreateDate = DateTime.Now;
+            return   Ok(await _service.AddAsync(model));
+        }
         [HttpPost]
         public async Task<OperationResult> AddPush([FromBody] PostViewModel model)
         {

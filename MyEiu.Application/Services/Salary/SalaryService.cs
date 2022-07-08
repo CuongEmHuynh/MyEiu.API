@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using MyEiu.Automapper.ViewModel.Salary;
 using MyEiu.Data.EF.DbContexts;
+using MyEiu.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -43,42 +44,93 @@ namespace MyEiu.Application.Services.Salary
         public async Task<object> GetSalary([NotNull] int year, [NotNull] int month, [NotNull] string staffId)
         {
             //Get info Salary
-            //var data = await PayrollProvider.GetMonthlyAsync(year, month, staffId, "HRL002A");
+            var dataHRL002A = await PayrollProvider.GetMonthlyAsync(year, month, staffId, "HRL002A");
+            var dataHRL002 = await PayrollProvider.GetMonthlyAsync(year, month, staffId, "HRL002");
 
             //Get Template  
-            string pathFileTemplate = "wwwroot/Template/salary-template.html";
+            string pathFileTemplate = "wwwroot/Template/salary_template.html";
             string pathFileTemplateEmpty = "wwwroot/Template/salary-template-empty.html";
             string html = "";
 
             //if (data != null )
             //{
-            //    var tienThucNhan = data.PayrollDetails.FirstOrDefault(x => x.PayrollItem.Trim() == "T34")!.Value;
+            //    
             html = File.ReadAllText(pathFileTemplate);
 
-            //    //GetData
-            //    string nameEml = data.FullName;
-            //    var nameDept = (await _staffEiuDbContext.StaffEius.Include(s => s.DepartmentEiu)
-            //                              .FirstOrDefaultAsync(s => s.IsDeleted == 0 && s.Type != 4 && s.SchoolEmail.Trim() == staffId))!.DepartmentEiu!.FullName;
-            //    string staff = data.StaffId;
+            //GetData
+            string nameEml = dataHRL002A.FullName;
 
-            //    var tienBHXH = data.PayrollDetails.FirstOrDefault(x => x.PayrollItem.Trim() == "L12")!.Value ?? 0;
+            var staffData = await _staffEiuDbContext.StaffEius.Include(s => s.DepartmentEiu)
+                                      .FirstOrDefaultAsync(s => s.IsDeleted == 0 && s.Type != 4 && s.SchoolEmail.Trim() == staffId);
 
-            var tienBHXH = 1000000;
-           var tienThucNhan = 800000;
+            var nameDept = staffData!.DepartmentEiu!.FullName;
+            string staff = staffData.StaffID!;
+            string staffType = staffData.Type == 0 ? "Giảng viên" : staffData.Type == 1 ? "Chuyên viên" : "Khách";
 
-            //Replace data into template
-            html = html.Replace("%monthy", month.ToString());
-            html = html.Replace("%ten_bp", "IT");
-            html = html.Replace("%ten_nv", "ABC");
-            html = html.Replace("%ma_nv", "033914515");
+            //Mức lương bảo hiểm xã hội
+            var tienBHXH = dataHRL002A.PayrollDetails.FirstOrDefault(x => x.PayrollItem.Trim() == "L12")!.Value ?? 0;
+            var tienComTrua = dataHRL002A.PayrollDetails.FirstOrDefault(x => x.PayrollItem.Trim() == "T20")!.Value ?? 0;
+            var tongluongTra = dataHRL002A.PayrollDetails.FirstOrDefault(x => x.PayrollItem.Trim() == "T28")!.Value ?? 0;
+            var tongGiamTru = dataHRL002A.PayrollDetails.FirstOrDefault(x => x.PayrollItem.Trim() == "T23")!.Value ?? 0;
+            var thueThuNhapCN = dataHRL002A.PayrollDetails.FirstOrDefault(x => x.PayrollItem.Trim() == "T26")!.Value ?? 0;
+            var tongThuNhapChiuThue = dataHRL002A.PayrollDetails.FirstOrDefault(x => x.PayrollItem.Trim() == "B04")!.Value ?? 0;
+            var baoHiemXH = dataHRL002A.PayrollDetails.FirstOrDefault(x => x.PayrollItem.Trim() == "B06")!.Value ?? 0;
+            var baoHiemYT = dataHRL002A.PayrollDetails.FirstOrDefault(x => x.PayrollItem.Trim() == "B07")!.Value ?? 0;
+            var baoHiemTN = dataHRL002A.PayrollDetails.FirstOrDefault(x => x.PayrollItem.Trim() == "B08")!.Value ?? 0;
+            var soNguoiPhuThuoc = dataHRL002A.PayrollDetails.FirstOrDefault(x => x.PayrollItem.Trim() == "T55")!.Value ?? 0;
+            var congDoan = dataHRL002A.PayrollDetails.FirstOrDefault(x => x.PayrollItem.Trim() == "T30")!.Value ?? 0;
+            var doanPhi = dataHRL002A.PayrollDetails.FirstOrDefault(x => x.PayrollItem.Trim() == "T31")!.Value ?? 0;
+            var dangPhi = dataHRL002A.PayrollDetails.FirstOrDefault(x => x.PayrollItem.Trim() == "DP")!.Value ?? 0;
+            var luongNangSuat = dataHRL002A.PayrollDetails.FirstOrDefault(x => x.PayrollItem.Trim() == "P00")!.Value ?? 0;
+            var giamTruKhac = dataHRL002.PayrollDetails.FirstOrDefault(x => x.PayrollItem.Trim() == "P60")!.Value ?? 0;
+
+            var tongTru = baoHiemXH + baoHiemYT + baoHiemTN + thueThuNhapCN + giamTruKhac + congDoan;
+            var tongNhan = luongNangSuat + tienComTrua;
+            var tienThucNhan = dataHRL002A.PayrollDetails.FirstOrDefault(x => x.PayrollItem.Trim() == "T34")!.Value;
+
+            //var tienBHXH = 1000000;
+            //var tienThucNhan = 800000;
+
+            ////Replace data into template
+            //Thông tin NV
+            html = html.Replace("%monthly", month.ToString());
+            html = html.Replace("%ten_bp", nameDept);
+            html = html.Replace("%ten_nv", nameEml);
+            html = html.Replace("%ma_nv", staff);
+            html = html.Replace("%ten_vtr", staffType);
+
+            //Thông tin chung
             html = html.Replace("%tien_bh", Decimal.ToInt32((decimal)tienBHXH).ToString("#,###"));
-            html = html.Replace("%tien_tn", Decimal.ToInt32((decimal)tienThucNhan).ToString("#,###"));
-            html = html.Replace("%luong_nang_suat", Decimal.ToInt32((decimal)tienThucNhan).ToString("#,###"));
-            html = html.Replace("%B01", Decimal.ToInt32((decimal)tienThucNhan).ToString("#,###"));
-            html = html.Replace("%G_tong_nhap", Decimal.ToInt32((decimal)tienThucNhan).ToString("#,###"));
-            html = html.Replace("%G_tong_trư", Decimal.ToInt32((decimal)tienThucNhan).ToString("#,###"));
-            html = html.Replace("%G_tong_trư", Decimal.ToInt32((decimal)tienThucNhan).ToString("#,###"));
-            html = html.Replace("%z20", Decimal.ToInt32((decimal)tienThucNhan).ToString("#,###"));
+            html = html.Replace("%tien_tn", tienBHXH.ToDecimal().ToStringCheckZero("#,###"));
+
+            //Các Khoản thu nhập
+            html = html.Replace("%Luong_nang_suat", Decimal.ToInt32((decimal)luongNangSuat).ToString("#,###"));
+            html = html.Replace("%L25", tienComTrua.ToDecimal().ToStringCheckZero("#,###"));
+            html = html.Replace("%PC1", "0");
+            html = html.Replace("%P00", "0");
+            html = html.Replace("%P10 ", "0");
+            html = html.Replace("%P20", "0");
+            html = html.Replace("%P51", "0");
+            html = html.Replace("%L73", "0");
+
+
+            //Các khoả trừ
+            html = html.Replace("%B01", Decimal.ToInt32((decimal)baoHiemXH).ToString("#,###"));
+            html = html.Replace("%B02", Decimal.ToInt32((decimal)baoHiemYT).ToString("#,###"));
+            html = html.Replace("%B03", Decimal.ToInt32((decimal)baoHiemTN).ToString("#,###"));
+            html = html.Replace("%T20", thueThuNhapCN.ToDecimal().ToStringCheckZero("#,###"));
+            html = html.Replace("%G_doan_phi", doanPhi.ToDecimal().ToStringCheckZero("#,###"));
+            html = html.Replace("%U02", "0");
+            html = html.Replace("%U01", congDoan.ToDecimal().ToStringCheckZero("#,###"));
+            html = html.Replace("%P61 ", giamTruKhac.ToDecimal().ToStringCheckZero("#,###"));
+
+            //Tổng
+
+            //html = html.Replace("%P61", Decimal.ToInt32((decimal)tienThucNhan).ToString("#,###"));
+            html = html.Replace("%G_tong_nhap", tongNhan.ToDecimal().ToStringCheckZero("#,###"));
+            html = html.Replace("%G_tong_tru", tongTru.ToDecimal().ToStringCheckZero("#,###"));
+            html = html.Replace("%Z20", Decimal.ToInt32((decimal)tienThucNhan).ToString("#,###"));
+
             //}
             //else
             //{
@@ -91,7 +143,7 @@ namespace MyEiu.Application.Services.Salary
             };
 
 
-            return result;
+            return html;
 
         }
     }

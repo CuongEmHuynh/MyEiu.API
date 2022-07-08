@@ -75,15 +75,27 @@ namespace MyEiu.API
             }
             else
                 app.UseMiddleware<ApiKeyMiddleware>();
+
             app.UseUnitOfWork();
 
-            app.UseDefaultFiles();
+
+            var cacheMaxAgeOneWeek = (60 * 60 * 24 * 7).ToString();
+         
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(
                 Path.Combine(env.ContentRootPath, "wwwroot")),
-                RequestPath = "/FileUpload"
+                RequestPath = "",
+                //add header(apikey) to statisfiles
+                OnPrepareResponse = (context) =>
+                {
+                    context.Context.Request.Headers.Append(
+                            "ApiKey", "70d3ce3e-fdd2-4f7f-9a75-7db0b65efe7d");
+                    context.Context.Response.Headers.Append(
+                            "ApiKey", "70d3ce3e-fdd2-4f7f-9a75-7db0b65efe7d");
+                }
             });
+           
 
             app.UseCors(x => x.AllowAnyHeader()
             .AllowAnyMethod()

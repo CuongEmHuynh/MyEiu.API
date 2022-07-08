@@ -27,5 +27,6 @@ namespace MyEiu.Automapper.ViewModel.App.Notification
     {
         public string? Name { get; set; }
         public string? Path { get; set; }
+        public int? FileDataId { get; set; }
     }
 }

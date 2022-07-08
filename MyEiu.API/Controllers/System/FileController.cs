@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyEiu.Application.Services.System;
-using MyEiu.Utilities.Dtos;
+using System.IO;
 
 namespace MyEiu.API.Controllers.System
 {
@@ -31,5 +31,7 @@ namespace MyEiu.API.Controllers.System
         {
             return Ok( await _service.UploadFile(file, userid));
         }
+
+
     }
 }

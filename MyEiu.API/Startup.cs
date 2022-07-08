@@ -71,7 +71,7 @@ namespace MyEiu.API
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                //app.UseMiddleware<ApiKeyMiddleware>();
+                app.UseMiddleware<ApiKeyMiddleware>();
             }
             else
                 app.UseMiddleware<ApiKeyMiddleware>();
@@ -83,17 +83,17 @@ namespace MyEiu.API
          
             app.UseStaticFiles(new StaticFileOptions
             {
-                FileProvider = new PhysicalFileProvider(
-                Path.Combine(env.ContentRootPath, "wwwroot")),
+                FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath, "wwwroot")),
                 RequestPath = "",
+                
                 //add header(apikey) to statisfiles
                 OnPrepareResponse = (context) =>
                 {
                     context.Context.Request.Headers.Append(
-                            "ApiKey", "70d3ce3e-fdd2-4f7f-9a75-7db0b65efe7d");
-                    context.Context.Response.Headers.Append(
-                            "ApiKey", "70d3ce3e-fdd2-4f7f-9a75-7db0b65efe7d");
-                }
+                            "ApiKey", "70d3ce3e-fdd2-4f7f-9a75-7db0b65efe7d");                  
+                },
+
+
             });
            
 

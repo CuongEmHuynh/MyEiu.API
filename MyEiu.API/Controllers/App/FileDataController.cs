@@ -19,5 +19,12 @@ namespace MyEiu.API.Controllers.App
         {
             return await _service.AddMultileFiles(models);
         }
+
+        [HttpGet]
+        public async Task<ActionResult> DownloadFile(int id)
+        {
+
+            return await _service.Download(id);
+        }       
     }
 }

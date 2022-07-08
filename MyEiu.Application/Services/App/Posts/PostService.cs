@@ -68,6 +68,7 @@ namespace MyEiu.Application.Services.App.Posts
                 .Include(p => p.Author)
                 .Include(p => p.Editor)
                 .Include(p => p.PostFileDatas!).ThenInclude(p => p.FileData)
+                .OrderByDescending(p => p.CreateDate)
                 .ToListAsync();
             return _mapper.Map<List<PostViewModel>>(item);
         }
@@ -130,8 +131,11 @@ namespace MyEiu.Application.Services.App.Posts
                 response.EnsureSuccessStatusCode();// make sure return ok, fail go to Catch Exception
                 string apiResponse = await response.Content.ReadAsStringAsync();
 
-                //change status post from Draft to delivered
+                //update status post from Draft to delivered
                 item!.Status = Data.Enum.PostStatus.Delivered;
+                //update createdate of post
+                item.CreateDate = DateTime.Now;
+                //update status postuser from Draft to NEW
                 item.PostUsers!.Select(pu => { pu.Status = Data.Enum.PostStatus.New; return pu; }).ToList();
 
                 _repoPost.Update(item);
@@ -194,6 +198,7 @@ namespace MyEiu.Application.Services.App.Posts
 
                 //change status post from Draft to delivered
                 item.Status = Data.Enum.PostStatus.Delivered;
+                item.CreateDate = DateTime.Now;
                 item.PostUsers!.Select(pu => { pu.Status = Data.Enum.PostStatus.New; return pu; }).ToList();
 
                 _repoPost.Update(item);
@@ -224,7 +229,8 @@ namespace MyEiu.Application.Services.App.Posts
             try
             {
                 //get all relevant emails with post
-                var num = await _repoPostUser.FindAll(pu => pu.Email == email && pu.Status == Data.Enum.PostStatus.New).CountAsync();
+                var num = await _repoPostUser.FindAll(pu => pu.Email == email && pu.Status == Data.Enum.PostStatus.New)
+                            .CountAsync();
 
 
                 if (num != null)
@@ -271,7 +277,11 @@ namespace MyEiu.Application.Services.App.Posts
                     NotificationViewModel notifmodel = _mapper.Map<NotificationViewModel>(item);
                     foreach(var pfiledata in item.PostFileDatas!)
                     {
-                        notifmodel.FilesUrl.Add(new NotifFile { Name = pfiledata.FileData.DisplayName, Path = "/" + pfiledata.FileData.Path});
+                        notifmodel.FilesUrl.Add(new NotifFile { 
+                            Name = pfiledata.FileData!.DisplayName, 
+                            Path = "/" + pfiledata.FileData.Path,
+                            FileDataId = pfiledata.FileDataId
+                        });
                     }
 
                     PostUser postuser = await _repoPostUser.FindAll(pu => pu.Email==email && pu.PostId == postid).FirstOrDefaultAsync();

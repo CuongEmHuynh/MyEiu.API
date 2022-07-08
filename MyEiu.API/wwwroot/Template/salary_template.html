@@ -1,0 +1,184 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset='utf-8' />
+	 <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+		<title> -WebApplication4 </title>
+		<style>
+			table {
+				border-collapse: collapse;
+			}
+
+			td.td {
+				width: 30%;
+				border: 1px solid black;
+				text-align: left;
+			}
+
+			td.td1 {
+				width: 20%;
+				border: 1px solid black;
+				text-align: right;
+			}
+
+		.button {
+				background-color: #4CAF50;
+			/* Green */
+			border: none;
+				color: white;
+				padding: 6px 32px;
+				text-align: center;
+				text-decoration: none;
+				display: inline-block;
+				font-size: 13px;
+			}
+	</style>
+</head>
+
+<body>
+<div id='form_luong' runat='server'>
+	<div id='salary' style=' width: 80%;margin: auto; '>
+		   &nbsp;
+	<div align='center' id='title'>
+		<strong> CHI TIẾT LƯƠNG THÁNG %monthly</strong>
+		<strong id='month'></strong>
+	</div>
+	<br>
+	<table style='width:90%;' align='center'>
+		<tr>
+			<td width='200'> Họ và tên nhân viên:</td>
+			<td id='name_emp'> %ten_nv</td>
+		</tr>
+		<tr>   
+			<td> Mã nhân viên:</td>
+			<td id='code_emp'>%ma_nv</td>
+		</tr>
+			<tr>				
+			<td> Chức vụ:</td>		  
+			<td id='position'>%ten_vtr</td>
+		</tr>
+		<tr>
+			<td> Bộ phận </td>
+			<td id='name_dep'>%ten_bp</td>
+		</tr>
+	</table>
+			<br>
+	<div id='Gross'>
+		<table style='width:90%;' align='center'>
+				<tr>
+					<th style='width:90% ;border:1px solid black; text-align: left;' colspan='4'> &nbsp;THÔNG TIN CHUNG
+							</th>
+															</tr>
+		<tr>
+			<td class='td'> &nbsp;Mức lương tính BHXH, BHYT</td>
+			<td class='td1' id='col1_row1'>%tien_bh &nbsp;</td>
+			<td class='td'>&nbsp;Mức lương tính BHTN</td>
+			<td class='td1' id='col2_row1'>%tien_tn &nbsp;</td>
+		</tr>
+		<tr>
+			<td class='td' > &nbsp;Số ngày làm việc</td>
+            <td class='td1' id='Ncol1_row1'>%N01 &nbsp;</td> 
+            <td class='td'>&nbsp;Số ngày nghỉ phép trong năm</td>
+            <td class='td1' id='Ncol2_row1'>%N03 &nbsp;</td>
+        </tr>
+		<tr>
+			<td class='td' > &nbsp;Số ngày nghỉ không hưởng lương</td>
+            <td class='td1' id='Ncol1_row1'>%N02 &nbsp;</td> 
+            <td class='td'>&nbsp;Số ngày nghỉ phép còn lại</td>
+            <td class='td1' id='Ncol2_row1'>%N04 &nbsp;</td>
+        </tr>
+		<tr>
+			<td class='td'>&nbsp;Thu nhập chịu thuế</td>
+			<td class='td1' id='col1_row2'>%T11 &nbsp;</td>
+			<td class='td'>&nbsp;Số người phụ thuộc</td>
+			<td class='td1' id='col2_row2'>%GT1 &nbsp;</td>
+		</tr>
+		<tr>
+			<td class='td'>&nbsp;Thu nhập tính thuế</td>
+			<td class='td1' id='col1_row3'>%T19 &nbsp;</td>
+			<td class='td'>&nbsp;Giảm trừ bản thân & gia cảnh</td>
+			<td class='td1' id='col2_row3'>%T18 &nbsp;</td>
+		</tr>
+		<tr>
+			<td class='td' colspan='4'>&nbsp;</td>
+		</tr>
+		<tr>
+			<th style = 'border:1px solid black; ' colspan='2'>&nbsp;CÁC KHOẢN THU NHẬP(1)</th>
+			<th style = 'border:1px solid black; ' colspan='2'>&nbsp;CÁC KHOẢN TRỪ VÀO LƯƠNG(2)</th>
+		</tr>
+		<tr>
+			<td class='td'>&nbsp;Lương năng suất</td>
+			<td class='td1' id='col1_row4'>%Luong_nang_suat &nbsp;</td>
+			<td class='td'>&nbsp;Bảo hiểm xã hội(8%)</td>
+			<td class='td1' id='col2_row4'>%B01 &nbsp;</td>
+		</tr>
+		<tr>
+			<td class='td'>&nbsp;Lương ngoài giờ</td>
+			<td class='td1' id='col1_row5'>%L73 &nbsp;</td>
+			<td class='td'>&nbsp;Bảo hiểm y tế(1.5%)</td>
+			<td class='td1' id='col2_row5'>%B02 &nbsp;</td>
+		</tr>
+		<tr>
+			<td class='td'>&nbsp;Tiền ăn trưa</td>
+			<td class='td1' id='col1_row6'>%L25 &nbsp;</td>
+			<td class='td'>&nbsp;Bảo hiểm thất nghiệp(1%)</td>
+			<td class='td1' id='col2_row6'>%B03 &nbsp;</td>
+		</tr>
+		<tr>
+			<td class='td'>&nbsp;Phụ cấp</td>
+			<td class='td1' id='col1_row7'>%PC1 &nbsp;</td>
+			<td class='td'>&nbsp;Thuế thu nhập cá nhân</td>
+			<td class='td1' id='col2_row7'>%T20 &nbsp;</td>
+		</tr>
+		<tr>
+			<td class='td'>&nbsp;Phụ cấp Đảng</td>
+			<td class='td1' id='col1_row8'>%P00 &nbsp;</td>
+			<td class='td'>&nbsp;Đoàn phí</td>
+			<td class='td1' id='col2_row8'>%G_doan_phi &nbsp;</td>
+		</tr>
+		<tr>
+			<td class='td'>&nbsp;Phụ cấp Công đoàn</td>
+			<td class='td1' id='col1_row9'>%P10 &nbsp;</td>
+			<td class='td'>&nbsp;Đảng phí</td>
+			<td class='td1' id='col2_row9'>%U02 &nbsp;</td>
+		</tr>
+		<tr>
+			<td class='td'>&nbsp;Phụ cấp CHQS</td>
+			<td class='td1' id='col1_row10'>%P20 &nbsp;</td>
+			<td class='td'>&nbsp;Công đoàn (1%)</td>
+			<td class='td1' id='col2_row10'>%U01 &nbsp;</td>
+		</tr>
+		<tr>
+			<td class='td'>&nbsp;Thu nhập khác</td>
+			<td class='td1' id='col1_row10'>%P51 &nbsp;</td>
+			<td class='td'>&nbsp;Giảm trừ khác</td>
+			<td class='td1' id='col2_row10'>%P61 &nbsp;</td>
+		</tr>
+		
+		<tr>
+			<td class='td' colspan='4'>&nbsp;</td>
+		</tr>
+		<tr>
+			<th style = 'border:1px solid black; text-align: left; ' > &nbsp;TỔNG THU NHẬP</th>
+			<td class='td1' id='col1_row12'><strong>%G_tong_nhap</strong></td>
+			<th style = 'border:1px solid black;  text-align: left;' > &nbsp;TỔNG KHẤU TRỪ</th>
+			<td class='td1' id='col2_row12'><strong>%G_tong_tru</strong></td>
+		</tr>
+		<tr>
+			<th style = 'border:1px solid black;  text-align: left; ' > &nbsp;LƯƠNG THỰC NHẬP(1)-(2)</th>
+			<td id = 'col1_row13' class='td1' style='border-right:none;'><strong>%Z20</strong></td>
+			<td class='td' style='border-left:none' colspan='2'>&nbsp;</td>
+		</tr>
+	</table>
+</div>
+
+		<br>
+		<div style = 'text-align: center;' > Mọi thắc mắc vui lòng liên hệ: <strong>Ms.Thư(0274 222 0372)</strong> -
+			Phòng Tổ chức hành chính</div>
+		<div style = 'text-align: center;' > Xin cám ơn!</div>
+	</div>
+
+</div>
+</body>
+
+</html>

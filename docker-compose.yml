@@ -10,7 +10,7 @@ services:
   myapp-eiu:
     hostname: myapp-eiu
     container_name: myapp-eiu
-    image: huynhcuongem75/myapp-eiu:latest
+    image: huynhcuongem75/myapp-eiu:v1.0
     build: 
         context: ./
         dockerfile: ./MyEiu.API/Dockerfile

@@ -6,6 +6,7 @@ using MyEiu.API.Dtos;
 using MyEiu.Application.Const;
 using MyEiu.Application.Dtos;
 using MyEiu.Application.Extensions;
+using MyEiu.Application.Services.System;
 using MyEiu.Automapper.ViewModel.App.Notification;
 using MyEiu.Automapper.ViewModel.App.Posts;
 using MyEiu.Data.EF.DbContexts;
@@ -29,7 +30,8 @@ namespace MyEiu.Application.Services.App.Posts
         //Task<OperationResult> Add(PostViewModel model,FileDataViewModel f_model);       
         Task<OperationResult> AddPush(PostViewModel model);
         Task<OperationResult> PushNoti(int id);
-        Task<OperationResult> Update(PostViewModel model);
+        Task<OperationResult> RemovePost(PostViewModel model);
+        Task<OperationResult> UpdatePost(PostViewModel model);
         Task<List<PostViewModel>> GetPostsByUser(int userid);
 
         Task<OperationResult> NotiListByUser(NotifPagingDto pagingdto);
@@ -42,6 +44,7 @@ namespace MyEiu.Application.Services.App.Posts
     {
         private readonly IRepository<Post> _repoPost;
         private readonly IRepository<PostUser> _repoPostUser;
+        private readonly IFileService _fileService;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly MapperConfiguration _configMapper;
@@ -220,7 +223,32 @@ namespace MyEiu.Application.Services.App.Posts
             }
             return operationResult;
         }
-        public Task<OperationResult> Update(PostViewModel model)
+        public async Task<OperationResult> RemovePost(PostViewModel model)
+        {
+            try
+            {
+                var post = _mapper.Map<Post>(model);
+                foreach (var fileData in post.PostFileDatas!)
+                {
+                    _fileService.RemoveFilePost(fileData.FileData!.FileName!);
+                }
+                _repoPost.Remove(post);
+                operationResult = new OperationResult()
+                {
+                    Message = "Remove complete",
+                    StatusCode = 200,
+                    Success = true
+                };
+            }
+            catch(Exception ex)
+            {
+                operationResult = ex.GetMessageError();
+            }
+
+            return operationResult;
+
+        }
+        public Task<OperationResult> UpdatePost(PostViewModel model)
         {
             throw new NotImplementedException();
         }
@@ -353,5 +381,7 @@ namespace MyEiu.Application.Services.App.Posts
 
             return pagingResult;
         }
+
+        
     }
 }

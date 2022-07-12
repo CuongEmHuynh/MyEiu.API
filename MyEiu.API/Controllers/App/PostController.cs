@@ -28,6 +28,9 @@ namespace MyEiu.API.Controllers.App
         [HttpGet]
         [AllowAnonymous]
         public async Task<ActionResult> GetPostsByUser(int userid) => Ok(await _service.GetPostsByUser(userid));
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<ActionResult> GetPostById(int postid) => Ok(await _service.GetPostById(postid));
         [HttpPost]
         [AllowAnonymous]
         public async Task<ActionResult> Add([FromBody] PostViewModel model)
@@ -41,7 +44,12 @@ namespace MyEiu.API.Controllers.App
             return await _service.AddPush(model);
             
         }
+        [HttpGet]
+        public async Task<OperationResult> RemovePost(int postid)
+        {
+            return await _service.RemovePost(postid);
 
+        }
         [HttpGet]
         public async Task<OperationResult> PushNoti(int postid)
         {

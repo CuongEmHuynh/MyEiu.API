@@ -21,14 +21,29 @@ namespace MyEiu.Data.EF.DbContexts
             base.OnModelCreating(builder);
             builder.Entity<Post>()
                 .HasOne(p => p.Author)
-                .WithMany(u => u.PostAuthors)               
+                .WithMany(u => u.PostAuthors)
                 .HasForeignKey(p => p.CreateBy)
-                .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Restrict);
             builder.Entity<Post>()
                .HasOne(p => p.Editor)
                .WithMany(u => u.PostEditors)
                .HasForeignKey(p => p.ModifyBy)
                .OnDelete(DeleteBehavior.Restrict);
+            builder.Entity<Post>()
+               .HasMany(p => p.PostFileDatas)
+               .WithOne(pfd => pfd.Post)
+               .HasForeignKey(p => p.PostId)
+               .OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<Post>()
+               .HasMany(p => p.PostGroups)
+               .WithOne(pfd => pfd.Post)
+               .HasForeignKey(p => p.PostId)
+               .OnDelete(DeleteBehavior.Cascade);
+            builder.Entity<Post>()
+               .HasMany(p => p.PostUsers)
+               .WithOne(pfd => pfd.Post)
+               .HasForeignKey(p => p.PostId)
+               .OnDelete(DeleteBehavior.Cascade);          
 
             await new DbInitializer(builder).Seed();
            

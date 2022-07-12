@@ -30,10 +30,10 @@ namespace MyEiu.Application.Services.App.Posts
         //Task<OperationResult> Add(PostViewModel model,FileDataViewModel f_model);       
         Task<OperationResult> AddPush(PostViewModel model);
         Task<OperationResult> PushNoti(int id);
-        Task<OperationResult> RemovePost(PostViewModel model);
+        Task<OperationResult> RemovePost(int postid);
         Task<OperationResult> UpdatePost(PostViewModel model);
         Task<List<PostViewModel>> GetPostsByUser(int userid);
-
+        Task<PostViewModel> GetPostById(int postid);
         Task<OperationResult> NotiListByUser(NotifPagingDto pagingdto);
         Task<OperationResult> CountNewNotifUser(string email);
         Task<OperationResult> NotiDetails(int postid,string email);//user view notification in details           
@@ -44,6 +44,7 @@ namespace MyEiu.Application.Services.App.Posts
     {
         private readonly IRepository<Post> _repoPost;
         private readonly IRepository<PostUser> _repoPostUser;
+        private readonly IRepository<FileData> _repoFileData;
         private readonly IFileService _fileService;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -52,12 +53,17 @@ namespace MyEiu.Application.Services.App.Posts
         private readonly HttpClient _httpClient;
         private readonly StaffEiuDbContext _staffEiuDbContext;
 
-        public PostService(IRepository<Post> postRepository, IRepository<PostUser> repoPostUser, IUnitOfWork unitOfWork, IMapper mapper, MapperConfiguration configMapper, 
+        public PostService(IRepository<Post> postRepository, IRepository<PostUser> repoPostUser, IRepository<FileData> repoFileData, IFileService fileService,
+            IUnitOfWork unitOfWork, 
+            IMapper mapper, 
+            MapperConfiguration configMapper, 
             HttpClient httpClient,StaffEiuDbContext staffEiuDbContext)
             : base(postRepository, unitOfWork, mapper, configMapper)
         {
             _repoPost = postRepository;
             _repoPostUser = repoPostUser;
+            _repoFileData = repoFileData;   
+            _fileService = fileService;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _configMapper = configMapper;
@@ -75,7 +81,19 @@ namespace MyEiu.Application.Services.App.Posts
                 .ToListAsync();
             return _mapper.Map<List<PostViewModel>>(item);
         }
-        
+        public async Task<PostViewModel> GetPostById(int postid)
+        {
+            var item = await _repoPost.FindAll(p => p.Id == postid)
+                .Include(p => p.PostGroups)
+                .Include(p => p.PostUsers.Where(pu => pu.GroupId == null))
+                .Include(p => p.PostFileDatas!).ThenInclude(p => p.FileData)                
+                .FirstOrDefaultAsync();
+            if(item == null)
+            {
+                return null;
+            }
+            return _mapper.Map<PostViewModel>(item);
+        }
         public async Task<OperationResult> AddPush(PostViewModel model)
         {
             model.CreateDate = DateTime.Now;
@@ -223,16 +241,27 @@ namespace MyEiu.Application.Services.App.Posts
             }
             return operationResult;
         }
-        public async Task<OperationResult> RemovePost(PostViewModel model)
+        public async Task<OperationResult> RemovePost(int postid)
         {
             try
-            {
-                var post = _mapper.Map<Post>(model);
-                foreach (var fileData in post.PostFileDatas!)
+            {               
+                var post = await _repoPost.FindAll(p => p.Id==postid).Include(p => p.PostFileDatas).ThenInclude(pfd=>pfd.FileData)
+                                                            .Include(p => p.PostGroups).Include(p => p.PostUsers).FirstOrDefaultAsync();
+                if(post != null)
                 {
-                    _fileService.RemoveFilePost(fileData.FileData!.FileName!);
+                    if(post.PostFileDatas!=null)
+                    {
+                        foreach (var postfileData in post.PostFileDatas!)
+                        {
+                            _fileService.RemoveFilePost(postfileData.FileData!.FileName!);
+                            _repoFileData.Remove(postfileData.FileData);
+                        }
+                    }                   
+
+                    _repoPost.Remove(post);
+                    await _unitOfWork.SaveChangeAsync();
                 }
-                _repoPost.Remove(post);
+                              
                 operationResult = new OperationResult()
                 {
                     Message = "Remove complete",

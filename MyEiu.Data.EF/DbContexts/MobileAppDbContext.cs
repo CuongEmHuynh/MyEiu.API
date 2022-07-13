@@ -29,11 +29,13 @@ namespace MyEiu.Data.EF.DbContexts
                .WithMany(u => u.PostEditors)
                .HasForeignKey(p => p.ModifyBy)
                .OnDelete(DeleteBehavior.Restrict);
-            builder.Entity<Post>()
+
+            builder.Entity<Post>()               
                .HasMany(p => p.PostFileDatas)
                .WithOne(pfd => pfd.Post)
                .HasForeignKey(p => p.PostId)
                .OnDelete(DeleteBehavior.Cascade);
+              
             builder.Entity<Post>()
                .HasMany(p => p.PostGroups)
                .WithOne(pfd => pfd.Post)

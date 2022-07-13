@@ -25,14 +25,11 @@ namespace MyEiu.API.Controllers.App
             _context = context;
             _client = httpClient;
         }
-        [HttpGet]
-        [AllowAnonymous]
+        [HttpGet]       
         public async Task<ActionResult> GetPostsByUser(int userid) => Ok(await _service.GetPostsByUser(userid));
-        [HttpGet]
-        [AllowAnonymous]
+        [HttpGet]      
         public async Task<ActionResult> GetPostById(int postid) => Ok(await _service.GetPostById(postid));
-        [HttpPost]
-        [AllowAnonymous]
+        [HttpPost]        
         public async Task<ActionResult> Add([FromBody] PostViewModel model)
         {
             model.CreateDate = DateTime.Now;
@@ -43,6 +40,19 @@ namespace MyEiu.API.Controllers.App
         {
             return await _service.AddPush(model);
             
+        }
+        [HttpPost]
+        public async Task<ActionResult> Update([FromBody] PostViewModel model)
+        {
+            model.ModifyDate = DateTime.Now;
+            return Ok(await _service.UpdatePost(model));
+            //return Ok();
+        }
+        [HttpPost]
+        public async Task<ActionResult> UpdatePush([FromBody] PostViewModel model)
+        {
+            model.CreateDate = DateTime.Now;
+            return Ok(await _service.AddAsync(model));
         }
         [HttpGet]
         public async Task<OperationResult> RemovePost(int postid)

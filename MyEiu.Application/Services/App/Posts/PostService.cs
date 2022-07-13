@@ -29,6 +29,7 @@ namespace MyEiu.Application.Services.App.Posts
     {
         //Task<OperationResult> Add(PostViewModel model,FileDataViewModel f_model);       
         Task<OperationResult> AddPush(PostViewModel model);
+        Task<OperationResult> UpdatePush(PostViewModel model);
         Task<OperationResult> PushNoti(int id);
         Task<OperationResult> RemovePost(int postid);
         Task<OperationResult> UpdatePost(PostViewModel model);
@@ -44,6 +45,7 @@ namespace MyEiu.Application.Services.App.Posts
     {
         private readonly IRepository<Post> _repoPost;
         private readonly IRepository<PostUser> _repoPostUser;
+        private readonly IRepository<PostGroup> _repoPostGroup;
         private readonly IRepository<FileData> _repoFileData;
         private readonly IFileService _fileService;
         private readonly IUnitOfWork _unitOfWork;
@@ -53,7 +55,11 @@ namespace MyEiu.Application.Services.App.Posts
         private readonly HttpClient _httpClient;
         private readonly StaffEiuDbContext _staffEiuDbContext;
 
-        public PostService(IRepository<Post> postRepository, IRepository<PostUser> repoPostUser, IRepository<FileData> repoFileData, IFileService fileService,
+        public PostService(IRepository<Post> postRepository, 
+            IRepository<PostUser> repoPostUser, 
+            IRepository<FileData> repoFileData,
+            IRepository<PostGroup> repoPostGroup,
+            IFileService fileService,
             IUnitOfWork unitOfWork, 
             IMapper mapper, 
             MapperConfiguration configMapper, 
@@ -62,7 +68,8 @@ namespace MyEiu.Application.Services.App.Posts
         {
             _repoPost = postRepository;
             _repoPostUser = repoPostUser;
-            _repoFileData = repoFileData;   
+            _repoFileData = repoFileData;  
+            _repoPostGroup = repoPostGroup;
             _fileService = fileService;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -107,6 +114,87 @@ namespace MyEiu.Application.Services.App.Posts
                     Message = "Check lưu thành công"
                 };
                 operationResult = await PushNoti(post);               
+            }
+            catch (Exception ex)
+            {
+                operationResult = ex.GetMessageError();
+            }
+            return operationResult;
+        }
+        public async Task<OperationResult> UpdatePost(PostViewModel model)
+        {
+            model.ModifyDate = DateTime.Now;
+            var post = _mapper.Map<Post>(model);
+            try
+            {
+                //delete all related data (PostGroup, PostUser, PostFileData, FileData)
+
+                //1. Delete Unused PostGroup & PostUser (has GroupId)
+                //get list groupdid in PostGroup
+                var pgSource = _repoPostGroup.FindAll(pg => pg.PostId == post.Id).ToList();
+                foreach (var postGroup in pgSource)
+                {
+                    var deleteflag = true;
+                    foreach (var pg in post.PostGroups!)
+                    {
+                        if(pg.GroupId == postGroup.GroupId)
+                            deleteflag = false;
+                    }
+                    if (deleteflag)
+                    {
+                        _repoPostGroup.Remove(postGroup);
+                        //delete unused PostUser
+                        var pulist = _repoPostUser.FindAll(pu => pu.GroupId == postGroup.GroupId).ToList();
+                        _repoPostUser.RemoveMultiple(pulist);
+                    }
+                }
+                //2. Delete unused PostUser (GroupId = null)
+                var postUserSource = _repoPostUser.FindAll(pu => pu.PostId == post.Id && pu.GroupId == null);
+                foreach (var postUser in postUserSource)
+                {
+                    var deleteflag = true;
+                    var postUserNew = post.PostUsers!.Where(pu => pu.GroupId == null).ToList();
+                    foreach (var pu in postUserNew)
+                    {
+                        if (pu.Email == postUser.Email)
+                            deleteflag = false;
+                    }
+                    if (deleteflag)
+                    {
+                        _repoPostUser.Remove(postUser);
+                    }
+                }
+                //3. Delete unused PostFileData & FileData
+                //Later
+
+                _repoPost.Update(post);
+                await _unitOfWork.SaveChangeAsync();
+                operationResult = new OperationResult()
+                {
+                    Message = "Cập nhật thành công",
+                    Success = true,
+                    StatusCode = 200                    
+                };               
+            }
+            catch (Exception ex)
+            {
+                operationResult = ex.GetMessageError();
+            }
+            return operationResult;
+        }
+        public async Task<OperationResult> UpdatePush(PostViewModel model)
+        {
+            model.CreateDate = DateTime.Now;
+            var post = _mapper.Map<Post>(model);
+            try
+            {
+                 _repoPost.Update(post);
+                await _unitOfWork.SaveChangeAsync();
+                operationResult = new OperationResult()
+                {
+                    Message = "Check update thành công"
+                };
+                operationResult = await PushNoti(post);
             }
             catch (Exception ex)
             {
@@ -276,11 +364,7 @@ namespace MyEiu.Application.Services.App.Posts
 
             return operationResult;
 
-        }
-        public Task<OperationResult> UpdatePost(PostViewModel model)
-        {
-            throw new NotImplementedException();
-        }
+        }       
         public async Task<OperationResult> CountNewNotifUser(string email)
         {
             try

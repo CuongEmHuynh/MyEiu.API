@@ -86,49 +86,7 @@ namespace MyEiu.API.Controllers.Staff
             }
 
             return operationResult;
-        }
-        [HttpPost]
-        public async Task<OperationResult> Staffs(List<string> emails)
-        {
-            try
-            {
-                List<StaffEiu> staffs = new();
-
-                var query = _staffeiudbcontext.StaffEius.Include(s => s.DepartmentEiu)
-                                                .Where(s => s.IsDeleted == 0 && s.Type != 4);   //4: type of member not staff     
-
-                foreach (var email in emails)
-                {
-                    staffs.AddRange(await query.Where(s => s.SchoolEmail == email.Trim()).ToListAsync());
-                }
-                if (staffs.Count > 0)
-                {
-                    operationResult = new OperationResult()
-                    {
-                        StatusCode = 200,
-                        Message = "Get data OK",
-                        Success = true,
-                        Data = _mapper.Map<List<StaffEiuViewModel>>(staffs)
-                    };
-                }
-                else
-                {
-                    operationResult = new OperationResult()
-                    {
-                        StatusCode = 200,
-                        Message = "No data found",
-                        Success = true
-                    };
-                }
-            }
-            catch (Exception ex)
-            {
-                operationResult = ex.GetMessageError();
-            }
-
-            return operationResult;
-
-        }
+        }       
 
 
         [HttpPost]

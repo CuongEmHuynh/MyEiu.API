@@ -33,7 +33,7 @@ namespace MyEiu.API.Controllers.App
         public async Task<ActionResult> Add([FromBody] PostViewModel model)
         {
             model.CreateDate = DateTime.Now;
-            return   Ok(await _service.AddAsync(model));
+            return   Ok(await _service.AddPostAsync(model));
         }
         [HttpPost]
         public async Task<OperationResult> AddPush([FromBody] PostViewModel model)

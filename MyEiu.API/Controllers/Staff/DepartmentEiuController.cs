@@ -22,7 +22,7 @@ namespace MyEiu.API.Controllers.Staff
         }
 
         [HttpGet]
-        public async Task<ActionResult> Departments()
+        public async Task<ActionResult> GetAll()
         {
             List<DepartmentEiuViewModel> departmentViewModel = new();
             List<DepartmentEiu> result = new();
@@ -37,7 +37,7 @@ namespace MyEiu.API.Controllers.Staff
             return Ok(departmentViewModel);
         }
         [HttpGet]
-        public async Task<ActionResult> Staffs(int departmentid)
+        public async Task<ActionResult> GetStaffs(int departmentid)
         {
             List<StaffEiuViewModel> staffViewModel = new();
             List<StaffEiu> result = new();
@@ -51,44 +51,6 @@ namespace MyEiu.API.Controllers.Staff
             return Ok(staffViewModel);
         }
 
-        [HttpPost]
-        public async Task<OperationResult> GetEmailInDeparts(List<int> departmentids)
-        {
-            try
-            {
-                List<object> result = new();
-                var query = _staffEiuDbContext.StaffEius.Where(d => d.IsDeleted == 0 && d.Type != 4);
-
-                foreach (int id in departmentids)
-                {
-                    result.AddRange(await query.Where(d => d.DepartmentEiu!.RecordID == id).Select(d=>new {d.DepartmentID,d.SchoolEmail }).ToListAsync());
-                }
-                if(result.Count > 0)
-                {
-                    operationResult = new OperationResult()
-                    {
-                        StatusCode = 200,
-                        Message = "Get data OK",
-                        Success = true,
-                        Data = result
-                    };
-                }
-               else
-                {
-                    operationResult = new OperationResult()
-                    {
-                        StatusCode = 200,
-                        Message = "No data found",
-                        Success = true                       
-                    };
-                }
-            }catch (Exception ex)
-            {
-                operationResult = ex.GetMessageError();
-            }
-                       
-            return operationResult;
-            
-        }
+       
     }
 }

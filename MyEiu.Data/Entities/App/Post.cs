@@ -31,6 +31,7 @@ namespace MyEiu.Data.Entities.App
         [ForeignKey("UserApp")]
         public int? ModifyBy { get; set; }
         public DateTime? CreateDate { get; set; }
+        //public DateTime? PushDate { get; set; }
         public DateTime? ModifyDate { get; set; }
         public virtual PostType? PostType { get; set; }    
         public virtual UserApp? Author { get; set; }      

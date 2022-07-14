@@ -27,7 +27,7 @@ namespace MyEiu.Application.Services.App.Posts
 {
     public interface IPostService : IBaseService<PostViewModel>
     {
-        //Task<OperationResult> Add(PostViewModel model,FileDataViewModel f_model);       
+        Task<OperationResult> AddPostAsync(PostViewModel model);       
         Task<OperationResult> AddPush(PostViewModel model);
         Task<OperationResult> UpdatePush(PostViewModel model);
         Task<OperationResult> PushNoti(int id);
@@ -60,10 +60,11 @@ namespace MyEiu.Application.Services.App.Posts
             IRepository<FileData> repoFileData,
             IRepository<PostGroup> repoPostGroup,
             IFileService fileService,
+            StaffEiuDbContext staffEiuDbContext,
             IUnitOfWork unitOfWork, 
             IMapper mapper, 
             MapperConfiguration configMapper, 
-            HttpClient httpClient,StaffEiuDbContext staffEiuDbContext)
+            HttpClient httpClient)
             : base(postRepository, unitOfWork, mapper, configMapper)
         {
             _repoPost = postRepository;
@@ -101,6 +102,47 @@ namespace MyEiu.Application.Services.App.Posts
             }
             return _mapper.Map<PostViewModel>(item);
         }
+
+        public async Task<OperationResult> AddPostAsync(PostViewModel model)
+        {
+            model.CreateDate = DateTime.Now;
+            var postItem = _mapper.Map<Post>(model);
+            try
+            {
+                //get users from Deparment to add into Post.PostUsers
+                if(postItem.PostGroups.Count>0)
+                {
+                    foreach(var postGroup in postItem.PostGroups)
+                    {
+                        var postUserSource = await _staffEiuDbContext.StaffEius.Where(s => s.IsDeleted == 0 && s.Type != 4 && s.DepartmentID == postGroup.GroupId)
+                            .Select(s => new { s.DepartmentID, s.SchoolEmail }).ToListAsync();
+                        foreach(var pu in postUserSource)
+                        {
+                            PostUser puTemp = new PostUser() { Email = pu.SchoolEmail, GroupId = pu.DepartmentID, Status = Data.Enum.PostStatus.Draft  };
+                            postItem.PostUsers.Add(puTemp);
+                        }
+                        //
+                    }
+                    
+                    
+                }
+
+                await _repoPost.AddAsync(postItem);
+                await _unitOfWork.SaveChangeAsync();
+                operationResult = new OperationResult()
+                {
+                    Message = "Lưu thành công",
+                    StatusCode = 200,
+                    Success = true
+                };
+            }
+            catch (Exception ex)
+            {
+                operationResult = ex.GetMessageError();
+            }
+            return operationResult;
+        }
+
         public async Task<OperationResult> AddPush(PostViewModel model)
         {
             model.CreateDate = DateTime.Now;
@@ -121,6 +163,7 @@ namespace MyEiu.Application.Services.App.Posts
             }
             return operationResult;
         }
+
         public async Task<OperationResult> UpdatePost(PostViewModel model)
         {
             model.ModifyDate = DateTime.Now;
@@ -495,6 +538,6 @@ namespace MyEiu.Application.Services.App.Posts
             return pagingResult;
         }
 
-        
+       
     }
 }

@@ -28,7 +28,7 @@ namespace MyEiu.Application.Services.App.Posts
     public interface IPostService : IBaseService<PostViewModel>
     {
         Task<OperationResult> AddPostAsync(PostViewModel model);       
-        Task<OperationResult> AddPush(PostViewModel model);
+        Task<OperationResult> AddPushAsync(PostViewModel model);
         Task<OperationResult> UpdatePush(PostViewModel model);
         Task<OperationResult> PushNoti(int id);
         Task<OperationResult> RemovePost(int postid);
@@ -110,7 +110,7 @@ namespace MyEiu.Application.Services.App.Posts
             try
             {
                 //get users from Deparment to add into Post.PostUsers
-                if(postItem.PostGroups.Count>0)
+                if(postItem.PostGroups.Count > 0)
                 {
                     foreach(var postGroup in postItem.PostGroups)
                     {
@@ -143,7 +143,7 @@ namespace MyEiu.Application.Services.App.Posts
             return operationResult;
         }
 
-        public async Task<OperationResult> AddPush(PostViewModel model)
+        public async Task<OperationResult> AddPushAsync(PostViewModel model)
         {
             model.CreateDate = DateTime.Now;
             var post = _mapper.Map<Post>(model);
@@ -175,6 +175,7 @@ namespace MyEiu.Application.Services.App.Posts
                 //1. Delete Unused PostGroup & PostUser (has GroupId)
                 //get list groupdid in PostGroup
                 var pgSource = _repoPostGroup.FindAll(pg => pg.PostId == post.Id).ToList();
+                List<PostGroup> removePostGroups = new List<PostGroup>();
                 foreach (var postGroup in pgSource)
                 {
                     var deleteflag = true;
@@ -187,27 +188,43 @@ namespace MyEiu.Application.Services.App.Posts
                     {
                         _repoPostGroup.Remove(postGroup);
                         //delete unused PostUser
-                        var pulist = _repoPostUser.FindAll(pu => pu.GroupId == postGroup.GroupId).ToList();
+                        var pulist = _repoPostUser.FindAll(pu => pu.GroupId == postGroup.GroupId && pu.PostId == post.Id).ToList();
                         _repoPostUser.RemoveMultiple(pulist);
                     }
                 }
                 //2. Delete unused PostUser (GroupId = null)
-                var postUserSource = _repoPostUser.FindAll(pu => pu.PostId == post.Id && pu.GroupId == null);
+                var postUserSource = _repoPostUser.FindAll(pu => pu.PostId == post.Id && pu.GroupId == null).ToList();
+                var postUserNew = post.PostUsers!.Where(pu => pu.GroupId == null).ToList();
                 foreach (var postUser in postUserSource)
                 {
                     var deleteflag = true;
-                    var postUserNew = post.PostUsers!.Where(pu => pu.GroupId == null).ToList();
                     foreach (var pu in postUserNew)
-                    {
-                        if (pu.Email == postUser.Email)
+                    {                       
+                        if (postUser.Email == pu.Email)
                             deleteflag = false;
                     }
                     if (deleteflag)
                     {
                         _repoPostUser.Remove(postUser);
                     }
+
                 }
-                //3. Delete unused PostFileData & FileData
+                //3. Add new PostUser (GroupId not null)
+                var newGroupId = post.PostGroups.Where(pg => pg.Id == 0).Select(rs => rs.GroupId).ToList();
+                foreach (var groupId in newGroupId)
+                {
+                    var newPostUser = await _staffEiuDbContext.StaffEius.Where(s => s.IsDeleted == 0 && s.Type != 4 && s.DepartmentID == groupId)
+                        .Select(s => new { s.DepartmentID, s.SchoolEmail }).ToListAsync();
+
+                    foreach (var pu in newPostUser)
+                    {
+                        PostUser puTemp = new PostUser() { Email = pu.SchoolEmail, GroupId = pu.DepartmentID, Status = Data.Enum.PostStatus.Draft };
+                        post.PostUsers.Add(puTemp);
+                    }
+                    //
+                }
+
+                //4. Delete unused PostFileData & FileData
                 //Later
 
                 _repoPost.Update(post);

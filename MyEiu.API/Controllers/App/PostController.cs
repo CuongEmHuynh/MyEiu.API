@@ -38,7 +38,7 @@ namespace MyEiu.API.Controllers.App
         [HttpPost]
         public async Task<OperationResult> AddPush([FromBody] PostViewModel model)
         {
-            return await _service.AddPush(model);
+            return await _service.AddPushAsync(model);
             
         }
         [HttpPost]

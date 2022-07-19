@@ -19,6 +19,11 @@ namespace MyEiu.API.Controllers.System
         {
             return Ok(_service.RemoveFilePost(fileName));
         }
+        [HttpGet]
+        public async Task<IActionResult> RemoveFileAndData(int filedataid)
+        {
+            return Ok(await _service.RemoveFileAndData(filedataid));
+        }
 
         [HttpPost]
         public async Task<IActionResult> UploadMultiFiles([FromForm] List<IFormFile> files, int userid)

@@ -52,7 +52,7 @@ namespace MyEiu.API.Controllers.App
         public async Task<ActionResult> UpdatePush([FromBody] PostViewModel model)
         {
             model.CreateDate = DateTime.Now;
-            return Ok(await _service.AddAsync(model));
+            return Ok(await _service.UpdatePush(model));
         }
         [HttpGet]
         public async Task<OperationResult> RemovePost(int postid)

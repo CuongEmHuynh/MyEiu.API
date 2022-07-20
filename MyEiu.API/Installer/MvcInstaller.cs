@@ -2,6 +2,7 @@
 using MyEiu.API.Installer.Settings;
 using MyEiu.Automapper.Settings;
 using MyEiu.Data.EF;
+using MyEiu.Data.EF.DbContexts;
 using MyEiu.Data.EF.Interface;
 using MyEiu.Data.EF.Repository;
 

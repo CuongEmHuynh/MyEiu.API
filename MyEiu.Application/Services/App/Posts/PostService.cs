@@ -122,9 +122,7 @@ namespace MyEiu.Application.Services.App.Posts
                             postItem.PostUsers.Add(puTemp);
                         }
                         //
-                    }
-                    
-                    
+                    }                                        
                 }
 
                 await _repoPost.AddAsync(postItem);
@@ -146,16 +144,32 @@ namespace MyEiu.Application.Services.App.Posts
         public async Task<OperationResult> AddPushAsync(PostViewModel model)
         {
             model.CreateDate = DateTime.Now;
-            var post = _mapper.Map<Post>(model);
+            var postItem = _mapper.Map<Post>(model);
             try
             {
-                await _repoPost.AddAsync(post);
+                //get users from Deparment to add into Post.PostUsers
+                if (postItem.PostGroups.Count > 0)
+                {
+                    foreach (var postGroup in postItem.PostGroups)
+                    {
+                        var postUserSource = await _staffEiuDbContext.StaffEius.Where(s => s.IsDeleted == 0 && s.Type != 4 && s.DepartmentID == postGroup.GroupId)
+                            .Select(s => new { s.DepartmentID, s.SchoolEmail }).ToListAsync();
+                        foreach (var pu in postUserSource)
+                        {
+                            PostUser puTemp = new PostUser() { Email = pu.SchoolEmail, GroupId = pu.DepartmentID, Status = Data.Enum.PostStatus.Draft };
+                            postItem.PostUsers.Add(puTemp);
+                        }
+                        //
+                    }
+                }
+
+                await _repoPost.AddAsync(postItem);
                 await _unitOfWork.SaveChangeAsync();
                 operationResult = new OperationResult()
                 {
                     Message = "Check lưu thành công"
                 };
-                operationResult = await PushNoti(post);               
+                operationResult = await PushNoti(postItem);               
             }
             catch (Exception ex)
             {
@@ -224,9 +238,6 @@ namespace MyEiu.Application.Services.App.Posts
                     //
                 }
 
-                //4. Delete unused PostFileData & FileData
-                //Later
-
                 _repoPost.Update(post);
                 await _unitOfWork.SaveChangeAsync();
                 operationResult = new OperationResult()
@@ -248,7 +259,62 @@ namespace MyEiu.Application.Services.App.Posts
             var post = _mapper.Map<Post>(model);
             try
             {
-                 _repoPost.Update(post);
+                //delete all related data (PostGroup, PostUser, PostFileData, FileData)
+
+                //1. Delete Unused PostGroup & PostUser (has GroupId)
+                //get list groupdid in PostGroup
+                var pgSource = _repoPostGroup.FindAll(pg => pg.PostId == post.Id).ToList();
+                List<PostGroup> removePostGroups = new List<PostGroup>();
+                foreach (var postGroup in pgSource)
+                {
+                    var deleteflag = true;
+                    foreach (var pg in post.PostGroups!)
+                    {
+                        if (pg.GroupId == postGroup.GroupId)
+                            deleteflag = false;
+                    }
+                    if (deleteflag)
+                    {
+                        _repoPostGroup.Remove(postGroup);
+                        //delete unused PostUser
+                        var pulist = _repoPostUser.FindAll(pu => pu.GroupId == postGroup.GroupId && pu.PostId == post.Id).ToList();
+                        _repoPostUser.RemoveMultiple(pulist);
+                    }
+                }
+                //2. Delete unused PostUser (GroupId = null)
+                var postUserSource = _repoPostUser.FindAll(pu => pu.PostId == post.Id && pu.GroupId == null).ToList();
+                var postUserNew = post.PostUsers!.Where(pu => pu.GroupId == null).ToList();
+                foreach (var postUser in postUserSource)
+                {
+                    var deleteflag = true;
+                    foreach (var pu in postUserNew)
+                    {
+                        if (postUser.Email == pu.Email)
+                            deleteflag = false;
+                    }
+                    if (deleteflag)
+                    {
+                        _repoPostUser.Remove(postUser);
+                    }
+
+                }
+                //3. Add new PostUser (GroupId not null)
+                var newGroupId = post.PostGroups.Where(pg => pg.Id == 0).Select(rs => rs.GroupId).ToList();
+                foreach (var groupId in newGroupId)
+                {
+                    var newPostUser = await _staffEiuDbContext.StaffEius.Where(s => s.IsDeleted == 0 && s.Type != 4 && s.DepartmentID == groupId)
+                        .Select(s => new { s.DepartmentID, s.SchoolEmail }).ToListAsync();
+
+                    foreach (var pu in newPostUser)
+                    {
+                        PostUser puTemp = new PostUser() { Email = pu.SchoolEmail, GroupId = pu.DepartmentID, Status = Data.Enum.PostStatus.Draft };
+                        post.PostUsers.Add(puTemp);
+                    }
+                    //
+                }
+
+
+                _repoPost.Update(post);
                 await _unitOfWork.SaveChangeAsync();
                 operationResult = new OperationResult()
                 {

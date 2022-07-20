@@ -37,7 +37,7 @@ namespace MyEiu.Data.EF.DbContexts
                     FirstName = "Ngữ",
                     Birthday = new DateTime(1988, 9, 20),
                     Email = "ngu.nguyen@eiu.edu.vn",
-                    RoleId = 2,
+                    RoleId = 1,
                     //GroupID = null,
                     Phone = "0977317173",
                     IsDeleted = 0,
@@ -56,6 +56,22 @@ namespace MyEiu.Data.EF.DbContexts
                     RoleId = 2,
                     //GroupID = null,
                     Phone = "0977888888",
+                    IsDeleted = 0,
+                    ImagePath = null
+                },
+                new UserApp
+                {
+                    Id = 3,
+                    Code = "040019",
+                    Username = "moodle",
+                    Password = null,
+                    LastName = "Moodle",
+                    FirstName = "EIU",
+                    Birthday = new DateTime(1997, 9, 20),
+                    Email = "moodle@eiu.edu.vn",
+                    RoleId = 2,
+                    //GroupID = null,
+                    Phone = "09778881",
                     IsDeleted = 0,
                     ImagePath = null
                 }
